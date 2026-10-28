@@ -35,20 +35,18 @@
     </script>
     <style>
         body {
-            background-color: #fdfcf0; /* Warm sepia undertone */
+            background-color: #fdfcf0;
             color: #1a1a1a;
-            /* Global Background: Detailed, fresco-like stone with ancient GoT-themed carvings */
             background-image: 
                 linear-gradient(rgba(253, 252, 240, 0.95), rgba(253, 252, 240, 0.9)),
                 url('https://images.unsplash.com/photo-1599675376288-2c26f04746f3?q=80&w=2000');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            background-attachment: scroll;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Thematic Card Styling */
         .dracarys-card {
             background-color: rgba(255, 255, 255, 0.98);
             border: 1px solid #e0e0e0;
@@ -56,7 +54,6 @@
             box-shadow: 0 4px 15px rgba(140, 120, 81, 0.1);
         }
         
-        /* Thematic Separator */
         .separator {
             border-top: 2px solid #D4AF37;
             border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
@@ -86,9 +83,8 @@
     <!-- HEADER CON LOGO Y NOMBRE INTEGRADO -->
     <header class="py-10 px-4 text-center">
         <div class="max-w-4xl mx-auto">
-            <!-- Full Integrated Logo and Company Name -->
             <div class="flex justify-center items-center mb-4">
-                <img src="https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200" alt="Logo Dracarys Soup" class="w-16 h-16 mr-3">
+                <img src="https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200" alt="Logo Dracarys Soup" class="w-16 h-16 rounded-full object-cover shadow-md mr-3 border-2 border-dracarys-gold">
                 <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest relative">
                     DRACARYS SOUP
                     <span class="absolute -top-3 -right-6 text-xl">🔥</span>
@@ -100,13 +96,13 @@
     </header>
 
     <!-- NAVEGACIÓN DE CATEGORÍAS -->
-    <nav class="sticky top-10 z-30 bg-sepia/95backdrop-blur py-3 px-4 shadow-sm border-b border-gray-100">
+    <nav class="sticky top-10 z-30 bg-[#fdfcf0]/95 backdrop-blur py-3 px-4 shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scrollbar font-medium text-xs">
-            <button onclick="filterCategory('all')" class="cat-btn bg-black text-white px-4 py-2 rounded-lg font-bold whitespace-nowrap">🔥 Todo el Menú</button>
-            <button onclick="filterCategory('Descuentos')" class="cat-btn bg-white text-gray-800 hover:bg-dracarys-card px-4 py-2 rounded-lg border border-gray-100 whitespace-nowrap">🏷️ Ofertas Especiales</button>
-            <button onclick="filterCategory('Sopas, Hervidos & Parrillas')" class="cat-btn bg-white text-gray-800 hover:bg-dracarys-card px-4 py-2 rounded-lg border border-gray-100 whitespace-nowrap">🍲 Sopas, Hervidos & Parrillas</button>
-            <button onclick="filterCategory('Salchipapas Mix')" class="cat-btn bg-white text-gray-800 hover:bg-dracarys-card px-4 py-2 rounded-lg border border-gray-100 whitespace-nowrap">🍟 Salchipapas Mix</button>
-            <button onclick="filterCategory('Bebidas & Postres')" class="cat-btn bg-white text-gray-800 hover:bg-dracarys-card px-4 py-2 rounded-lg border border-gray-100 whitespace-nowrap">🥤 Bebidas & Postres</button>
+            <button onclick="filterCategory('all')" class="cat-btn bg-black text-white px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow">🔥 Todo el Menú</button>
+            <button onclick="filterCategory('Descuentos')" class="cat-btn bg-white text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🏷️ Ofertas Especiales</button>
+            <button onclick="filterCategory('Sopas, Hervidos & Parrillas')" class="cat-btn bg-white text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🍲 Sopas, Hervidos & Parrillas</button>
+            <button onclick="filterCategory('Salchipapas Mix')" class="cat-btn bg-white text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🍟 Salchipapas Mix</button>
+            <button onclick="filterCategory('Bebidas & Postres')" class="cat-btn bg-white text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🥤 Bebidas & Postres</button>
         </div>
     </nav>
 
@@ -115,7 +111,7 @@
         
         <!-- CATÁLOGO DE PRODUCTOS -->
         <section class="lg:col-span-2 space-y-6">
-            <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3">SOPAS, HERVIDOS & PARRILLAS</h2>
+            <h2 id="current-category-title" class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-300 pb-3">🔥 Todo el Menú</h2>
             <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Productos dinámicos -->
             </div>
@@ -124,7 +120,7 @@
         <!-- MI PEDIDO / CARRITO EN VIVO -->
         <aside class="space-y-6">
             <div class="dracarys-card p-6 sticky top-28">
-                <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-100 pb-3 flex justify-between items-center">
+                <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
                     <span>🛒 Tu Pedido</span>
                     <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
                 </h2>
@@ -133,7 +129,7 @@
                     <p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>
                 </div>
 
-                <div class="border-t border-gray-100 pt-3 space-y-1 text-sm font-semibold">
+                <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold">
                     <div class="flex justify-between text-gray-600">
                         <span>Total ($):</span>
                         <span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span>
@@ -145,15 +141,15 @@
                 </div>
 
                 <!-- FORMULARIO DE CHECKOUT -->
-                <div class="mt-4 pt-4 border-t border-gray-100 space-y-3 text-xs">
+                <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
                     <div>
-                        <input type="text" id="cust-name" placeholder="Tu Nombre Completo" class="w-full bg-white border border-gray-200 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                        <input type="text" id="cust-name" placeholder="Tu Nombre Completo" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
                     </div>
                     <div>
-                        <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04121234567)" class="w-full bg-white border border-gray-200 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                        <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04121234567)" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
                     </div>
                     <div>
-                        <select id="pay-method" class="w-full bg-white border border-gray-200 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                        <select id="pay-method" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
                             <option value="Pago Móvil">Pago Móvil (Bs)</option>
                             <option value="Zinli">Zinli ($)</option>
                             <option value="Wally">Wally ($)</option>
@@ -172,55 +168,78 @@
 
     <!-- SUPER PANEL ADMIN CMS VISUAL MODAL -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-dracarys-card max-w-2xl w-full p-7 rounded-2xl border border-dracarys-border max-h-[90vh] overflow-y-auto space-y-6">
-            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+        <div class="bg-white max-w-2xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
                 <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Super Panel CMS Visual</h3>
-                <button onclick="closeAdmin()" class="text-gray-400 hover:text-black font-bold text-xl">✖</button>
+                <button onclick="closeAdmin()" class="text-gray-500 hover:text-black font-bold text-xl">✖</button>
             </div>
 
             <!-- LOGIN ADMIN -->
             <div id="admin-login-box" class="space-y-4">
                 <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el menú en tiempo real:</p>
-                <input type="password" id="admin-pass" placeholder="Clave de Admin (admin123)" class="w-full bg-white border border-gray-200 p-2.5 rounded-lg text-gray-900 text-xs">
-                <button onclick="authAdmin()" class="w-full bg-black text-white py-2 rounded-lg font-bold text-xs">Ingresar al CMS</button>
+                <input type="password" id="admin-pass" placeholder="Clave de Admin (admin123)" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+                <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
             </div>
 
             <!-- CONTENIDO CMS -->
             <div id="admin-panel-content" class="hidden space-y-6 text-xs">
-                <h4 class="font-cinzel text-lg text-dracarys-gold font-bold">Panel Autenticado (Admin: Oronoz)</h4>
+                <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
+                    <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
+                    <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Nuevo Plato</button>
+                </div>
                 
                 <!-- AJUSTES GENERALES -->
-                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
                     <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
-                    <input type="number" step="0.1" id="input-bcv" value="36.50" class="w-24 bg-white border border-gray-200 p-1 rounded text-right text-gray-900 font-bold">
-                    <button onclick="saveGeneralSettings()" class="w-full bg-dracarys-fire text-white py-1.5 rounded font-bold">Guardar Cambios</button>
+                    <div class="flex gap-2">
+                        <input type="number" step="0.1" id="input-bcv" value="36.50" class="w-32 bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
+                        <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-4 py-1.5 rounded font-bold shadow">Actualizar Tasa</button>
+                    </div>
                 </div>
 
                 <!-- EDITAR PLATO VISUAL -->
-                <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-4">
-                    <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name">...</span></h4>
+                <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name" class="text-black font-bold">Selecciona un plato abajo</span></h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-3">
-                            <input type="text" id="edit-name" placeholder="Nombre" class="w-full border p-2 rounded text-gray-900">
-                            <textarea id="edit-desc" placeholder="Descripción" class="w-full border p-2 rounded text-gray-900"></textarea>
-                            <input type="number" step="0.1" id="edit-price" placeholder="Precio ($ USD)" class="w-full border p-2 rounded text-gray-900">
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
+                                <input type="text" id="edit-name" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
+                                <textarea id="edit-desc" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900 h-20"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Precio ($ USD):</label>
+                                <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                            </div>
                         </div>
                         <div class="space-y-3">
-                            <input type="text" id="edit-img" placeholder="URL Foto (https://...)" class="w-full border p-2 rounded text-gray-900" onchange="updateVisualPreview()">
-                            <select id="edit-category" class="w-full border p-2 rounded text-gray-900">
-                                <option value="Sopas, Hervidos & Parrillas">Sopas, Hervidos & Parrillas</option>
-                                <option value="Salchipapas Mix">Salchipapas Mix</option>
-                                <option value="Bebidas & Postres">Bebidas & Postres</option>
-                            </select>
-                            <img id="visual-edit-preview" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200" class="w-full h-24 h-auto rounded-lg object-cover border" alt="Preview">
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">URL de la Foto:</label>
+                                <input type="text" id="edit-img" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900" onchange="updateVisualPreview()">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
+                                <select id="edit-category" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                                    <option value="Sopas, Hervidos & Parrillas">Sopas, Hervidos & Parrillas</option>
+                                    <option value="Salchipapas Mix">Salchipapas Mix</option>
+                                    <option value="Bebidas & Postres">Bebidas & Postres</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Vista Previa:</label>
+                                <img id="visual-edit-preview" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200" class="w-full h-20 rounded-lg object-cover border border-gray-300" alt="Preview">
+                            </div>
                         </div>
                     </div>
-                    <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 text-white py-2 rounded font-bold">Guardar Edición Visual</button>
+                    <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold shadow mt-2">💾 Guardar Cambios del Plato</button>
                 </div>
 
                 <!-- GESTOR DE PRODUCTOS -->
-                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-                    <h4 class="font-bold text-gray-800">Products List Manager</h4>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h4 class="font-bold text-gray-800">Listado General de Productos</h4>
                     <div id="admin-product-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
                         <!-- Lista JS -->
                     </div>
@@ -231,28 +250,48 @@
 
     <!-- SCRIPT MASTER -->
     <script>
-        // BASE DE DATOS INICIAL CON FOTOS REALES
         let defaultProducts = [
-            { id: 1, name: 'Sancocho Dracarys Res 1.5L', category: 'Sopas, Hervidos & Parrillas', desc: 'Levanta muertos de res concentrated. Incluye arepitas y limón.', price: 11.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
-            { id: 2, name: 'Parrilla Mixta Taberna (2 personas)', category: 'Sopas, Hervidos & Parrillas', desc: 'Carne, Pollo, Chorizo, Chistorra. Incluye papas fritas y salsas.', price: 18.99, promoPrice: 13.99, badge: 'BEST SELLER', available: true, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400' },
-            { id: 3, name: 'Salchipapas Mix Chistorra & Res', category: 'Salchipapas Mix', desc: 'Papas fritas con ración de chistorra y res a la parrilla, ensalada y salsas.', price: 8.30, promoPrice: 5.99, badge: '33% OFF', available: true, img: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?q=80&w=400' },
-            { id: 4, name: 'Bouja de soup medieval 750ml', category: 'Sopas, Hervidos & Parrillas', desc: 'Sopa espesa y rústica de carne y verduras.', price: 10.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
-            { id: 5, name: 'Coca-cola 1L helada', category: 'Bebidas & Postres', desc: 'Refresco helado 1 Litro.', price: 2.50, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400' }
+            { id: 1, name: 'Sancocho Dracarys Res 1.5L', category: 'Sopas, Hervidos & Parrillas', desc: 'Levanta muertos de res concentrado a la leña. Incluye arepitas y limón.', price: 11.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
+            { id: 2, name: 'Parrilla Mixta Taberna (2 personas)', category: 'Sopas, Hervidos & Parrillas', desc: 'Carne, Pollo, Chorizo, Chistorra. Incluye papas fritas, guasacaca y salsas.', price: 18.99, promoPrice: 13.99, badge: 'BEST SELLER', available: true, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400' },
+            { id: 3, name: 'Salchipapas Mix Chistorra & Res', category: 'Salchipapas Mix', desc: 'Papas fritas con ración de chistorra y res a la parrilla, ensalada cremosa y salsas.', price: 8.30, promoPrice: 5.99, badge: '33% OFF', available: true, img: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?q=80&w=400' },
+            { id: 4, name: 'Bouja de soup medieval 750ml', category: 'Sopas, Hervidos & Parrillas', desc: 'Sopa espesa y rústica de carne y verduras al estilo de la taberna.', price: 10.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
+            { id: 5, name: 'Coca-cola 1L helada', category: 'Bebidas & Postres', desc: 'Refresco de cola helado 1 Litro.', price: 2.50, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400' }
         ];
 
-        let products = JSON.parse(localStorage.getItem('dracarys_products_v2')) || defaultProducts;
+        // Sincronizar con localStorage (compatible con claves anteriores)
+        let savedData = localStorage.getItem('dracarys_products_v2') || localStorage.getItem('dracarys_products');
+        let products = savedData ? JSON.parse(savedData) : defaultProducts;
         let bcvRate = parseFloat(localStorage.getItem('dracarys_bcv')) || 36.50;
         let isAdminAuthenticated = false;
         let cart = [];
         let editingProductId = null;
+        let currentFilter = 'all';
 
         function renderProducts(filterCat = 'all') {
+            currentFilter = filterCat;
             const grid = document.getElementById('catalog-grid');
+            const titleEl = document.getElementById('current-category-title');
+            titleEl.innerText = filterCat === 'all' ? '🔥 Todo el Menú' : (filterCat === 'Descuentos' ? '🏷️ Ofertas Especiales' : filterCat);
+            
             grid.innerHTML = '';
-            products.forEach(p => {
+
+            let filtered = products;
+            if (filterCat === 'Descuentos') {
+                filtered = products.filter(p => p.promoPrice !== null && p.promoPrice !== undefined);
+            } else if (filterCat !== 'all') {
+                filtered = products.filter(p => p.category === filterCat);
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 italic col-span-2 text-center py-10 bg-white/60 rounded-xl">No hay productos disponibles en esta categoría.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
                 const price = p.promoPrice || p.price;
+                const bsPrice = (price * bcvRate).toFixed(2);
                 grid.innerHTML += `
-                    <div class="dracarys-card p-4 gap-3 relative flex ${!p.available ? 'opacity-60' : ''}">
+                    <div class="dracarys-card p-4 gap-3 relative flex ${!p.available ? 'opacity-60 grayscale' : ''}">
                         <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}">
                         <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
                             <div>
@@ -264,13 +303,20 @@
                                 <div>
                                     <span class="font-black text-gray-950 text-sm">$${price.toFixed(2)}</span>
                                     ${p.promoPrice ? `<span class="text-gray-400 line-through text-[10px] ml-1">$${p.price.toFixed(2)}</span>` : ''}
+                                    <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
                                 </div>
-                                ${isAdminAuthenticated ? `
-                                    <button onclick="editProductVisual(${p.id})" class="text-blue-600 font-bold px-2 py-1 rounded text-[10px] hover:underline">✏️ Editar Visual</button>
-                                ` : ''}
-                                <button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold">
-                                    + Añadir
-                                </button>
+                                <div class="flex gap-1.5 items-center">
+                                    ${isAdminAuthenticated ? `
+                                        <button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white font-bold px-2 py-1 rounded text-[10px] hover:bg-blue-700">✏️ Editar</button>
+                                    ` : ''}
+                                    ${p.available ? `
+                                        <button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">
+                                            + Añadir
+                                        </button>
+                                    ` : `
+                                        <span class="bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded">Agotado</span>
+                                    `}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -278,7 +324,6 @@
             });
         }
 
-        // CONTROL DE CARRITO
         function addToCart(id) {
             const p = products.find(item => item.id === id);
             if (!p || !p.available) return;
@@ -301,9 +346,10 @@
                 const price = item.promoPrice || item.price;
                 total += price;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
                         <div class="pr-2 truncate max-w-[180px]">
                             <p class="font-bold text-gray-900 text-[11px]">${item.name}</p>
+                            <p class="text-dracarys-fire font-semibold text-[10px]">$${price.toFixed(2)}</p>
                         </div>
                         <button onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5 hover:text-red-300">✖</button>
                     </div>
@@ -318,7 +364,6 @@
             updateCart();
         }
 
-        // PANEL DE CONTROL CMS VISUAL
         function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
         function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
@@ -327,7 +372,7 @@
                 isAdminAuthenticated = true;
                 document.getElementById('admin-login-box').classList.add('hidden');
                 document.getElementById('admin-panel-content').classList.remove('hidden');
-                renderProducts(); // Re-render to show edit buttons
+                renderProducts(currentFilter);
                 renderAdminProducts();
             } else {
                 alert('Clave incorrecta');
@@ -339,17 +384,17 @@
             list.innerHTML = '';
             products.forEach(p => {
                 list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-200 shadow-sm">
                         <div class="flex items-center gap-2">
                             <img src="${p.img}" class="w-9 h-9 rounded object-cover border" alt="Thumb">
-                            <span class="font-bold text-gray-950 truncate max-w-[200px]">${p.name}</span>
+                            <span class="font-bold text-gray-950 truncate max-w-[170px]">${p.name}</span>
                         </div>
-                        <div class="flex gap-2 text-xs">
-                            <button onclick="toggleAvailability(${p.id})" class="px-2 py-0.5 rounded text-[10px] font-bold ${p.available ? 'bg-emerald-900 text-emerald-200' : 'bg-red-900 text-red-200'}">
+                        <div class="flex gap-2 text-xs items-center">
+                            <button onclick="toggleAvailability(${p.id})" class="px-2 py-1 rounded text-[10px] font-bold ${p.available ? 'bg-emerald-800 text-emerald-200' : 'bg-red-800 text-red-200'}">
                                 ${p.available ? 'Disponible' : 'Agotado'}
                             </button>
-                            <button onclick="editProductVisual(${p.id})" class="text-blue-600 font-bold">✏️</button>
-                            <button onclick="deleteProduct(${p.id})" class="text-red-500 font-bold">✖</button>
+                            <button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">✏️</button>
+                            <button onclick="deleteProduct(${p.id})" class="text-red-500 font-bold px-1">✖</button>
                         </div>
                     </div>
                 `;
@@ -367,7 +412,7 @@
             document.getElementById('edit-img').value = p.img;
             document.getElementById('edit-category').value = p.category;
             updateVisualPreview();
-            openAdmin(); // Open panel if edit from main page
+            openAdmin();
         }
 
         function updateVisualPreview() {
@@ -375,6 +420,7 @@
         }
 
         function saveVisualEdit() {
+            if (editingProductId === null) return alert('Selecciona un producto primero.');
             const p = products.find(item => item.id === editingProductId);
             if (!p) return;
             p.name = document.getElementById('edit-name').value;
@@ -383,41 +429,63 @@
             p.img = document.getElementById('edit-img').value;
             p.category = document.getElementById('edit-category').value;
             saveProducts();
-            editingProductId = null;
-            alert('Producto actualizado con éxito visualmente.');
+            alert('¡Plato actualizado con éxito en el menú!');
+        }
+
+        function addNewProductPrompt() {
+            const name = prompt('Nombre del nuevo plato:');
+            if (!name) return;
+            const price = parseFloat(prompt('Precio en $ USD:', '10.00')) || 10.00;
+            const newP = {
+                id: Date.now(),
+                name: name,
+                category: 'Sopas, Hervidos & Parrillas',
+                desc: 'Deliciosa preparación artesanal de la casa.',
+                price: price,
+                promoPrice: null,
+                badge: 'NUEVO',
+                available: true,
+                img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
+            };
+            products.push(newP);
+            saveProducts();
+            renderAdminProducts();
+            alert('¡Plato agregado con éxito!');
         }
 
         function toggleAvailability(id) {
             const p = products.find(item => item.id === id);
-            if (p) { p.available = !p.available; saveProducts(); }
+            if (p) { p.available = !p.available; saveProducts(); renderAdminProducts(); }
         }
 
         function deleteProduct(id) {
-            products = products.filter(p => p.id !== id);
-            saveProducts();
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                products = products.filter(p => p.id !== id);
+                saveProducts();
+                renderAdminProducts();
+            }
         }
 
         function saveProducts() {
             localStorage.setItem('dracarys_products_v2', JSON.stringify(products));
-            renderProducts();
-            renderAdminProducts();
+            renderProducts(currentFilter);
         }
 
         function saveGeneralSettings() {
             bcvRate = parseFloat(document.getElementById('input-bcv').value);
             localStorage.setItem('dracarys_bcv', bcvRate);
             document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
-            renderProducts();
+            renderProducts(currentFilter);
             updateCart();
-            alert('Ajustes actualizados.');
+            alert('¡Tasa BCV actualizada con éxito!');
         }
 
         function filterCategory(cat) { renderProducts(cat); }
 
-        // INICIALIZACIÓN
+        // Inicialización
         document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
         document.getElementById('input-bcv').value = bcvRate;
-        renderProducts();
+        renderProducts('all');
     </script>
 </body>
 </html>
