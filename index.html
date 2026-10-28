@@ -3,17 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dracarys Soup</title>
+    <title>Dracarys Soup — Taberna & Caldos Tradicionales</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para estilo Vintage -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parchment: '#fcf8f2',
+                        'parchment-dark': '#f4ebd9',
+                        wood: '#2b1b17',
+                        'wood-light': '#3d2822',
+                        copper: '#c86d3b',
+                        'copper-hover': '#b05828',
+                        gold: '#d4af37',
+                        ink: '#1c1917'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #0f172a; color: white; }
-        h1 { color: #f97316; font-size: 2.5rem; }
-        p { font-size: 1.2rem; }
-        .btn { display: inline-block; background-color: #25d366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+        body {
+            background-color: #2b1b17;
+            background-image: radial-gradient(#3d2822 1px, transparent 0);
+            background-size: 24px 24px;
+            color: #1c1917;
+        }
+        .parchment-bg {
+            background-color: #fcf8f2;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0, 0, 0, 0.03) 28px);
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.08), 0 10px 25px rgba(0,0,0,0.5);
+            border: 2px solid #d4af37;
+        }
+        .wood-card {
+            background-color: #3d2822;
+            border: 1px solid #c86d3b;
+        }
     </style>
 </head>
-<body>
-    <h1>🔥 Dracarys Soup 🔥</h1>
-    <p>Próximamente el mejor menú interactivo. ¡Desplegado gratis en Vercel!</p>
-    <a href="https://wa.me/" class="btn">Hacer pedido por WhatsApp</a>
+<body class="font-sans antialiased min-h-screen pb-12">
+
+    <!-- BARRA SUPERIOR DE ESTADO Y TASA -->
+    <header class="bg-wood text-parchment-dark border-b border-copper p-3 shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center text-sm gap-2">
+            <div class="flex items-center gap-3">
+                <span id="status-badge" class="px-3 py-1 rounded-full font-bold text-xs bg-emerald-800 text-emerald-100 border border-emerald-500">
+                    🟢 ABIERTO AHORA
+                </span>
+                <span class="text-xs text-copper">Horario: 11:00 AM - 9:00 PM</span>
+            </div>
+            <div class="flex items-center gap-4 text-xs">
+                <span>Tasa BCV: <strong class="text-gold" id="bcv-rate">36.50</strong> Bs/$</span>
+                <button onclick="openAdminModal()" class="text-amber-400 hover:underline flex items-center gap-1 font-semibold">
+                    ⚙️ Panel Admin
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HEADER / BANNER VINTAGE -->
+    <section class="py-10 text-center text-parchment relative">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="font-cinzel text-4xl md:text-6xl text-gold tracking-widest drop-shadow-md mb-2">
+                🔥 DRACARYS SOUP 🔥
+            </h1>
+            <p class="font-serif italic text-copper text-lg md:text-xl">
+                "Caldos de Fuego & Sabores Ancestrales de la Taberna"
+            </p>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- CATÁLOGO DE MENÚ (2 COLUMNAS EN DESKTOP) -->
+        <section class="lg:col-span-2 space-y-6">
+            <div class="parchment-bg rounded-lg p-6 md:p-8">
+                <div class="border-b-2 border-copper pb-4 mb-6 flex justify-between items-end">
+                    <div>
+                        <h2 class="font-cinzel text-2xl md:text-3xl text-wood font-bold">Carta de Sopas & Potajes</h2>
+                        <p class="text-xs text-stone-600 font-serif italic">Selecciona tus elixires para agregarlos al caldero</p>
+                    </div>
+                </div>
+
+                <!-- LISTA DE PLATOS -->
+                <div id="menu-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Renderizado dinámicamente con JS -->
+                </div>
+            </div>
+
+            <!-- HISTORIA & VALORACIONES -->
+            <div class="parchment-bg rounded-lg p-6 md:p-8">
+                <h3 class="font-cinzel text-xl text-wood font-bold mb-3 border-b border-copper pb-2">Opiniones de la Comarca</h3>
+                <div id="reviews-container" class="space-y-3 mb-6 text-sm italic text-stone-800">
+                    <p class="border-b border-stone-300 pb-2">"El Sancocho de res levantó a mi abuelo en 10 minutos. ¡10/10!" — <strong>Carlos M.</strong> ⭐⭐⭐⭐⭐</p>
+                    <p class="border-b border-stone-300 pb-2">"Excelente sazón y llegó súper caliente el delivery." — <strong>Elena R.</strong> ⭐⭐⭐⭐⭐</p>
+                </div>
+
+                <!-- FORMULARIO DE RESEÑA -->
+                <form onsubmit="addReview(event)" class="bg-parchment-dark p-4 rounded border border-amber-300 text-xs space-y-2">
+                    <p class="font-bold text-wood">Deja tu comentario sobre la casa:</p>
+                    <input type="text" id="review-name" placeholder="Tu Nombre" required class="w-full p-2 border rounded">
+                    <textarea id="review-text" placeholder="¿Qué tal estuvo tu experiencia?" required class="w-full p-2 border rounded"></textarea>
+                    <button type="submit" class="bg-copper hover:bg-copper-hover text-white font-bold py-1.5 px-4 rounded">Publicar Opinión</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- CARRITO / EL CALDERO -->
+        <aside class="space-y-6">
+            <div class="parchment-bg rounded-lg p-6 sticky top-6">
+                <h2 class="font-cinzel text-xl text-wood font-bold border-b-2 border-copper pb-2 mb-4 flex justify-between items-center">
+                    <span>🍲 Tu Caldero</span>
+                    <span id="cart-count" class="bg-copper text-white text-xs px-2 py-0.5 rounded-full">0</span>
+                </h2>
+
+                <div id="cart-items" class="space-y-3 text-sm max-h-60 overflow-y-auto pr-1">
+                    <p class="text-stone-500 italic text-center py-6">Tu caldero está vacío...</p>
+                </div>
+
+                <div class="border-t-2 border-stone-300 pt-4 mt-4 space-y-2">
+                    <div class="flex justify-between font-bold text-wood">
+                        <span>Total USD:</span>
+                        <span id="cart-total-usd">$0.00</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-copper text-sm">
+                        <span>Total Bs (BCV):</span>
+                        <span id="cart-total-bs">0.00 Bs</span>
+                    </div>
+                </div>
+
+                <!-- OPCIONES DE PAGO -->
+                <div class="mt-6 space-y-3 text-xs">
+                    <label class="block font-bold text-wood">Método de Pago:</label>
+                    <select id="payment-method" class="w-full p-2 border rounded bg-white">
+                        <option value="Pago Móvil">Pago Móvil (Bs)</option>
+                        <option value="Binance Pay">Binance Pay (USDT)</option>
+                        <option value="Zelle">Zelle ($)</option>
+                        <option value="Zinli">Zinli ($)</option>
+                        <option value="Efectivo">Efectivo en Entrega</option>
+                    </select>
+
+                    <label class="block font-bold text-wood mt-2">Tipo de Entrega:</label>
+                    <select id="delivery-method" class="w-full p-2 border rounded bg-white">
+                        <option value="Delivery">Delivery a Domicilio</option>
+                        <option value="Retiro">Retiro en Taberna</option>
+                    </select>
+
+                    <button onclick="processOrder()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-cinzel font-bold py-3 rounded shadow transition transform hover:-translate-y-0.5 text-sm mt-4">
+                        📲 Enviar Pedido por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- FOOTER POLITICAS & CONTACTO -->
+    <footer class="max-w-6xl mx-auto mt-12 px-4 text-center text-parchment-dark text-xs border-t border-wood-light pt-6 space-y-2">
+        <p>🔥 <strong>Dracarys Soup Store</strong> — Todos los derechos reservados © 2026</p>
+        <p class="text-stone-400">Políticas de reembolso: Pedidos cancelados con al menos 30 min de anticipación. Entregas sujetas a cobertura de delivery.</p>
+    </footer>
+
+    <!-- MODAL PANEL DE ADMINISTRACIÓN -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="parchment-bg max-w-lg w-full p-6 rounded-lg max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex justify-between items-center border-b border-copper pb-2">
+                <h3 class="font-cinzel text-xl font-bold text-wood">⚙️ Panel de Administración</h3>
+                <button onclick="closeAdminModal()" class="text-stone-600 font-bold hover:text-black">✖</button>
+            </div>
+
+            <!-- LOGIN ADMIN SIMPLIFICADO -->
+            <div id="admin-auth" class="space-y-3">
+                <p class="text-xs text-stone-600">Ingresa la clave de administrador para gestionar el negocio:</p>
+                <input type="password" id="admin-pass" placeholder="Clave admin (Ej: admin123)" class="w-full p-2 border rounded">
+                <button onclick="authenticateAdmin()" class="w-full bg-wood text-gold font-bold py-2 rounded">Ingresar</button>
+            </div>
+
+            <!-- CONTENIDO PANEL -->
+            <div id="admin-content" class="hidden space-y-6 text-xs">
+                <!-- CONTROLES GENERALES -->
+                <div class="bg-parchment-dark p-3 rounded space-y-3 border border-amber-300">
+                    <h4 class="font-bold text-wood text-sm">Estado & Tasa</h4>
+                    <div class="flex items-center justify-between">
+                        <span>Estado de la Cocina:</span>
+                        <button id="toggle-status-btn" onclick="toggleKitchenStatus()" class="px-3 py-1 rounded font-bold text-white bg-emerald-700">ABIERTO</button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Tasa BCV (Bs):</span>
+                        <input type="number" step="0.1" id="input-bcv" class="w-24 p-1 border rounded text-right font-bold" value="36.50">
+                    </div>
+                    <button onclick="updateSettings()" class="w-full bg-copper text-white py-1 rounded font-bold">Actualizar Ajustes</button>
+                </div>
+
+                <!-- AÑADIR NUEVO PLATO -->
+                <div class="bg-parchment-dark p-3 rounded space-y-2 border border-amber-300">
+                    <h4 class="font-bold text-wood text-sm">Añadir Nuevo Platillo</h4>
+                    <input type="text" id="new-soup-title" placeholder="Nombre de la sopa" class="w-full p-1.5 border rounded">
+                    <input type="text" id="new-soup-desc" placeholder="Descripción brevedad" class="w-full p-1.5 border rounded">
+                    <input type="number" step="0.5" id="new-soup-price" placeholder="Precio ($ USD)" class="w-full p-1.5 border rounded">
+                    <button onclick="addNewSoup()" class="w-full bg-wood text-gold py-1.5 rounded font-bold">Agregar a la Carta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHATBOT IA FLOTANTE -->
+    <div class="fixed bottom-4 right-4 z-40">
+        <button onclick="toggleChat()" class="bg-copper hover:bg-copper-hover text-white p-3.5 rounded-full shadow-2xl border-2 border-gold flex items-center justify-center">
+            💬 <span class="ml-2 font-bold text-xs hidden md:inline">El Maestro Sopero</span>
+        </button>
+    </div>
+
+    <div id="chat-box" class="fixed bottom-16 right-4 w-80 bg-parchment border-2 border-gold rounded-lg shadow-2xl hidden z-50 p-4 space-y-3 text-xs">
+        <div class="flex justify-between items-center border-b border-copper pb-2">
+            <span class="font-cinzel font-bold text-wood">🤖 Asistente IA Taberna</span>
+            <button onclick="toggleChat()" class="text-stone-600 font-bold">✖</button>
+        </div>
+        <div id="chat-messages" class="h-48 overflow-y-auto space-y-2 pr-1">
+            <p class="bg-parchment-dark p-2 rounded text-stone-800">¡Saludos comensal! Soy el Maestro Sopero. ¿En qué puedo orientar tu pedido hoy?</p>
+        </div>
+        <div class="flex gap-1">
+            <input type="text" id="chat-input" placeholder="Pregunta algo..." class="w-full p-2 border rounded" onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" class="bg-copper text-white px-3 font-bold rounded">Enviar</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE FUNCIONALIDAD -->
+    <script>
+        // ESTADO INICIAL
+        let bcvRate = 36.50;
+        let isOpen = true;
+        let cart = [];
+        
+        let menu = [
+            { id: 1, title: '🔥 Sancocho Dracarys', desc: 'Res y verdura criolla concentrada a fuego lento.', price: 6.00, active: true },
+            { id: 2, title: '🐔 Caldo de Gallina Vieja', desc: 'Levanta muertos con huevo sancochado y cilantro.', price: 5.00, active: true },
+            { id: 3, title: '🐟 Potaje de Pescado & Coco', desc: 'Fondo marino cremoso con toques de ají dulce.', price: 7.50, active: true }
+        ];
+
+        // RENDERIZAR MENÚ
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = '';
+
+            menu.filter(item => item.active).forEach(item => {
+                const bsPrice = (item.price * bcvRate).toFixed(2);
+                container.innerHTML += `
+                    <div class="bg-parchment-dark p-4 rounded border border-amber-300 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-cinzel font-bold text-wood text-lg">${item.title}</h3>
+                            <p class="text-xs text-stone-600 my-2 italic">${item.desc}</p>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center border-t border-amber-200 pt-3">
+                            <div>
+                                <span class="font-bold text-copper text-base">$${item.price.toFixed(2)}</span>
+                                <span class="text-[10px] text-stone-500 block">${bsPrice} Bs</span>
+                            </div>
+                            <button onclick="addToCart(${item.id})" class="bg-copper hover:bg-copper-hover text-white text-xs font-bold py-1.5 px-3 rounded shadow">
+                                + Añadir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // CARRITO
+        function addToCart(id) {
+            const item = menu.find(m => m.id === id);
+            cart.push(item);
+            updateCart();
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cart-items');
+            document.getElementById('cart-count').innerText = cart.length;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-stone-500 italic text-center py-6">Tu caldero está vacío...</p>';
+                document.getElementById('cart-total-usd').innerText = '$0.00';
+                document.getElementById('cart-total-bs').innerText = '0.00 Bs';
+                return;
+            }
+
+            container.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded border border-stone-200">
+                        <div>
+                            <p class="font-bold text-xs text-wood">${item.title}</p>
+                            <p class="text-[10px] text-copper">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-600 font-bold text-xs px-1">✖</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total-usd').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('cart-total-bs').innerText = `${(total * bcvRate).toFixed(2)} Bs`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // ENVIAR A WHATSAPP
+        function processOrder() {
+            if (cart.length === 0) {
+                alert('¡El caldero está vacío! Agrega una sopa antes de pedir.');
+                return;
+            }
+
+            const totalUsd = cart.reduce((sum, item) => sum + item.price, 0);
+            const totalBs = (totalUsd * bcvRate).toFixed(2);
+            const payment = document.getElementById('payment-method').value;
+            const delivery = document.getElementById('delivery-method').value;
+
+            let itemsList = cart.map(i => `• ${i.title} ($${i.price})`).join('%0A');
+
+            let msg = `🔥 *NUEVO PEDIDO - DRACARYS SOUP* 🔥%0A%0A` +
+                      `*Detalle:*%0A${itemsList}%0A%0A` +
+                      `*Total USD:* $${totalUsd.toFixed(2)}%0A` +
+                      `*Total Bs (BCV):* ${totalBs} Bs%0A` +
+                      `*Método de Pago:* ${payment}%0A` +
+                      `*Tipo de Entrega:* ${delivery}`;
+
+            window.open(`https://wa.me/584120000000?text=${msg}`, '_blank');
+        }
+
+        // ADMIN MODAL & AUTH
+        function openAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+        
+        function authenticateAdmin() {
+            if (document.getElementById('admin-pass').value === 'admin123') {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else {
+                alert('Clave incorrecta');
+            }
+        }
+
+        function toggleKitchenStatus() {
+            isOpen = !isOpen;
+            const badge = document.getElementById('status-badge');
+            const btn = document.getElementById('toggle-status-btn');
+            
+            if (isOpen) {
+                badge.className = "px-3 py-1 rounded-full font-bold text-xs bg-emerald-800 text-emerald-100 border border-emerald-500";
+                badge.innerText = "🟢 ABIERTO AHORA";
+                btn.className = "px-3 py-1 rounded font-bold text-white bg-emerald-700";
+                btn.innerText = "ABIERTO";
+            } else {
+                badge.className = "px-3 py-1 rounded-full font-bold text-xs bg-red-800 text-red-100 border border-red-500";
+                badge.innerText = "🔴 CERRADO POR HOY";
+                btn.className = "px-3 py-1 rounded font-bold text-white bg-red-700";
+                btn.innerText = "CERRADO";
+            }
+        }
+
+        function updateSettings() {
+            bcvRate = parseFloat(document.getElementById('input-bcv').value);
+            document.getElementById('bcv-rate').innerText = bcvRate.toFixed(2);
+            renderMenu();
+            updateCart();
+            alert('Ajustes actualizados.');
+        }
+
+        function addNewSoup() {
+            const title = document.getElementById('new-soup-title').value;
+            const desc = document.getElementById('new-soup-desc').value;
+            const price = parseFloat(document.getElementById('new-soup-price').value);
+
+            if (title && price) {
+                menu.push({ id: Date.now(), title, desc, price, active: true });
+                renderMenu();
+                alert('Platillo añadido a la carta.');
+            }
+        }
+
+        // RESEÑAS
+        function addReview(e) {
+            e.preventDefault();
+            const name = document.getElementById('review-name').value;
+            const text = document.getElementById('review-text').value;
+            const container = document.getElementById('reviews-container');
+
+            container.innerHTML += `<p class="border-b border-stone-300 pb-2">"${text}" — <strong>${name}</strong> ⭐⭐⭐⭐⭐</p>`;
+            e.target.reset();
+        }
+
+        // CHATBOT SIMULADO
+        function toggleChat() { document.getElementById('chat-box').classList.toggle('hidden'); }
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const box = document.getElementById('chat-messages');
+            if (!input.value) return;
+
+            box.innerHTML += `<p class="bg-white p-2 rounded text-right text-copper font-semibold">${input.value}</p>`;
+            setTimeout(() => {
+                box.innerHTML += `<p class="bg-parchment-dark p-2 rounded text-stone-800">Ofrecemos caldos tradicionales preparados al día. Aceptamos Pago Móvil a tasa BCV (${bcvRate} Bs/$), Binance y Zelle.</p>`;
+                box.scrollTop = box.scrollHeight;
+            }, 600);
+            input.value = '';
+        }
+
+        // INICIALIZAR
+        renderMenu();
+    </script>
 </body>
 </html>
