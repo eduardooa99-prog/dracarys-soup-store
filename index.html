@@ -70,6 +70,23 @@ tailwind.config = {
         color: #E6C687 !important;
         font-size: 1.2rem !important;
     }
+
+    /* Forzar que los textos internos del modal del panel sean oscuros y legibles */
+    #admin-modal, #admin-modal * {
+        color: #111827;
+    }
+    #admin-modal .text-dracarys-gold {
+        color: #D4AF37 !important;
+    }
+    #admin-modal .text-amber-900 {
+        color: #78350f !important;
+    }
+    #admin-modal .text-red-700 {
+        color: #b91c1c !important;
+    }
+    #admin-modal button {
+        color: #ffffff;
+    }
 </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -483,13 +500,12 @@ function openAdmin() {
 }
 
 function closeAdmin() { 
-    // Cierre de sesión automático para evitar que quede libre
     isAdminAuthenticated = false;
     document.getElementById('admin-pass').value = '';
     document.getElementById('admin-login-box').classList.remove('hidden');
     document.getElementById('admin-panel-content').classList.add('hidden');
     document.getElementById('admin-modal').classList.add('hidden'); 
-    renderProducts(currentFilter); // Oculta botones de edición rápida en el catálogo
+    renderProducts(currentFilter);
 }
 
 function authAdmin() {
@@ -525,13 +541,13 @@ function buildDayRow(container, dayIndex, dayName) {
     const d = storeSchedule.days[dayIndex];
     container.innerHTML += `
         <div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
-            <label class="font-bold flex items-center gap-1 text-gray-800">
+            <label class="font-bold flex items-center gap-1 text-gray-900">
                 <input type="checkbox" id="sched-active-${dayIndex}" ${d.active ? 'checked' : ''}> ${dayName}
             </label>
             <div class="flex items-center gap-1">
-                <input type="time" id="sched-open-${dayIndex}" value="${d.open}" class="border rounded p-0.5 text-[10px]">
-                <span>a</span>
-                <input type="time" id="sched-close-${dayIndex}" value="${d.close}" class="border rounded p-0.5 text-[10px]">
+                <input type="time" id="sched-open-${dayIndex}" value="${d.open}" class="border rounded p-0.5 text-[10px] text-gray-900 bg-white">
+                <span class="text-gray-900 font-bold">a</span>
+                <input type="time" id="sched-close-${dayIndex}" value="${d.close}" class="border rounded p-0.5 text-[10px] text-gray-900 bg-white">
             </div>
         </div>
     `;
@@ -562,7 +578,7 @@ function renderCategoryManager() {
     const list = document.getElementById('category-management-list');
     list.innerHTML = '';
     categories.forEach(cat => {
-        list.innerHTML += `<span class="bg-white border px-2 py-1 rounded text-[11px] flex items-center gap-1 shadow-sm font-semibold">${cat}<button onclick="deleteCategory('${cat}')" class="text-red-500 font-bold ml-1 hover:text-red-700">×</button></span>`;
+        list.innerHTML += `<span class="bg-white border border-gray-300 px-2 py-1 rounded text-[11px] flex items-center gap-1 shadow-sm font-semibold text-gray-900">${cat}<button onclick="deleteCategory('${cat}')" class="text-red-600 font-bold ml-1 hover:text-red-800">×</button></span>`;
     });
 }
 
