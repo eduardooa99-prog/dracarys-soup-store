@@ -71,8 +71,8 @@ tailwind.config = {
         font-size: 1.2rem !important;
     }
 
-    /* Forzar que los textos internos del modal del panel sean oscuros y legibles */
-    #admin-modal, #admin-modal * {
+    /* Forzar que los textos internos del modal del panel sean oscuros y legibles, protegiendo los botones de acción */
+    #admin-modal, #admin-modal div, #admin-modal p, #admin-modal span, #admin-modal label {
         color: #111827;
     }
     #admin-modal .text-dracarys-gold {
@@ -85,7 +85,14 @@ tailwind.config = {
         color: #b91c1c !important;
     }
     #admin-modal button {
-        color: #ffffff;
+        color: #ffffff !important;
+    }
+    /* Excepción para el botón de cerrar (la X) y texto gris */
+    #admin-modal button.text-gray-500 {
+        color: #6b7280 !important;
+    }
+    #admin-modal button.text-gray-500:hover {
+        color: #000000 !important;
     }
 </style>
 </head>
@@ -179,7 +186,7 @@ tailwind.config = {
     <div class="bg-white max-w-3xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
         <div class="flex justify-between items-center border-b border-gray-200 pb-3">
             <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Super Panel CMS Visual</h3>
-            <button onclick="closeAdmin()" class="text-gray-500 hover:text-black font-bold text-xl">✖</button>
+            <button onclick="closeAdmin()" class="text-gray-500 hover:text-black font-bold text-xl cursor-pointer">✖</button>
         </div>
         <!-- LOGIN ADMIN -->
         <div id="admin-login-box" class="space-y-4">
