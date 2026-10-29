@@ -57,6 +57,18 @@ body {
         .separator {
             border-top: 2px solid #D4AF37;
             border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
+            /* Quitar franja de categorías y hacerla flotante */
+        .flex.overflow-x-auto.bg-white, div:has(> .flex.overflow-x-auto) {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        /* Color exacto al de BIENVENIDOS y aumento sutil de tamaño */
+        .text-xs.italic, .text-sm.font-semibold {
+            color: #E6C687 !important;
+            font-size: 1.15rem !important;
+        }
         }
     </style>
 </head>
