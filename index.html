@@ -167,7 +167,7 @@ tailwind.config = {
         <!-- LOGIN ADMIN -->
         <div id="admin-login-box" class="space-y-4">
             <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el menú en tiempo real:</p>
-            <input type="password" id="admin-pass" placeholder="Clave de Admin (admin123)" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+            <input type="password" id="admin-pass" placeholder="Coloque su clave" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
             <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
         </div>
         <!-- CONTENIDO CMS -->
@@ -361,11 +361,11 @@ function checkStoreStatus() {
 function renderCategoriesNav() {
     const navBar = document.getElementById('category-nav-bar');
     navBar.innerHTML = `
-        <button onclick="filterCategory('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow">🔥 Todo el Menú</button>
-        <button onclick="filterCategory('Descuentos')" class="cat-btn ${currentFilter === 'Descuentos' ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🏷️ Ofertas Especiales</button>
+        <button onclick="filterCategory('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow border border-gray-300">🔥 Todo el Menú</button>
+        <button onclick="filterCategory('Descuentos')" class="cat-btn ${currentFilter === 'Descuentos' ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">🏷️ Ofertas Especiales</button>
     `;
     categories.forEach(cat => {
-        navBar.innerHTML += `<button onclick="filterCategory('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">${cat}</button>`;
+        navBar.innerHTML += `<button onclick="filterCategory('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">${cat}</button>`;
     });
 }
 
@@ -477,9 +477,20 @@ function submitOrder() {
     updateCart();
 }
 
-// PANEL ADMIN CMS
-function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
-function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
+// PANEL ADMIN CMS CON CERRADO DE SESIÓN SEGURO
+function openAdmin() { 
+    document.getElementById('admin-modal').classList.remove('hidden'); 
+}
+
+function closeAdmin() { 
+    // Cierre de sesión automático para evitar que quede libre
+    isAdminAuthenticated = false;
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('admin-login-box').classList.remove('hidden');
+    document.getElementById('admin-panel-content').classList.add('hidden');
+    document.getElementById('admin-modal').classList.add('hidden'); 
+    renderProducts(currentFilter); // Oculta botones de edición rápida en el catálogo
+}
 
 function authAdmin() {
     if (document.getElementById('admin-pass').value === 'admin123') {
