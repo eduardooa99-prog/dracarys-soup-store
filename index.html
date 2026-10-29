@@ -176,7 +176,8 @@ tailwind.config = {
                 <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
                 <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Nuevo Plato</button>
             </div>
-            <!-- AJUSTES GENERALES Y GESTIÓN DE CATEGORÍAS -->
+            
+            <!-- AJUSTES GENERALES, HORARIOS Y CATEGORÍAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
                     <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
@@ -194,6 +195,21 @@ tailwind.config = {
                     <div id="category-management-list" class="flex flex-wrap gap-1 mt-2 max-h-20 overflow-y-auto"></div>
                 </div>
             </div>
+
+            <!-- GESTOR DE HORARIOS Y ESTADO AUTOMÁTICO -->
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-dracarys-bronze">⏰ Horarios de Apertura (Lunes a Domingo) & Estado</h4>
+                    <label class="flex items-center gap-1.5 font-bold text-red-700 cursor-pointer">
+                        <input type="checkbox" id="force-closed" onchange="saveScheduleSettings()" class="w-4 h-4"> Forzar Cierre Manual
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]" id="schedule-inputs-container">
+                    <!-- Generado por JS -->
+                </div>
+                <button onclick="saveScheduleSettings()" class="bg-black text-white px-3 py-1.5 rounded font-bold shadow w-full">💾 Guardar Horarios</button>
+            </div>
+
             <!-- EDITAR PLATO VISUAL -->
             <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
                 <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name" class="text-black font-bold">Selecciona un plato abajo</span></h4>
@@ -207,12 +223,22 @@ tailwind.config = {
                             <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
                             <textarea id="edit-desc" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900 h-20"></textarea>
                         </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 mb-1">Precio ($ USD):</label>
-                            <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Precio Regular ($):</label>
+                                <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Precio Oferta ($):</label>
+                                <input type="number" step="0.1" id="edit-promo" placeholder="Opcional" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                            </div>
                         </div>
                     </div>
                     <div class="space-y-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Insignia (Badge):</label>
+                            <input type="text" id="edit-badge" placeholder="Ej. BEST SELLER, 33% OFF" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                        </div>
                         <div>
                             <label class="block font-semibold text-gray-700 mb-1">URL de la Foto:</label>
                             <input type="text" id="edit-img" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900" onchange="updateVisualPreview()">
@@ -229,6 +255,7 @@ tailwind.config = {
                 </div>
                 <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold shadow mt-2">💾 Guardar Cambios del Plato</button>
             </div>
+            
             <!-- GESTOR DE INVENTARIO -->
             <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
                 <h4 class="font-bold text-gray-800">Listado General de Productos (Disponibilidad y Eliminación)</h4>
@@ -244,7 +271,7 @@ tailwind.config = {
         <div class="space-y-2">
             <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
             <p>Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
-            <p class="text-gray-500">Horario: 11:00 AM - 9:00 PM</p>
+            <p class="text-gray-500">Horario: <span id="footer-horario-text">11:00 AM - 9:00 PM</span></p>
         </div>
         <div class="space-y-2">
             <h4 class="font-bold text-white">Enlaces de Interés</h4>
@@ -278,11 +305,58 @@ let defaultProducts = [
 
 let products = JSON.parse(localStorage.getItem('dracarys_products_v3')) || defaultProducts;
 let bcvRate = parseFloat(localStorage.getItem('dracarys_bcv')) || 36.50;
+
+// Sistema de Horarios por defecto (Lunes a Domingo)
+let defaultSchedule = {
+    forceClosed: false,
+    days: {
+        1: { open: '11:00', close: '21:00', active: true }, // Lunes
+        2: { open: '11:00', close: '21:00', active: true }, // Martes
+        3: { open: '11:00', close: '21:00', active: true }, // Miércoles
+        4: { open: '11:00', close: '21:00', active: true }, // Jueves
+        5: { open: '11:00', close: '21:00', active: true }, // Viernes
+        6: { open: '11:00', close: '21:00', active: true }, // Sábado
+        0: { open: '11:00', close: '21:00', active: true }  // Domingo
+    }
+};
+let storeSchedule = JSON.parse(localStorage.getItem('dracarys_schedule')) || defaultSchedule;
+
 let isAdminAuthenticated = false;
 let cart = [];
 let editingProductId = null;
 let currentFilter = 'all';
 let orderType = 'Delivery';
+
+// Verificador automático de Estado (Abierto / Cerrado)
+function checkStoreStatus() {
+    const badge = document.getElementById('kitchen-badge');
+    if (!badge) return;
+
+    if (storeSchedule.forceClosed) {
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
+        badge.innerText = "🔴 CERRADO (MANUAL)";
+        return;
+    }
+
+    const now = new Date();
+    const day = now.getDay(); // 0 (Dom) a 6 (Sáb)
+    const currentTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    
+    const todaysSchedule = storeSchedule.days[day];
+    if (!todaysSchedule || !todaysSchedule.active) {
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
+        badge.innerText = "🔴 CERRADO HOY";
+        return;
+    }
+
+    if (currentTime >= todaysSchedule.open && currentTime <= todaysSchedule.close) {
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600";
+        badge.innerText = "🟢 ABIERTO";
+    } else {
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
+        badge.innerText = "🔴 CERRADO";
+    }
+}
 
 function renderCategoriesNav() {
     const navBar = document.getElementById('category-nav-bar');
@@ -305,7 +379,7 @@ function renderProducts(filterCat = 'all') {
     
     let filtered = products;
     if (filterCat === 'Descuentos') {
-        filtered = products.filter(p => p.promoPrice !== null && p.promoPrice !== undefined);
+        filtered = products.filter(p => p.promoPrice !== null && p.promoPrice !== undefined && p.promoPrice > 0);
     } else if (filterCat !== 'all') {
         filtered = products.filter(p => p.category === filterCat);
     }
@@ -316,8 +390,10 @@ function renderProducts(filterCat = 'all') {
     }
 
     filtered.forEach(p => {
-        const price = p.promoPrice || p.price;
+        const hasPromo = p.promoPrice !== null && p.promoPrice !== undefined && p.promoPrice > 0;
+        const price = hasPromo ? p.promoPrice : p.price;
         const bsPrice = (price * bcvRate).toFixed(2);
+        
         grid.innerHTML += `
             <div class="dracarys-card p-4 gap-3 relative flex ${!p.available ? 'opacity-60 grayscale' : ''}">
                 <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'">
@@ -330,7 +406,7 @@ function renderProducts(filterCat = 'all') {
                     <div class="flex justify-between items-end mt-1">
                         <div>
                             <span class="font-black text-gray-950 text-sm">$${price.toFixed(2)}</span>
-                            ${p.promoPrice ? `<span class="text-gray-400 line-through text-[10px] ml-1">$${p.price.toFixed(2)}</span>` : ''}
+                            ${hasPromo ? `<span class="text-gray-400 line-through text-[10px] ml-1">$${p.price.toFixed(2)}</span>` : ''}
                             <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
                         </div>
                         <div class="flex gap-1.5 items-center">
@@ -361,7 +437,7 @@ function updateCart() {
     const container = document.getElementById('cart-items');
     document.getElementById('cart-badge').innerText = cart.length;
     if (cart.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>';
+        container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>';
         document.getElementById('subtotal-usd').innerText = '$0.00';
         document.getElementById('total-bs').innerText = '0.00 Bs';
         return;
@@ -369,7 +445,7 @@ function updateCart() {
     container.innerHTML = '';
     let total = 0;
     cart.forEach((item, index) => {
-        const price = item.promoPrice || item.price;
+        const price = (item.promoPrice !== null && item.promoPrice !== undefined && item.promoPrice > 0) ? item.promoPrice : item.price;
         total += price;
         container.innerHTML += `
             <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
@@ -391,7 +467,7 @@ function removeFromCart(index) {
 }
 
 function submitOrder() {
-    if (cart.length === 0) return alert('Agrega al menos un producto al carrito.');
+    if (cart.length === 0) return alert('Agrega al menos un producto al caldero.');
     const name = document.getElementById('cust-name').value;
     const phone = document.getElementById('cust-phone').value;
     const method = document.getElementById('pay-method').value;
@@ -414,9 +490,53 @@ function authAdmin() {
         renderAdminProducts();
         renderCategoryManager();
         populateCategoryDropdown();
+        renderScheduleManager();
     } else {
         alert('Clave incorrecta');
     }
+}
+
+// Renderizar Gestor de Horarios en el Panel
+function renderScheduleManager() {
+    const container = document.getElementById('schedule-inputs-container');
+    document.getElementById('force-closed').checked = storeSchedule.forceClosed;
+    
+    const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    container.innerHTML = '';
+    
+    for (let i = 1; i <= 6; i++) {
+        buildDayRow(container, i, dayNames[i]);
+    }
+    buildDayRow(container, 0, dayNames[0]); // Domingo al final
+}
+
+function buildDayRow(container, dayIndex, dayName) {
+    const d = storeSchedule.days[dayIndex];
+    container.innerHTML += `
+        <div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
+            <label class="font-bold flex items-center gap-1 text-gray-800">
+                <input type="checkbox" id="sched-active-${dayIndex}" ${d.active ? 'checked' : ''}> ${dayName}
+            </label>
+            <div class="flex items-center gap-1">
+                <input type="time" id="sched-open-${dayIndex}" value="${d.open}" class="border rounded p-0.5 text-[10px]">
+                <span>a</span>
+                <input type="time" id="sched-close-${dayIndex}" value="${d.close}" class="border rounded p-0.5 text-[10px]">
+            </div>
+        </div>
+    `;
+}
+
+function saveScheduleSettings() {
+    storeSchedule.forceClosed = document.getElementById('force-closed').checked;
+    for (let i = 0; i <= 6; i++) {
+        const active = document.getElementById(`sched-active-${i}`).checked;
+        const open = document.getElementById(`sched-open-${i}`).value;
+        const close = document.getElementById(`sched-close-${i}`).value;
+        storeSchedule.days[i] = { active, open, close };
+    }
+    localStorage.setItem('dracarys_schedule', JSON.stringify(storeSchedule));
+    checkStoreStatus();
+    alert('¡Horarios actualizados con éxito!');
 }
 
 function populateCategoryDropdown() {
@@ -487,6 +607,8 @@ function editProductVisual(id) {
     document.getElementById('edit-name').value = p.name;
     document.getElementById('edit-desc').value = p.desc;
     document.getElementById('edit-price').value = p.price;
+    document.getElementById('edit-promo').value = (p.promoPrice !== null && p.promoPrice !== undefined) ? p.promoPrice : '';
+    document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-img').value = p.img;
     document.getElementById('edit-category').value = p.category;
     updateVisualPreview();
@@ -501,11 +623,20 @@ function saveVisualEdit() {
     if (editingProductId === null) return alert('Selecciona un producto primero.');
     const p = products.find(item => item.id === editingProductId);
     if (!p) return;
+    
     p.name = document.getElementById('edit-name').value;
     p.desc = document.getElementById('edit-desc').value;
     p.price = parseFloat(document.getElementById('edit-price').value);
+    
+    const promoVal = document.getElementById('edit-promo').value;
+    p.promoPrice = promoVal ? parseFloat(promoVal) : null;
+    
+    const badgeVal = document.getElementById('edit-badge').value.trim();
+    p.badge = badgeVal ? badgeVal : null;
+    
     p.img = document.getElementById('edit-img').value;
     p.category = document.getElementById('edit-category').value;
+    
     saveProducts();
     alert('¡Plato actualizado con éxito en el menú!');
 }
@@ -566,10 +697,12 @@ function filterCategory(cat) {
     renderProducts(cat); 
 }
 
-// Inicialización
+// Inicialización general
 document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
 document.getElementById('input-bcv').value = bcvRate;
 renderProducts('all');
+checkStoreStatus();
+setInterval(checkStoreStatus, 60000); // Revisa el horario cada minuto automáticamente
 </script>
 </body>
 </html>
