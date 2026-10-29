@@ -1,636 +1,575 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dracarys Soup — Taberna de Caldos & Parrillas (Admin CMS)</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dracarys: {
-                            gold: '#D4AF37',
-                            fire: '#E65100',
-                            card: '#1E1E1E',
-                            border: '#333333',
-                            bg: '#121212',
-                            sepia: '#fdfcf0',
-                            bronze: '#8c7851'
-                        }
-                    },
-                    fontFamily: {
-                        cinzel: ['Cinzel', 'serif'],
-                        serif: ['Playfair Display', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif']
-                    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dracarys Soup — Taberna de Caldos & Parrillas (Admin CMS)</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                dracarys: {
+                    gold: '#D4AF37',
+                    fire: '#E65100',
+                    card: '#1E1E1E',
+                    border: '#333333',
+                    bg: '#121212',
+                    sepia: '#fdfcf0',
+                    bronze: '#8c7851'
                 }
+            },
+            fontFamily: {
+                cinzel: ['Cinzel', 'serif'],
+                serif: ['Playfair Display', 'serif'],
+                sans: ['Plus Jakarta Sans', 'sans-serif']
             }
         }
-    </script>
-    <style>
-body {
-            background-color: #1a1a1a; /* Fondo base oscuro para el contraste */
-            color: #fdfcf0; /* Texto claro para mejor lectura */
-            background-image: 
-                linear-gradient(rgba(26, 26, 26, 0.35), rgba(26, 26, 26, 0.25)), /* Capa oscura más ligera */
-                url('fondo_fotografico.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .dracarys-card {
-            background-color: rgba(255, 255, 255, 0.98);
-            border: 1px solid #e0e0e0;
-            border-radius: 1rem;
-            box-shadow: 0 4px 15px rgba(140, 120, 81, 0.1);
-        }
-        
-        .separator {
-            border-top: 2px solid #D4AF37;
-            border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
-            /* Quitar franja de categorías y hacerla flotante */
-        .flex.overflow-x-auto.bg-white, div:has(> .flex.overflow-x-auto) {
-            background-color: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
+    }
+}
+</script>
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #fdfcf0;
+        background-image: linear-gradient(rgba(26, 26, 26, 0.35), rgba(26, 26, 26, 0.25)), url('fondo_fotografico.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .dracarys-card {
+        background-color: rgba(255, 255, 255, 0.98);
+        border: 1px solid #e0e0e0;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(140, 120, 81, 0.1);
+    }
+    
+    .separator {
+        border-top: 2px solid #D4AF37;
+        border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
+    }
 
-        /* Color exacto al de BIENVENIDOS y aumento sutil de tamaño */
-        .text-xs.italic, .text-sm.font-semibold {
-            color: #E6C687 !important;
-            font-size: 1.15rem !important;
- /* Forzar categorías flotantes y color/tamaño de textos clave */
-        #barra-categorias {
-            background: transparent !important;
-            background-color: transparent !important;
-            box-shadow: none !important;
-            border: none !important;
-        }
-        #subtitulo-medieval, #titulo-menu-principal {
-            color: #E6C687 !important;
-            font-size: 1.25rem !important;
-        } 
-        }
-    </style>
+    /* Franja de categorías totalmente flotante sin fondos sólidos */
+    nav.sticky.top-10 {
+        background: transparent !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        backdrop-filter: none !important;
+    }
+
+    /* Subtítulo bajo BIENVENIDOS y título Todo el Menú con el tono dorado exacto y tamaño ideal */
+    header p.font-serif, h2#current-category-title {
+        color: #E6C687 !important;
+        font-size: 1.2rem !important;
+    }
+</style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
+<div>
+<!-- 1. TOP BAR DE ESTADO Y BCV -->
+<div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2 px-4 shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <span id="kitchen-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600">🟢 ABIERTO</span>
+            <span class="text-gray-300 hidden sm:inline">Caracas, Venezuela</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">36.50</strong> Bs/$</span>
+            <button onclick="openAdmin()" class="text-dracarys-gold hover:text-amber-300 font-semibold flex items-center gap-1">⚙️ Super Panel CMS Visual</button>
+        </div>
+    </div>
+</div>
 
-    <div>
-        <!-- 1. TOP BAR DE ESTADO Y BCV -->
-        <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2 px-4 shadow-md">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <span id="kitchen-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600">
-                        🟢 ABIERTO
-                    </span>
-                    <span class="text-gray-300 hidden sm:inline">Caracas, Venezuela</span>
+<!-- 2. HEADER CON LOGO OFICIAL LOCAL DE GITHUB -->
+<header class="py-8 px-4 text-center">
+    <div class="max-w-4xl mx-auto flex flex-col items-center">
+        <img src="logo dracarys.jpg" alt="Logo Dracarys Soup" class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-2xl border-4 border-dracarys-gold mb-3" onerror="this.src='https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200'">
+        <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">BIENVENIDOS</h1>
+        <p class="font-serif italic text-base md:text-lg mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
+        <div class="separator w-48 mx-auto my-4"></div>
+        
+        <!-- Selector de Modalidad Estilo Domino's -->
+        <div class="bg-white/80 p-1.5 rounded-xl border border-gray-300 flex gap-2 shadow-sm mt-1">
+            <button id="btn-delivery" onclick="setOrderType('Delivery')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
+            <button id="btn-pickup" onclick="setOrderType('Retiro')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
+        </div>
+    </div>
+</header>
+
+<!-- 3. NAVEGACIÓN DE CATEGORÍAS DINÁMICA -->
+<nav class="sticky top-10 z-30 py-3 px-4">
+    <div id="category-nav-bar" class="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scrollbar font-medium text-xs">
+        <!-- Generado dinámicamente -->
+    </div>
+</nav>
+
+<!-- 4 & 5. CONTENIDO PRINCIPAL Y CARRITO -->
+<main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- CATÁLOGO DE PRODUCTOS -->
+    <section class="lg:col-span-2 space-y-6">
+        <h2 id="current-category-title" class="font-cinzel text-xl font-bold pb-3 border-b border-dracarys-gold/30">🔥 Todo el Menú</h2>
+        <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Productos dinámicos -->
+        </div>
+    </section>
+
+    <!-- 6. MI PEDIDO / CARRITO EN VIVO -->
+    <aside class="space-y-6">
+        <div class="dracarys-card p-6 sticky top-28">
+            <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
+                <span>🛒 Tu Pedido</span>
+                <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
+            </h2>
+            <div id="cart-items" class="py-4 space-y-3 max-h-60 overflow-y-auto text-xs">
+                <p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>
+            </div>
+            <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold">
+                <div class="flex justify-between text-gray-600"><span>Total ($):</span><span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span></div>
+                <div class="flex justify-between text-dracarys-fire font-bold text-base"><span>Total (Bs BCV):</span><span id="total-bs">0.00 Bs</span></div>
+            </div>
+            
+            <!-- FORMULARIO DE CHECKOUT -->
+            <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
+                <div><input type="text" id="cust-name" placeholder="Tu Nombre Completo" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none"></div>
+                <div><input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04121234567)" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none"></div>
+                <div>
+                    <select id="pay-method" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                        <option value="Pago Móvil">Pago Móvil (Bs)</option>
+                        <option value="Zinli">Zinli ($)</option>
+                        <option value="Wally">Wally ($)</option>
+                        <option value="Binance">Binance Pay (USDT)</option>
+                        <option value="Zelle">Zelle ($)</option>
+                        <option value="Efectivo">Efectivo en Entrega</option>
+                    </select>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">36.50</strong> Bs/$</span>
-                    <button onclick="openAdmin()" class="text-dracarys-gold hover:text-amber-300 font-semibold flex items-center gap-1">
-                        ⚙️ Super Panel CMS Visual
-                    </button>
-                </div>
+                <button onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2"><span>✅ Confirmar & Pagar</span></button>
             </div>
         </div>
+    </aside>
+</main>
+</div>
 
-        <!-- 2. HEADER CON LOGO OFICIAL LOCAL DE GITHUB -->
-        <header class="py-8 px-4 text-center">
-            <div class="max-w-4xl mx-auto flex flex-col items-center">
-                <img src="logo dracarys.jpg" alt="Logo Dracarys Soup" class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-2xl border-4 border-dracarys-gold mb-3" onerror="this.src='https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200'">
-                
-                <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">
-                    BIENVENIDOS
-                </h1>
-                <p class="font-serif italic text-base md:text-lg text-dracarys-bronze mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
-                <div class="separator w-48 mx-auto my-4"></div>
-
-                <!-- Selector de Modalidad Estilo Domino's -->
-                <div class="bg-white/80 p-1.5 rounded-xl border border-gray-300 flex gap-2 shadow-sm mt-1">
-                    <button id="btn-delivery" onclick="setOrderType('Delivery')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">
-                        🚴 Delivery
-                    </button>
-                    <button id="btn-pickup" onclick="setOrderType('Retiro')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">
-                        🏪 Retiro en Local
-                    </button>
-                </div>
+<!-- 7. SUPER PANEL ADMIN CMS VISUAL AISLADO -->
+<div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white max-w-3xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+            <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Super Panel CMS Visual</h3>
+            <button onclick="closeAdmin()" class="text-gray-500 hover:text-black font-bold text-xl">✖</button>
+        </div>
+        <!-- LOGIN ADMIN -->
+        <div id="admin-login-box" class="space-y-4">
+            <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el menú en tiempo real:</p>
+            <input type="password" id="admin-pass" placeholder="Clave de Admin (admin123)" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+            <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
+        </div>
+        <!-- CONTENIDO CMS -->
+        <div id="admin-panel-content" class="hidden space-y-6 text-xs">
+            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
+                <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
+                <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Nuevo Plato</button>
             </div>
-        </header>
-
-        <!-- 3. NAVEGACIÓN DE CATEGORÍAS DINÁMICA -->
-        <nav class="sticky top-10 z-30 bg-[#fdfcf0]/95 backdrop-blur py-3 px-4 shadow-sm border-b border-gray-200">
-            <div id="category-nav-bar" class="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scrollbar font-medium text-xs">
-                <!-- Generado dinámicamente -->
-            </div>
-        </nav>
-
-        <!-- 4 & 5. CONTENIDO PRINCIPAL Y CARRITO -->
-        <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- CATÁLOGO DE PRODUCTOS -->
-            <section class="lg:col-span-2 space-y-6">
-                <h2 id="current-category-title" class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-300 pb-3">🔥 Todo el Menú</h2>
-                <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Productos dinámicos -->
-                </div>
-            </section>
-
-            <!-- 6. MI PEDIDO / CARRITO EN VIVO -->
-            <aside class="space-y-6">
-                <div class="dracarys-card p-6 sticky top-28">
-                    <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
-                        <span>🛒 Tu Pedido</span>
-                        <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
-                    </h2>
-
-                    <div id="cart-items" class="py-4 space-y-3 max-h-60 overflow-y-auto text-xs">
-                        <p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold">
-                        <div class="flex justify-between text-gray-600">
-                            <span>Total ($):</span>
-                            <span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span>
-                        </div>
-                        <div class="flex justify-between text-dracarys-fire font-bold text-base">
-                            <span>Total (Bs BCV):</span>
-                            <span id="total-bs">0.00 Bs</span>
-                        </div>
-                    </div>
-
-                    <!-- FORMULARIO DE CHECKOUT -->
-                    <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
-                        <div>
-                            <input type="text" id="cust-name" placeholder="Tu Nombre Completo" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-                        </div>
-                        <div>
-                            <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04121234567)" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-                        </div>
-                        <div>
-                            <select id="pay-method" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-                                <option value="Pago Móvil">Pago Móvil (Bs)</option>
-                                <option value="Zinli">Zinli ($)</option>
-                                <option value="Wally">Wally ($)</option>
-                                <option value="Binance">Binance Pay (USDT)</option>
-                                <option value="Zelle">Zelle ($)</option>
-                                <option value="Efectivo">Efectivo en Entrega</option>
-                            </select>
-                        </div>
-                        <button onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2">
-                            <span>✅ Confirmar & Pagar</span>
-                        </button>
-                    </div>
-                </div>
-            </aside>
-
-        </main>
-    </div>
-
-    <!-- 7. SUPER PANEL ADMIN CMS VISUAL AISLADO -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white max-w-3xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Super Panel CMS Visual</h3>
-                <button onclick="closeAdmin()" class="text-gray-500 hover:text-black font-bold text-xl">✖</button>
-            </div>
-
-            <!-- LOGIN ADMIN -->
-            <div id="admin-login-box" class="space-y-4">
-                <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el menú en tiempo real:</p>
-                <input type="password" id="admin-pass" placeholder="Clave de Admin (admin123)" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
-                <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
-            </div>
-
-            <!-- CONTENIDO CMS -->
-            <div id="admin-panel-content" class="hidden space-y-6 text-xs">
-                <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
-                    <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
-                    <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Nuevo Plato</button>
-                </div>
-                
-                <!-- AJUSTES GENERALES Y GESTIÓN DE CATEGORÍAS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-                        <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
-                        <div class="flex gap-2">
-                            <input type="number" step="0.1" id="input-bcv" value="36.50" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
-                            <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar</button>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
-                        <h4 class="font-bold text-dracarys-bronze">Gestión de Categorías:</h4>
-                        <div class="flex gap-2">
-                            <input type="text" id="new-category-input" placeholder="Nueva categoría" class="w-full bg-white border border-gray-300 p-1.5 rounded text-gray-900">
-                            <button onclick="createCategory()" class="bg-black text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">+ Crear</button>
-                        </div>
-                        <div id="category-management-list" class="flex flex-wrap gap-1 mt-2 max-h-20 overflow-y-auto"></div>
-                    </div>
-                </div>
-
-                <!-- EDITAR PLATO VISUAL -->
-                <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-                    <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name" class="text-black font-bold">Selecciona un plato abajo</span></h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
-                                <input type="text" id="edit-name" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
-                                <textarea id="edit-desc" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900 h-20"></textarea>
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Precio ($ USD):</label>
-                                <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">URL de la Foto:</label>
-                                <input type="text" id="edit-img" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900" onchange="updateVisualPreview()">
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
-                                <select id="edit-category" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-                                    <!-- Opciones dinámicas -->
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-semibold text-gray-700 mb-1">Vista Previa:</label>
-                                <img id="visual-edit-preview" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200" class="w-full h-20 rounded-lg object-cover border border-gray-300" alt="Preview">
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold shadow mt-2">💾 Guardar Cambios del Plato</button>
-                </div>
-
-                <!-- GESTOR DE INVENTARIO -->
+            <!-- AJUSTES GENERALES Y GESTIÓN DE CATEGORÍAS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-                    <h4 class="font-bold text-gray-800">Listado General de Productos (Disponibilidad y Eliminación)</h4>
-                    <div id="admin-product-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                        <!-- Lista JS -->
+                    <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
+                    <div class="flex gap-2">
+                        <input type="number" step="0.1" id="input-bcv" value="36.50" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
+                        <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar</button>
                     </div>
                 </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
+                    <h4 class="font-bold text-dracarys-bronze">Gestión de Categorías:</h4>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-category-input" placeholder="Nueva categoría" class="w-full bg-white border border-gray-300 p-1.5 rounded text-gray-900">
+                        <button onclick="createCategory()" class="bg-black text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">+ Crear</button>
+                    </div>
+                    <div id="category-management-list" class="flex flex-wrap gap-1 mt-2 max-h-20 overflow-y-auto"></div>
+                </div>
+            </div>
+            <!-- EDITAR PLATO VISUAL -->
+            <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name" class="text-black font-bold">Selecciona un plato abajo</span></h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
+                            <input type="text" id="edit-name" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
+                            <textarea id="edit-desc" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900 h-20"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Precio ($ USD):</label>
+                            <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">URL de la Foto:</label>
+                            <input type="text" id="edit-img" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900" onchange="updateVisualPreview()">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
+                            <select id="edit-category" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900"><!-- Opciones dinámicas --></select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">Vista Previa:</label>
+                            <img id="visual-edit-preview" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200" class="w-full h-20 rounded-lg object-cover border border-gray-300" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+                <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold shadow mt-2">💾 Guardar Cambios del Plato</button>
+            </div>
+            <!-- GESTOR DE INVENTARIO -->
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                <h4 class="font-bold text-gray-800">Listado General de Productos (Disponibilidad y Eliminación)</h4>
+                <div id="admin-product-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"><!-- Lista JS --></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- 8. FOOTER & POLÍTICAS -->
-    <footer class="bg-black text-gray-400 py-10 px-4 mt-16 border-t border-dracarys-border text-xs">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div class="space-y-2">
-                <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
-                <p>Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
-                <p class="text-gray-500">Horario: 11:00 AM - 9:00 PM</p>
-            </div>
-            <div class="space-y-2">
-                <h4 class="font-bold text-white">Enlaces de Interés</h4>
-                <div class="flex flex-col gap-1">
-                    <a href="#" onclick="alert('Dracarys Soup - Servicio de Delivery activo en Caracas.')" class="hover:text-dracarys-gold">Políticas de Delivery</a>
-                    <a href="#" onclick="alert('Garantía de frescura artesanal en cada caldo a la leña.')" class="hover:text-dracarys-gold">Garantía de Frescura</a>
-                    <a href="#" onclick="alert('Términos y condiciones comerciales de Dracarys C.A.')" class="hover:text-dracarys-gold">Términos de Servicio</a>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <h4 class="font-bold text-white">Contacto & Redes</h4>
-                <p>Instagram: @dracaryssoup</p>
-                <p>Caracas, Venezuela</p>
-                <p class="text-[10px] text-gray-600 mt-4">© 2026 Dracarys Soup. Todos los derechos reservados.</p>
+<!-- 8. FOOTER & POLÍTICAS -->
+<footer class="bg-black text-gray-400 py-10 px-4 mt-16 border-t border-dracarys-border text-xs">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div class="space-y-2">
+            <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
+            <p>Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
+            <p class="text-gray-500">Horario: 11:00 AM - 9:00 PM</p>
+        </div>
+        <div class="space-y-2">
+            <h4 class="font-bold text-white">Enlaces de Interés</h4>
+            <div class="flex flex-col gap-1">
+                <a href="#" onclick="alert('Dracarys Soup - Servicio de Delivery activo en Caracas.')" class="hover:text-dracarys-gold">Políticas de Delivery</a>
+                <a href="#" onclick="alert('Garantía de frescura artesanal en cada caldo a la leña.')" class="hover:text-dracarys-gold">Garantía de Frescura</a>
+                <a href="#" onclick="alert('Términos y condiciones comerciales de Dracarys C.A.')" class="hover:text-dracarys-gold">Términos de Servicio</a>
             </div>
         </div>
-    </footer>
+        <div class="space-y-2">
+            <h4 class="font-bold text-white">Contacto & Redes</h4>
+            <p>Instagram: @dracaryssoup</p>
+            <p>Caracas, Venezuela</p>
+            <p class="text-[10px] text-gray-600 mt-4">© 2026 Dracarys Soup. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
 
-    <!-- SCRIPT MASTER -->
-    <script>
-        let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
-        let categories = JSON.parse(localStorage.getItem('dracarys_categories')) || defaultCategories;
+<!-- SCRIPT MASTER -->
+<script>
+let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
+let categories = JSON.parse(localStorage.getItem('dracarys_categories')) || defaultCategories;
 
-        let defaultProducts = [
-            { id: 1, name: 'Sancocho Dracarys Res 1.5L', category: 'Sopas, Hervidos & Parrillas', desc: 'Levanta muertos de res concentrado a la leña. Incluye arepitas y limón.', price: 11.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
-            { id: 2, name: 'Parrilla Mixta Taberna (2 personas)', category: 'Sopas, Hervidos & Parrillas', desc: 'Carne, Pollo, Chorizo, Chistorra. Incluye papas fritas, guasacaca y salsas.', price: 18.99, promoPrice: 13.99, badge: 'BEST SELLER', available: true, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400' },
-            { id: 3, name: 'Salchipapas Mix Chistorra & Res', category: 'Salchipapas Mix', desc: 'Papas fritas con ración de chistorra y res a la parrilla, ensalada cremosa y salsas.', price: 8.30, promoPrice: 5.99, badge: '33% OFF', available: true, img: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?q=80&w=400' },
-            { id: 4, name: 'Bouja de soup medieval 750ml', category: 'Sopas, Hervidos & Parrillas', desc: 'Sopa espesa y rústica de carne y verduras al estilo de la taberna.', price: 10.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
-            { id: 5, name: 'Coca-cola 1L helada', category: 'Bebidas & Postres', desc: 'Refresco de cola helado 1 Litro.', price: 2.50, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400' }
-        ];
+let defaultProducts = [
+    { id: 1, name: 'Sancocho Dracarys Res 1.5L', category: 'Sopas, Hervidos & Parrillas', desc: 'Levanta muertos de res concentrado a la leña. Incluye arepitas y limón.', price: 11.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
+    { id: 2, name: 'Parrilla Mixta Taberna (2 personas)', category: 'Sopas, Hervidos & Parrillas', desc: 'Carne, Pollo, Chorizo, Chistorra. Incluye papas fritas, guasacaca y salsas.', price: 18.99, promoPrice: 13.99, badge: 'BEST SELLER', available: true, img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=400' },
+    { id: 3, name: 'Salchipapas Mix Chistorra & Res', category: 'Salchipapas Mix', desc: 'Papas fritas con ración de chistorra y res a la parrilla, ensalada cremosa y salsas.', price: 8.30, promoPrice: 5.99, badge: '33% OFF', available: true, img: 'https://images.unsplash.com/photo-1585109649139-366815a0d713?q=80&w=400' },
+    { id: 4, name: 'Bouja de soup medieval 750ml', category: 'Sopas, Hervidos & Parrillas', desc: 'Sopa espesa y rústica de carne y verduras al estilo de la taberna.', price: 10.99, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400' },
+    { id: 5, name: 'Coca-cola 1L helada', category: 'Bebidas & Postres', desc: 'Refresco de cola helado 1 Litro.', price: 2.50, promoPrice: null, badge: null, available: true, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=400' }
+];
 
-        let products = JSON.parse(localStorage.getItem('dracarys_products_v3')) || defaultProducts;
-        let bcvRate = parseFloat(localStorage.getItem('dracarys_bcv')) || 36.50;
-        let isAdminAuthenticated = false;
-        let cart = [];
-        let editingProductId = null;
-        let currentFilter = 'all';
-        let orderType = 'Delivery';
+let products = JSON.parse(localStorage.getItem('dracarys_products_v3')) || defaultProducts;
+let bcvRate = parseFloat(localStorage.getItem('dracarys_bcv')) || 36.50;
+let isAdminAuthenticated = false;
+let cart = [];
+let editingProductId = null;
+let currentFilter = 'all';
+let orderType = 'Delivery';
 
-        function renderCategoriesNav() {
-            const navBar = document.getElementById('category-nav-bar');
-            navBar.innerHTML = `
-                <button onclick="filterCategory('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white text-gray-800'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow">🔥 Todo el Menú</button>
-                <button onclick="filterCategory('Descuentos')" class="cat-btn ${currentFilter === 'Descuentos' ? 'bg-black text-white' : 'bg-white text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🏷️ Ofertas Especiales</button>
-            `;
-            categories.forEach(cat => {
-                navBar.innerHTML += `
-                    <button onclick="filterCategory('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">${cat}</button>
-                `;
-            });
-        }
+function renderCategoriesNav() {
+    const navBar = document.getElementById('category-nav-bar');
+    navBar.innerHTML = `
+        <button onclick="filterCategory('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow">🔥 Todo el Menú</button>
+        <button onclick="filterCategory('Descuentos')" class="cat-btn ${currentFilter === 'Descuentos' ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">🏷️ Ofertas Especiales</button>
+    `;
+    categories.forEach(cat => {
+        navBar.innerHTML += `<button onclick="filterCategory('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/90 text-gray-800'} px-4 py-2 rounded-lg border border-gray-200 whitespace-nowrap shadow-sm">${cat}</button>`;
+    });
+}
 
-        function renderProducts(filterCat = 'all') {
-            currentFilter = filterCat;
-            renderCategoriesNav();
-            const grid = document.getElementById('catalog-grid');
-            const titleEl = document.getElementById('current-category-title');
-            titleEl.innerText = filterCat === 'all' ? '🔥 Todo el Menú' : (filterCat === 'Descuentos' ? '🏷️ Ofertas Especiales' : filterCat);
-            
-            grid.innerHTML = '';
+function renderProducts(filterCat = 'all') {
+    currentFilter = filterCat;
+    renderCategoriesNav();
+    const grid = document.getElementById('catalog-grid');
+    const titleEl = document.getElementById('current-category-title');
+    titleEl.innerText = filterCat === 'all' ? '🔥 Todo el Menú' : (filterCat === 'Descuentos' ? '🏷️ Ofertas Especiales' : filterCat);
+    grid.innerHTML = '';
+    
+    let filtered = products;
+    if (filterCat === 'Descuentos') {
+        filtered = products.filter(p => p.promoPrice !== null && p.promoPrice !== undefined);
+    } else if (filterCat !== 'all') {
+        filtered = products.filter(p => p.category === filterCat);
+    }
 
-            let filtered = products;
-            if (filterCat === 'Descuentos') {
-                filtered = products.filter(p => p.promoPrice !== null && p.promoPrice !== undefined);
-            } else if (filterCat !== 'all') {
-                filtered = products.filter(p => p.category === filterCat);
-            }
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p class="text-gray-300 italic col-span-2 text-center py-10 bg-black/40 rounded-xl backdrop-blur-sm">No hay productos disponibles en esta categoría.</p>';
+        return;
+    }
 
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 italic col-span-2 text-center py-10 bg-white/60 rounded-xl">No hay productos disponibles en esta categoría.</p>';
-                return;
-            }
-
-            filtered.forEach(p => {
-                const price = p.promoPrice || p.price;
-                const bsPrice = (price * bcvRate).toFixed(2);
-                grid.innerHTML += `
-                    <div class="dracarys-card p-4 gap-3 relative flex ${!p.available ? 'opacity-60 grayscale' : ''}">
-                        <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'">
-                        <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
-                            <div>
-                                ${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}
-                                <h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3>
-                                <p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p>
-                            </div>
-                            <div class="flex justify-between items-end mt-1">
-                                <div>
-                                    <span class="font-black text-gray-950 text-sm">$${price.toFixed(2)}</span>
-                                    ${p.promoPrice ? `<span class="text-gray-400 line-through text-[10px] ml-1">$${p.price.toFixed(2)}</span>` : ''}
-                                    <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
-                                </div>
-                                <div class="flex gap-1.5 items-center">
-                                    ${isAdminAuthenticated ? `
-                                        <button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white font-bold px-2 py-1 rounded text-[10px] hover:bg-blue-700">✏️ Editar</button>
-                                    ` : ''}
-                                    ${p.available ? `
-                                        <button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">
-                                            + Añadir
-                                        </button>
-                                    ` : `
-                                        <span class="bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded">Agotado</span>
-                                    `}
-                                </div>
-                            </div>
+    filtered.forEach(p => {
+        const price = p.promoPrice || p.price;
+        const bsPrice = (price * bcvRate).toFixed(2);
+        grid.innerHTML += `
+            <div class="dracarys-card p-4 gap-3 relative flex ${!p.available ? 'opacity-60 grayscale' : ''}">
+                <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'">
+                <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
+                    <div>
+                        ${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}
+                        <h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3>
+                        <p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p>
+                    </div>
+                    <div class="flex justify-between items-end mt-1">
+                        <div>
+                            <span class="font-black text-gray-950 text-sm">$${price.toFixed(2)}</span>
+                            ${p.promoPrice ? `<span class="text-gray-400 line-through text-[10px] ml-1">$${p.price.toFixed(2)}</span>` : ''}
+                            <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
+                        </div>
+                        <div class="flex gap-1.5 items-center">
+                            ${isAdminAuthenticated ? `<button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white font-bold px-2 py-1 rounded text-[10px] hover:bg-blue-700">✏️ Editar</button>` : ''}
+                            ${p.available ? `<button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">+ Añadir</button>` : `<span class="bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded">Agotado</span>`}
                         </div>
                     </div>
-                `;
-            });
-        }
+                </div>
+            </div>
+        `;
+    });
+}
 
-        function setOrderType(type) {
-            orderType = type;
-            document.getElementById('btn-delivery').className = type === 'Delivery' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
-            document.getElementById('btn-pickup').className = type === 'Retiro' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
-        }
+function setOrderType(type) {
+    orderType = type;
+    document.getElementById('btn-delivery').className = type === 'Delivery' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
+    document.getElementById('btn-pickup').className = type === 'Retiro' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
+}
 
-        function addToCart(id) {
-            const p = products.find(item => item.id === id);
-            if (!p || !p.available) return;
-            cart.push(p);
-            updateCart();
-        }
+function addToCart(id) {
+    const p = products.find(item => item.id === id);
+    if (!p || !p.available) return;
+    cart.push(p);
+    updateCart();
+}
 
-        function updateCart() {
-            const container = document.getElementById('cart-items');
-            document.getElementById('cart-badge').innerText = cart.length;
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>';
-                document.getElementById('subtotal-usd').innerText = '$0.00';
-                document.getElementById('total-bs').innerText = '0.00 Bs';
-                return;
-            }
-            container.innerHTML = '';
-            let total = 0;
-            cart.forEach((item, index) => {
-                const price = item.promoPrice || item.price;
-                total += price;
-                container.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
-                        <div class="pr-2 truncate max-w-[180px]">
-                            <p class="font-bold text-gray-900 text-[11px]">${item.name}</p>
-                            <p class="text-dracarys-fire font-semibold text-[10px]">$${price.toFixed(2)}</p>
-                        </div>
-                        <button onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5 hover:text-red-300">✖</button>
-                    </div>
-                `;
-            });
-            document.getElementById('subtotal-usd').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('total-bs').innerText = `${(total * bcvRate).toFixed(2)} Bs`;
-        }
+function updateCart() {
+    const container = document.getElementById('cart-items');
+    document.getElementById('cart-badge').innerText = cart.length;
+    if (cart.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu carrito está vacío...</p>';
+        document.getElementById('subtotal-usd').innerText = '$0.00';
+        document.getElementById('total-bs').innerText = '0.00 Bs';
+        return;
+    }
+    container.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+        const price = item.promoPrice || item.price;
+        total += price;
+        container.innerHTML += `
+            <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
+                <div class="pr-2 truncate max-w-[180px]">
+                    <p class="font-bold text-gray-900 text-[11px]">${item.name}</p>
+                    <p class="text-dracarys-fire font-semibold text-[10px]">$${price.toFixed(2)}</p>
+                </div>
+                <button onclick="removeFromCart(${index})" class="text-red-500 font-bold px-1.5 hover:text-red-300">✖</button>
+            </div>
+        `;
+    });
+    document.getElementById('subtotal-usd').innerText = `$${total.toFixed(2)}`;
+    document.getElementById('total-bs').innerText = `${(total * bcvRate).toFixed(2)} Bs`;
+}
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+}
 
-        function submitOrder() {
-            if (cart.length === 0) return alert('Agrega al menos un producto al carrito.');
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const method = document.getElementById('pay-method').value;
-            if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono de WhatsApp.');
+function submitOrder() {
+    if (cart.length === 0) return alert('Agrega al menos un producto al carrito.');
+    const name = document.getElementById('cust-name').value;
+    const phone = document.getElementById('cust-phone').value;
+    const method = document.getElementById('pay-method').value;
+    if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono de WhatsApp.');
+    alert(`¡Pedido registrado con éxito, ${name}!\nModalidad: ${orderType}\nMétodo de pago: ${method}\n\nProcesando enlace a WhatsApp...`);
+    cart = [];
+    updateCart();
+}
 
-            alert(`¡Pedido registrado con éxito, ${name}!\nModalidad: ${orderType}\nMétodo de pago: ${method}\n\nProcesando enlace a WhatsApp...`);
-            cart = [];
-            updateCart();
-        }
+// PANEL ADMIN CMS
+function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
+function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-        // PANEL ADMIN CMS
-        function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
-        function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
+function authAdmin() {
+    if (document.getElementById('admin-pass').value === 'admin123') {
+        isAdminAuthenticated = true;
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-panel-content').classList.remove('hidden');
+        renderProducts(currentFilter);
+        renderAdminProducts();
+        renderCategoryManager();
+        populateCategoryDropdown();
+    } else {
+        alert('Clave incorrecta');
+    }
+}
 
-        function authAdmin() {
-            if (document.getElementById('admin-pass').value === 'admin123') {
-                isAdminAuthenticated = true;
-                document.getElementById('admin-login-box').classList.add('hidden');
-                document.getElementById('admin-panel-content').classList.remove('hidden');
-                renderProducts(currentFilter);
-                renderAdminProducts();
-                renderCategoryManager();
-                populateCategoryDropdown();
-            } else {
-                alert('Clave incorrecta');
-            }
-        }
+function populateCategoryDropdown() {
+    const select = document.getElementById('edit-category');
+    select.innerHTML = '';
+    categories.forEach(cat => {
+        select.innerHTML += `<option value="${cat}">${cat}</option>`;
+    });
+}
 
-        function populateCategoryDropdown() {
-            const select = document.getElementById('edit-category');
-            select.innerHTML = '';
-            categories.forEach(cat => {
-                select.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
-        }
+function renderCategoryManager() {
+    const list = document.getElementById('category-management-list');
+    list.innerHTML = '';
+    categories.forEach(cat => {
+        list.innerHTML += `<span class="bg-white border px-2 py-1 rounded text-[11px] flex items-center gap-1 shadow-sm font-semibold">${cat}<button onclick="deleteCategory('${cat}')" class="text-red-500 font-bold ml-1 hover:text-red-700">×</button></span>`;
+    });
+}
 
-        function renderCategoryManager() {
-            const list = document.getElementById('category-management-list');
-            list.innerHTML = '';
-            categories.forEach(cat => {
-                list.innerHTML += `
-                    <span class="bg-white border px-2 py-1 rounded text-[11px] flex items-center gap-1 shadow-sm font-semibold">
-                        ${cat}
-                        <button onclick="deleteCategory('${cat}')" class="text-red-500 font-bold ml-1 hover:text-red-700">×</button>
-                    </span>
-                `;
-            });
-        }
+function createCategory() {
+    const input = document.getElementById('new-category-input');
+    const catName = input.value.trim();
+    if (!catName) return alert('Ingresa un nombre para la categoría.');
+    if (categories.includes(catName)) return alert('Esa categoría ya existe.');
+    categories.push(catName);
+    localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+    input.value = '';
+    renderCategoryManager();
+    populateCategoryDropdown();
+    renderProducts(currentFilter);
+    alert(`Categoría "${catName}" creada con éxito.`);
+}
 
-        function createCategory() {
-            const input = document.getElementById('new-category-input');
-            const catName = input.value.trim();
-            if (!catName) return alert('Ingresa un nombre para la categoría.');
-            if (categories.includes(catName)) return alert('Esa categoría ya existe.');
-            categories.push(catName);
-            localStorage.setItem('dracarys_categories', JSON.stringify(categories));
-            input.value = '';
-            renderCategoryManager();
-            populateCategoryDropdown();
-            renderProducts(currentFilter);
-            alert(`Categoría "${catName}" creada con éxito.`);
-        }
-
-        function deleteCategory(catName) {
-            if (confirm(`¿Eliminar la categoría "${catName}"?`)) {
-                categories = categories.filter(c => c !== catName);
-                localStorage.setItem('dracarys_categories', JSON.stringify(categories));
-                renderCategoryManager();
-                populateCategoryDropdown();
-                renderProducts('all');
-            }
-        }
-
-        function renderAdminProducts() {
-            const list = document.getElementById('admin-product-list');
-            list.innerHTML = '';
-            products.forEach(p => {
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-200 shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <img src="${p.img}" class="w-9 h-9 rounded object-cover border" alt="Thumb" onerror="this.src='https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200'">
-                            <span class="font-bold text-gray-950 truncate max-w-[170px]">${p.name}</span>
-                        </div>
-                        <div class="flex gap-2 text-xs items-center">
-                            <button onclick="toggleAvailability(${p.id})" class="px-2 py-1 rounded text-[10px] font-bold ${p.available ? 'bg-emerald-800 text-emerald-200' : 'bg-red-800 text-red-200'}">
-                                ${p.available ? 'Disponible' : 'Agotado'}
-                            </button>
-                            <button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">✏️</button>
-                            <button onclick="deleteProduct(${p.id})" class="text-red-500 font-bold px-1">✖</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function editProductVisual(id) {
-            const p = products.find(item => item.id === id);
-            if (!p) return;
-            editingProductId = id;
-            document.getElementById('visual-edit-name').innerText = p.name;
-            document.getElementById('edit-name').value = p.name;
-            document.getElementById('edit-desc').value = p.desc;
-            document.getElementById('edit-price').value = p.price;
-            document.getElementById('edit-img').value = p.img;
-            document.getElementById('edit-category').value = p.category;
-            updateVisualPreview();
-            openAdmin();
-        }
-
-        function updateVisualPreview() {
-            document.getElementById('visual-edit-preview').src = document.getElementById('edit-img').value;
-        }
-
-        function saveVisualEdit() {
-            if (editingProductId === null) return alert('Selecciona un producto primero.');
-            const p = products.find(item => item.id === editingProductId);
-            if (!p) return;
-            p.name = document.getElementById('edit-name').value;
-            p.desc = document.getElementById('edit-desc').value;
-            p.price = parseFloat(document.getElementById('edit-price').value);
-            p.img = document.getElementById('edit-img').value;
-            p.category = document.getElementById('edit-category').value;
-            saveProducts();
-            alert('¡Plato actualizado con éxito en el menú!');
-        }
-
-        function addNewProductPrompt() {
-            const name = prompt('Nombre del nuevo plato:');
-            if (!name) return;
-            const price = parseFloat(prompt('Precio en $ USD:', '10.00')) || 10.00;
-            const newP = {
-                id: Date.now(),
-                name: name,
-                category: categories[0] || 'Platos',
-                desc: 'Deliciosa preparación artesanal de la casa.',
-                price: price,
-                promoPrice: null,
-                badge: 'NUEVO',
-                available: true,
-                img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
-            };
-            products.push(newP);
-            saveProducts();
-            renderAdminProducts();
-            alert('¡Plato agregado con éxito!');
-        }
-
-        function toggleAvailability(id) {
-            const p = products.find(item => item.id === id);
-            if (p) { p.available = !p.available; saveProducts(); renderAdminProducts(); }
-        }
-
-        function deleteProduct(id) {
-            if (confirm('¿Estás seguro de eliminar este producto?')) {
-                products = products.filter(p => p.id !== id);
-                saveProducts();
-                renderAdminProducts();
-            }
-        }
-
-        function saveProducts() {
-            localStorage.setItem('dracarys_products_v3', JSON.stringify(products));
-            renderProducts(currentFilter);
-        }
-
-        function saveGeneralSettings() {
-            bcvRate = parseFloat(document.getElementById('input-bcv').value);
-            localStorage.setItem('dracarys_bcv', bcvRate);
-            document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
-            renderProducts(currentFilter);
-            updateCart();
-            alert('¡Tasa BCV actualizada con éxito!');
-        }
-
-        function filterCategory(cat) { renderProducts(cat); }
-
-        // Inicialización
-        document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
-        document.getElementById('input-bcv').value = bcvRate;
+function deleteCategory(catName) {
+    if (confirm(`¿Eliminar la categoría "${catName}"?`)) {
+        categories = categories.filter(c => c !== catName);
+        localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+        renderCategoryManager();
+        populateCategoryDropdown();
         renderProducts('all');
-    </script>
+    }
+}
+
+function renderAdminProducts() {
+    const list = document.getElementById('admin-product-list');
+    list.innerHTML = '';
+    products.forEach(p => {
+        list.innerHTML += `
+            <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-200 shadow-sm">
+                <div class="flex items-center gap-2">
+                    <img src="${p.img}" class="w-9 h-9 rounded object-cover border" alt="Thumb" onerror="this.src='https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=200'">
+                    <span class="font-bold text-gray-950 truncate max-w-[170px]">${p.name}</span>
+                </div>
+                <div class="flex gap-2 text-xs items-center">
+                    <button onclick="toggleAvailability(${p.id})" class="px-2 py-1 rounded text-[10px] font-bold ${p.available ? 'bg-emerald-800 text-emerald-200' : 'bg-red-800 text-red-200'}">${p.available ? 'Disponible' : 'Agotado'}</button>
+                    <button onclick="editProductVisual(${p.id})" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">✏️</button>
+                    <button onclick="deleteProduct(${p.id})" class="text-red-500 font-bold px-1">✖</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function editProductVisual(id) {
+    const p = products.find(item => item.id === id);
+    if (!p) return;
+    editingProductId = id;
+    document.getElementById('visual-edit-name').innerText = p.name;
+    document.getElementById('edit-name').value = p.name;
+    document.getElementById('edit-desc').value = p.desc;
+    document.getElementById('edit-price').value = p.price;
+    document.getElementById('edit-img').value = p.img;
+    document.getElementById('edit-category').value = p.category;
+    updateVisualPreview();
+    openAdmin();
+}
+
+function updateVisualPreview() {
+    document.getElementById('visual-edit-preview').src = document.getElementById('edit-img').value;
+}
+
+function saveVisualEdit() {
+    if (editingProductId === null) return alert('Selecciona un producto primero.');
+    const p = products.find(item => item.id === editingProductId);
+    if (!p) return;
+    p.name = document.getElementById('edit-name').value;
+    p.desc = document.getElementById('edit-desc').value;
+    p.price = parseFloat(document.getElementById('edit-price').value);
+    p.img = document.getElementById('edit-img').value;
+    p.category = document.getElementById('edit-category').value;
+    saveProducts();
+    alert('¡Plato actualizado con éxito en el menú!');
+}
+
+function addNewProductPrompt() {
+    const name = prompt('Nombre del nuevo plato:');
+    if (!name) return;
+    const price = parseFloat(prompt('Precio en $ USD:', '10.00')) || 10.00;
+    const newP = {
+        id: Date.now(),
+        name: name,
+        category: categories[0] || 'Platos',
+        desc: 'Deliciosa preparación artesanal de la casa.',
+        price: price,
+        promoPrice: null,
+        badge: 'NUEVO',
+        available: true,
+        img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
+    };
+    products.push(newP);
+    saveProducts();
+    renderAdminProducts();
+    alert('¡Plato agregado con éxito!');
+}
+
+function toggleAvailability(id) {
+    const p = products.find(item => item.id === id);
+    if (p) { 
+        p.available = !p.available; 
+        saveProducts(); 
+        renderAdminProducts(); 
+    }
+}
+
+function deleteProduct(id) {
+    if (confirm('¿Estás seguro de eliminar este producto?')) {
+        products = products.filter(p => p.id !== id);
+        saveProducts();
+        renderAdminProducts();
+    }
+}
+
+function saveProducts() {
+    localStorage.setItem('dracarys_products_v3', JSON.stringify(products));
+    renderProducts(currentFilter);
+}
+
+function saveGeneralSettings() {
+    bcvRate = parseFloat(document.getElementById('input-bcv').value);
+    localStorage.setItem('dracarys_bcv', bcvRate);
+    document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+    renderProducts(currentFilter);
+    updateCart();
+    alert('¡Tasa BCV actualizada con éxito!');
+}
+
+function filterCategory(cat) { 
+    renderProducts(cat); 
+}
+
+// Inicialización
+document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+document.getElementById('input-bcv').value = bcvRate;
+renderProducts('all');
+</script>
 </body>
 </html>
