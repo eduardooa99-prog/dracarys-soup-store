@@ -264,7 +264,7 @@ header p.font-serif, h2#current-category-title {
 <script>
 // Configuración de Supabase
 const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIic7cm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2G'.trim();
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2G';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
@@ -604,7 +604,6 @@ async function saveVisualEdit() {
   const img = document.getElementById('edit-img').value;
   const isBest = document.getElementById('edit-badge').value.includes('BEST');
 
-  // Actualizar directamente en Supabase
   const { error } = await supabaseClient
     .from('menu_items')
     .update({ name, description: desc, price, category, image_url: img, is_best_seller: isBest })
