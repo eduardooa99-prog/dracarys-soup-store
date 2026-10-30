@@ -89,7 +89,7 @@
         <span class="text-gray-300 hidden sm:inline">Caracas, Venezuela (UTC-4)</span>
       </div>
       <div class="flex items-center gap-4">
-        <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">36.50</strong> Bs/$</span>
+        <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">889.25</strong> Bs/$</span>
         <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline hidden md:inline">📸 Instagram</a>
         <button onclick="openAdmin()" class="text-dracarys-gold hover:text-amber-300 font-semibold flex items-center gap-1">⚙️ Panel CMS Visual</button>
       </div>
@@ -261,7 +261,7 @@
           <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
             <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
             <div class="flex gap-2">
-              <input type="number" step="0.1" id="input-bcv" value="36.50" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
+              <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
               <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar</button>
             </div>
           </div>
@@ -358,7 +358,7 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON SUPABASE, MAPAS Y PAGOS -->
+<!-- SCRIPT MASTER CON SUPABASE, MAPAS Y TASA EN TIEMPO REAL -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -367,7 +367,7 @@
   let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
   let categories = JSON.parse(localStorage.getItem('dracarys_categories')) || defaultCategories;
   let products = [];
-  let bcvRate = parseFloat(localStorage.getItem('dracarys_bcv')) || 36.50;
+  let bcvRate = 889.25; // Valor por defecto
   let isAdminAuthenticated = false;
   let cart = [];
   let editingProductId = null;
@@ -398,6 +398,18 @@
       badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
       badge.innerText = "🔴 CERRADO (FUERA DE HORARIO)";
     }
+  }
+
+  // CARGAR TASA BCV DESDE SUPABASE
+  async function loadSettingsFromSupabase() {
+    const { data, error } = await supabaseClient.from('settings').select('*').eq('key', 'bcv_rate').single();
+    if (data && data.value) {
+      bcvRate = parseFloat(data.value);
+    }
+    document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+    const inputBcv = document.getElementById('input-bcv');
+    if (inputBcv) inputBcv.value = bcvRate;
+    updateCart();
   }
 
   async function loadProductsFromSupabase() {
@@ -482,8 +494,12 @@
 
   // INICIALIZAR MAPA LEAFLET DE CARACAS
   function initDeliveryMap() {
-    if (deliveryMap) return;
-    // Coordenadas aproximadas de Caracas centro
+    const mapContainer = document.getElementById('delivery-map');
+    if (!mapContainer || deliveryMap) return;
+
+    mapContainer.style.height = "180px";
+    mapContainer.style.width = "100%";
+
     deliveryMap = L.map('delivery-map').setView([10.4806, -66.9036], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -503,9 +519,10 @@
       selectedCoords = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
       document.getElementById('cust-coords').value = selectedCoords;
     });
+
+    setTimeout(() => { deliveryMap.invalidateSize(); }, 200);
   }
 
-  // GEOLOCALIZACIÓN GPS NATIVA
   function getGPSLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -589,35 +606,54 @@
     document.getElementById('total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
   }
 
-  // DATOS BANCARIOS REALES DINÁMICOS
   function updatePaymentInfo() {
     const method = document.getElementById('pay-method').value;
     const box = document.getElementById('payment-details-box');
+    if (!box) return;
     
     if (method === 'Pago Móvil') {
       box.innerHTML = `
-        <p class="font-bold">📱 Datos de Pago Móvil:</p>
+        <p class="font-bold text-amber-950">📱 Datos de Pago Móvil:</p>
         <p>Bancos: <strong>Banesco o BDV (0134 / 0102)</strong></p>
         <p>Teléfono: <strong>0412-7120538</strong></p>
         <p>C.I.: <strong>V-13479980</strong></p>
       `;
     } else if (method === 'Wally Tech') {
       box.innerHTML = `
-        <p class="font-bold">💳 Datos para Wally Tech:</p>
+        <p class="font-bold text-amber-950">💳 Datos para Wally Tech:</p>
         <p>Teléfono / Cuenta: <strong>0412-7120538</strong></p>
         <p>Titular: <strong>Dracarys C.A.</strong></p>
       `;
     } else if (method === 'Binance Pay') {
       box.innerHTML = `
-        <p class="font-bold">🪙 Binance Pay (USDT):</p>
+        <p class="font-bold text-amber-950">🪙 Binance Pay (USDT):</p>
         <p>Correo Binance Pay: <strong>eduardooa99@gmail.com</strong></p>
         <p>Titular: <strong>Eduardo Oronoz</strong></p>
       `;
     } else {
       box.innerHTML = `
-        <p class="font-bold">💵 Efectivo:</p>
+        <p class="font-bold text-amber-950">💵 Efectivo:</p>
         <p>Prepara el monto exacto para facilitar la entrega o retiro.</p>
       `;
+    }
+  }
+
+  // GUARDAR TASA BCV EN SUPABASE DESDE EL CMS
+  async function saveGeneralSettings() {
+    const newRate = parseFloat(document.getElementById('input-bcv').value);
+    if (isNaN(newRate)) return alert('Ingresa una tasa válida.');
+
+    const { error } = await supabaseClient
+      .from('settings')
+      .upsert({ key: 'bcv_rate', value: newRate.toString() });
+
+    if (error) {
+      alert('Error al guardar en Supabase: ' + error.message);
+    } else {
+      bcvRate = newRate;
+      document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+      renderProducts(currentFilter);
+      alert('¡Tasa BCV actualizada en tiempo real para todos los dispositivos!');
     }
   }
 
@@ -646,7 +682,6 @@
     const totalUSD = subtotal + deliveryCost;
     const totalBS = totalUSD * bcvRate;
 
-    // 1. GUARDAR EN SUPABASE
     const { error } = await supabaseClient.from('orders').insert([{
       customer_name: name,
       phone: phone,
@@ -666,7 +701,6 @@
       return;
     }
 
-    // 2. DISPARAR ALERTA A WHATSAPP
     let summary = `🛒 *¡NUEVO PEDIDO DRACARYS!*\n`;
     summary += `👤 *Cliente:* ${name}\n`;
     summary += `📱 *Teléfono:* ${phone}\n`;
@@ -764,8 +798,8 @@
 
   function closeLegalModal() { document.getElementById('legal-modal').classList.add('hidden'); }
 
-  // INICIALIZACIÓN
-  document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+  // INICIALIZACIÓN GLOBAL
+  loadSettingsFromSupabase();
   loadProductsFromSupabase();
   checkStoreStatus();
   updatePaymentInfo();
