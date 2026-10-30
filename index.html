@@ -8,6 +8,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Cliente Oficial de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Leaflet CSS (Mapa Interactivo Gratuito) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <script>
@@ -67,6 +71,11 @@
     #admin-modal, #legal-modal, #admin-modal div, #admin-modal p, #admin-modal span, #admin-modal label {
       color: #111827;
     }
+    #delivery-map {
+      height: 180px;
+      border-radius: 0.55rem;
+      border: 1px solid #cbd5e1;
+    }
   </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -81,6 +90,7 @@
       </div>
       <div class="flex items-center gap-4">
         <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">36.50</strong> Bs/$</span>
+        <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline hidden md:inline">📸 Instagram</a>
         <button onclick="openAdmin()" class="text-dracarys-gold hover:text-amber-300 font-semibold flex items-center gap-1">⚙️ Panel CMS Visual</button>
       </div>
     </div>
@@ -162,23 +172,42 @@
             <input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
           </div>
           <div>
-            <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04121234567) *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+            <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04127120538) *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
           </div>
-          <div id="address-box">
-            <textarea id="cust-address" placeholder="Dirección Exacta de Entrega & Punto de Referencia *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none h-16"></textarea>
+          
+          <div id="address-box" class="space-y-2">
+            <textarea id="cust-address" placeholder="Dirección Exacta de Entrega & Punto de Referencia *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none h-14"></textarea>
+            
+            <!-- MAPA INTERACTIVO GRATUITO & GPS -->
+            <div class="space-y-1">
+              <div class="flex justify-between items-center text-[10px] text-gray-600 font-semibold">
+                <span>📍 Mueve el pin en el mapa o usa GPS:</span>
+                <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar mi GPS actual</button>
+              </div>
+              <div id="delivery-map"></div>
+              <input type="hidden" id="cust-coords" value="No especificado">
+            </div>
           </div>
+
+          <!-- MÉTODOS DE PAGO REALES -->
           <div>
-            <select id="pay-method" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-              <option value="Pago Móvil">Pago Móvil (Bs BCV)</option>
-              <option value="Zinli">Zinli ($ USD)</option>
-              <option value="Zelle">Zelle ($ USD)</option>
-              <option value="Binance">Binance Pay (USDT)</option>
+            <select id="pay-method" onchange="updatePaymentInfo()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+              <option value="Pago Móvil">Pago Móvil (Banesco / BDV)</option>
+              <option value="Wally Tech">Wally Tech</option>
+              <option value="Binance Pay">Binance Pay (USDT)</option>
               <option value="Efectivo">Efectivo en Entrega</option>
             </select>
           </div>
+
+          <!-- CAJA DINÁMICA DE DATOS BANCARIOS OFICIALES -->
+          <div id="payment-details-box" class="bg-amber-50 border border-amber-300 p-2.5 rounded-lg text-[11px] text-amber-900 space-y-1">
+            <!-- Se carga por JS -->
+          </div>
+
           <div>
             <input type="text" id="pay-ref" placeholder="N° Referencia o Comprobante de Pago *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
           </div>
+          
           <button id="btn-submit-order" onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2">
             <span>✅ Confirmar & Pagar</span>
           </button>
@@ -321,13 +350,15 @@
     <div class="space-y-2">
       <h4 class="font-bold text-white">Ubicación & Contacto</h4>
       <p>📍 Caracas, Venezuela</p>
-      <p>📱 WhatsApp: +58 412-1234567</p>
-      <p class="text-[10px] text-gray-600 mt-4">© 2026 Dracarys Soup. Todos los derechos reservados.</p>
+      <p>📱 WhatsApp: 0412-7120538 / 0414-2920866</p>
+      <p>✉️ Correo: eduardooa99@gmail.com</p>
+      <p class="mt-2"><a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram: @dracarysoup</a></p>
+      <p class="text-[10px] text-gray-600 mt-2">© 2026 Dracarys Soup. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON SUPABASE -->
+<!-- SCRIPT MASTER CON SUPABASE, MAPAS Y PAGOS -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -342,13 +373,15 @@
   let editingProductId = null;
   let currentFilter = 'all';
   let orderType = 'Delivery';
+  let deliveryMap = null;
+  let deliveryMarker = null;
+  let selectedCoords = "Caracas (Centro)";
 
   // EVALUAR HORA OFICIAL DE CARACAS (UTC-4)
   function isCaracasOpen() {
     const now = new Date();
     const utcHours = now.getUTCHours();
     const caracasHours = (utcHours - 4 + 24) % 24;
-    // Abierto de 11 AM (11:00) a 9 PM (21:00)
     return caracasHours >= 11 && caracasHours < 21;
   }
 
@@ -441,6 +474,56 @@
     document.getElementById('delivery-cost-row').style.display = type === 'Delivery' ? 'flex' : 'none';
     document.getElementById('address-box').style.display = type === 'Delivery' ? 'block' : 'none';
     updateCart();
+
+    if (type === 'Delivery' && !deliveryMap) {
+      setTimeout(initDeliveryMap, 300);
+    }
+  }
+
+  // INICIALIZAR MAPA LEAFLET DE CARACAS
+  function initDeliveryMap() {
+    if (deliveryMap) return;
+    // Coordenadas aproximadas de Caracas centro
+    deliveryMap = L.map('delivery-map').setView([10.4806, -66.9036], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(deliveryMap);
+
+    deliveryMarker = L.marker([10.4806, -66.9036], { draggable: true }).addTo(deliveryMap);
+    
+    deliveryMarker.on('dragend', function(event) {
+      const pos = deliveryMarker.getLatLng();
+      selectedCoords = `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`;
+      document.getElementById('cust-coords').value = selectedCoords;
+    });
+
+    deliveryMap.on('click', function(e) {
+      deliveryMarker.setLatLng(e.latlng);
+      selectedCoords = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+      document.getElementById('cust-coords').value = selectedCoords;
+    });
+  }
+
+  // GEOLOCALIZACIÓN GPS NATIVA
+  function getGPSLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        if (deliveryMap && deliveryMarker) {
+          deliveryMap.setView([lat, lng], 15);
+          deliveryMarker.setLatLng([lat, lng]);
+          selectedCoords = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+          document.getElementById('cust-coords').value = selectedCoords;
+          alert('¡Ubicación GPS obtenida con éxito!');
+        }
+      }, () => {
+        alert('No se pudo obtener la ubicación GPS automáticamente. Puedes mover el pin manualmente en el mapa.');
+      });
+    } else {
+      alert('Tu navegador no soporta geolocalización.');
+    }
   }
 
   function addToCart(id) {
@@ -506,6 +589,38 @@
     document.getElementById('total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
   }
 
+  // DATOS BANCARIOS REALES DINÁMICOS
+  function updatePaymentInfo() {
+    const method = document.getElementById('pay-method').value;
+    const box = document.getElementById('payment-details-box');
+    
+    if (method === 'Pago Móvil') {
+      box.innerHTML = `
+        <p class="font-bold">📱 Datos de Pago Móvil:</p>
+        <p>Bancos: <strong>Banesco o BDV (0134 / 0102)</strong></p>
+        <p>Teléfono: <strong>0412-7120538</strong></p>
+        <p>C.I.: <strong>V-13479980</strong></p>
+      `;
+    } else if (method === 'Wally Tech') {
+      box.innerHTML = `
+        <p class="font-bold">💳 Datos para Wally Tech:</p>
+        <p>Teléfono / Cuenta: <strong>0412-7120538</strong></p>
+        <p>Titular: <strong>Dracarys C.A.</strong></p>
+      `;
+    } else if (method === 'Binance Pay') {
+      box.innerHTML = `
+        <p class="font-bold">🪙 Binance Pay (USDT):</p>
+        <p>Correo Binance Pay: <strong>eduardooa99@gmail.com</strong></p>
+        <p>Titular: <strong>Eduardo Oronoz</strong></p>
+      `;
+    } else {
+      box.innerHTML = `
+        <p class="font-bold">💵 Efectivo:</p>
+        <p>Prepara el monto exacto para facilitar la entrega o retiro.</p>
+      `;
+    }
+  }
+
   // SUBMIT DE PEDIDO A SUPABASE Y WHATSAPP
   async function submitOrder() {
     if (!isCaracasOpen()) {
@@ -516,6 +631,7 @@
     const name = document.getElementById('cust-name').value.trim();
     const phone = document.getElementById('cust-phone').value.trim();
     const address = document.getElementById('cust-address').value.trim();
+    const coords = document.getElementById('cust-coords').value;
     const method = document.getElementById('pay-method').value;
     const ref = document.getElementById('pay-ref').value.trim();
     const zoneSelect = document.getElementById('delivery-zone-select');
@@ -536,7 +652,7 @@
       phone: phone,
       order_type: orderType,
       delivery_zone: orderType === 'Delivery' ? zoneName : 'N/A',
-      delivery_address: orderType === 'Delivery' ? address : 'Retiro en Local',
+      delivery_address: orderType === 'Delivery' ? `${address} [Coordenadas GPS: ${coords}]` : 'Retiro en Local',
       items: cart,
       total_usd: totalUSD,
       total_bs: totalBS,
@@ -555,14 +671,17 @@
     summary += `👤 *Cliente:* ${name}\n`;
     summary += `📱 *Teléfono:* ${phone}\n`;
     summary += `🛵 *Modalidad:* ${orderType} (${orderType === 'Delivery' ? zoneName : 'Retiro'})\n`;
-    if (orderType === 'Delivery') summary += `📍 *Dirección:* ${address}\n`;
+    if (orderType === 'Delivery') {
+      summary += `📍 *Dirección:* ${address}\n`;
+      summary += `🗺️ *Google Maps:* https://maps.google.com/?q=${coords}\n`;
+    }
     summary += `💳 *Método de Pago:* ${method} (Ref: ${ref})\n\n`;
     summary += `🍲 *Platos Pedidos:*\n`;
     cart.forEach(i => { summary += `• ${i.qty}x ${i.name} ($${(i.price * i.qty).toFixed(2)})\n`; });
     summary += `\n💵 *Total USD:* $${totalUSD.toFixed(2)}\n`;
     summary += `🇻🇪 *Total Bs (BCV):* ${totalBS.toFixed(2)} Bs`;
 
-    const waUrl = `https://wa.me/584121234567?text=${encodeURIComponent(summary)}`;
+    const waUrl = `https://wa.me/584127120538?text=${encodeURIComponent(summary)}`;
     window.open(waUrl, '_blank');
 
     alert(`¡Pedido registrado exitosamente en la taberna!\nRedirigiendo a WhatsApp para confirmar...`);
@@ -632,13 +751,13 @@
 
     if (type === 'delivery') {
       title.innerText = '🛵 Políticas de Delivery & Envíos';
-      body.innerHTML = '<p>Nuestros despachos en Caracas se ejecutan en alianza con motorizados asignados en horarios de 11:00 AM a 9:00 PM. El costo de envío se establece según la zona geográfica seleccionada al pagar.</p>';
+      body.innerHTML = '<p>Nuestros despachos en Caracas se ejecutan en horarios de 11:00 AM a 9:00 PM. El costo de envío se establece según la zona geográfica seleccionada al pagar.</p>';
     } else if (type === 'freshness') {
       title.innerText = '🌿 Garantía de Frescura & Alérgenos';
-      body.innerHTML = '<p>Nuestras sopas y hervidos son elaborados a la leña diariamente con ingredientes 100% frescos. Contienen proteínas cárnicas, cilantro, verduras surtidas y maíz. Si posee alguna alergia severa, por favor indíquelo en las notas de su pedido.</p>';
+      body.innerHTML = '<p>Nuestras sopas y hervidos son elaborados a la leña diariamente con ingredientes 100% frescos. Si posee alguna alergia severa, por favor indíquelo en las notas de su pedido.</p>';
     } else {
       title.innerText = '📋 Términos del Servicio';
-      body.innerHTML = '<p>Dracarys C.A. garantiza la preparación e higienización de cada platillo. Los pagos realizados vía Pago Móvil o divisas digitales son verificados manualmente por nuestro personal administrativo antes del despacho.</p>';
+      body.innerHTML = '<p>Dracarys C.A. garantiza la preparación e higienización de cada platillo. Los pagos realizados vía Pago Móvil, Wally o Binance Pay son verificados manualmente por nuestro personal.</p>';
     }
     modal.classList.remove('hidden');
   }
@@ -649,6 +768,8 @@
   document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
   loadProductsFromSupabase();
   checkStoreStatus();
+  updatePaymentInfo();
+  setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
   setInterval(checkStoreStatus, 60000);
 </script>
 </body>
