@@ -139,12 +139,10 @@
           <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
         </h2>
         
-        <!-- Elementos del Carrito con Control de Cantidades -->
         <div id="cart-items" class="py-4 space-y-3 max-h-60 overflow-y-auto text-xs">
           <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
         </div>
 
-        <!-- INDICADOR DE CÁLCULO DE DISTANCIA AUTOMÁTICO -->
         <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
           <div class="flex justify-between items-center">
             <span class="font-bold text-gray-900">Origen:</span>
@@ -156,7 +154,6 @@
           </div>
         </div>
 
-        <!-- Totales -->
         <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold mt-3">
           <div class="flex justify-between text-gray-600 text-xs">
             <span>Subtotal:</span>
@@ -176,7 +173,6 @@
           </div>
         </div>
 
-        <!-- FORMULARIO DE CHECKOUT BLINDADO -->
         <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
           <div>
             <input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
@@ -189,10 +185,8 @@
             <label class="block font-bold text-gray-800">Dirección Exacta de Entrega *</label>
             <input type="text" id="cust-address" oninput="handleAddressInput(this.value)" placeholder="Escribe tu zona/calle en Caracas para buscar..." class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
             
-            <!-- LISTA DESPLEGABLE DE AUTOCOMPLETADO (NOMINATIM) -->
             <div id="address-suggestions" class="hidden absolute top-14 left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto"></div>
 
-            <!-- MAPA INTERACTIVO CON REGLA AUTOMÁTICA DE COSTOS -->
             <div class="space-y-1 mt-2">
               <div class="flex justify-between items-center text-[10px] text-gray-600 font-semibold">
                 <span>📍 Mueve el pin o usa GPS (Calcula $2 / 2km):</span>
@@ -203,7 +197,6 @@
             </div>
           </div>
 
-          <!-- MÉTODOS DE PAGO REALES -->
           <div>
             <select id="pay-method" onchange="updatePaymentInfo()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
               <option value="Pago Móvil">Pago Móvil (Banesco / BDV)</option>
@@ -213,10 +206,7 @@
             </select>
           </div>
 
-          <!-- CAJA DINÁMICA DE DATOS BANCARIOS OFICIALES -->
-          <div id="payment-details-box" class="bg-amber-50 border border-amber-300 p-2.5 rounded-lg text-[11px] text-amber-900 space-y-1">
-            <!-- Se carga por JS -->
-          </div>
+          <div id="payment-details-box" class="bg-amber-50 border border-amber-300 p-2.5 rounded-lg text-[11px] text-amber-900 space-y-1"></div>
 
           <div>
             <input type="text" id="pay-ref" placeholder="N° Referencia o Comprobante de Pago *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
@@ -226,7 +216,6 @@
             <span>✅ Confirmar & Pagar</span>
           </button>
 
-          <!-- BOTÓN DE ATENCIÓN DIRECTA POR WHATSAPP -->
           <a href="https://wa.me/584127120538?text=Hola,%20necesito%20asesor%C3%ADa%20con%20mi%20pedido%20en%20Dracarys%20Soup" target="_blank" class="block text-center w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded-xl shadow transition text-[11px]">
             💬 ¿Dudas con tu ubicación o pago? Escríbenos por WhatsApp
           </a>
@@ -236,7 +225,7 @@
   </main>
 </div>
 
-<!-- 7. SUPER PANEL ADMIN CMS PODEROSO -->
+<!-- 7. SUPER PANEL ADMIN CMS OMNIPOTENTE -->
 <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
   <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
     <div class="flex justify-between items-center border-b border-gray-200 pb-3">
@@ -258,20 +247,19 @@
         <div class="flex gap-2 flex-wrap">
           <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos</button>
           <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
-          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Operaciones</button>
+          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Operaciones & Horarios</button>
           <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos</button>
         </div>
       </div>
 
-      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS Y DISPONIBILIDAD -->
+      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS, ETIQUETAS Y DISPONIBILIDAD -->
       <div id="admin-tab-products" class="space-y-6">
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-2">
-            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos & Disponibilidad</h4>
+            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos, Etiquetas & Disponibilidad</h4>
             <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Plato Nuevo</button>
           </div>
           
-          <!-- FORMULARIO DE EDICIÓN VISUAL -->
           <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
             <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
             <input type="hidden" id="edit-id">
@@ -296,15 +284,13 @@
                 <label class="block font-semibold text-gray-700 mb-1">URL Foto:</label>
                 <input type="text" id="edit-img" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
               </div>
-              <div class="flex items-center gap-4 md:col-span-2 pt-2 flex-wrap">
+              <div>
+                <label class="block font-semibold text-gray-700 mb-1">Etiqueta / Insignia (Badge):</label>
+                <input type="text" id="edit-badge" placeholder="Ej. BEST SELLER o NUEVO" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+              </div>
+              <div class="flex items-center gap-4 pt-4 flex-wrap">
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
                   <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery
-                </label>
-                <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
-                  <input type="checkbox" id="edit-best-seller" class="w-4 h-4 text-amber-500 rounded"> ⭐ Best Seller
-                </label>
-                <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
-                  <input type="checkbox" id="edit-available" class="w-4 h-4 text-blue-600 rounded" checked> 🟢 Disponible para Pedidos
                 </label>
               </div>
             </div>
@@ -327,7 +313,7 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 3: OPERACIONES, TASA Y HORARIOS -->
+      <!-- PESTAÑA 3: OPERACIONES, TASA, CLIMA Y HORARIOS POR DÍA -->
       <div id="admin-tab-operations" class="space-y-6 hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Tasa BCV -->
@@ -352,12 +338,22 @@
         <!-- CONTROL MANUAL DE HORARIOS (OVERRIDE) -->
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
           <h4 class="font-bold text-dracarys-bronze">Control Manual de Apertura (Override):</h4>
-          <p class="text-[11px] text-gray-600">Puedes dejar que el sistema opere por su horario automático o forzar el estado de la taberna:</p>
+          <p class="text-[11px] text-gray-600">Fuerza el estado operativo de la taberna al instante:</p>
           <div class="flex gap-2">
-            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border border-gray-300 bg-white text-gray-800 shadow-sm">🕒 Automático (11am - 9pm)</button>
-            <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border border-emerald-600 bg-emerald-50 text-emerald-800 shadow-sm">🟢 Forzar Abierto</button>
-            <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border border-red-600 bg-red-50 text-red-800 shadow-sm">🔴 Forzar Cerrado</button>
+            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border shadow-sm">🕒 Automático (Horarios)</button>
+            <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border shadow-sm">🟢 Forzar Abierto</button>
+            <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border shadow-sm">🔴 Forzar Cerrado</button>
           </div>
+        </div>
+
+        <!-- HORARIOS POR DÍA DE LA SEMANA -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+          <h4 class="font-bold text-dracarys-bronze">📅 Configuración de Horarios por Día (Lunes a Domingo):</h4>
+          <p class="text-[11px] text-gray-600">Establece la hora de apertura y cierre para cada día de la semana:</p>
+          <div id="weekly-schedule-container" class="space-y-2 mt-2">
+            <!-- Se llena por JavaScript -->
+          </div>
+          <button onclick="saveWeeklySchedule()" class="bg-black text-white px-4 py-2 rounded font-bold shadow text-xs mt-2">💾 Guardar Horarios Semanales</button>
         </div>
       </div>
 
@@ -410,13 +406,12 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER DEFINITIVO PODEROSO -->
+<!-- SCRIPT MASTER DEFINITIVO OMNIPOTENTE -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // COORDENADAS BASE: Avenida Norte 14, Altagracia, Caracas
   const STORE_LAT = 10.5100;
   const STORE_LNG = -66.9150;
 
@@ -425,7 +420,16 @@
   let products = [];
   let bcvRate = 889.25;
   let isRainModeActive = false;
-  let storeOverride = 'auto'; // 'auto', 'open', 'closed'
+  let storeOverride = 'auto'; 
+  let weeklySchedule = {
+    0: { active: true, open: '11:00', close: '21:00', name: 'Domingo' },
+    1: { active: true, open: '11:00', close: '21:00', name: 'Lunes' },
+    2: { active: true, open: '11:00', close: '21:00', name: 'Martes' },
+    3: { active: true, open: '11:00', close: '21:00', name: 'Miércoles' },
+    4: { active: true, open: '11:00', close: '21:00', name: 'Jueves' },
+    5: { active: true, open: '11:00', close: '21:00', name: 'Viernes' },
+    6: { active: true, open: '11:00', close: '21:00', name: 'Sábado' }
+  };
   let isAdminAuthenticated = false;
   let cart = [];
   let currentFilter = 'all';
@@ -442,7 +446,19 @@
 
     const now = new Date();
     const caracasHours = (now.getUTCHours() - 4 + 24) % 24;
-    return caracasHours >= 11 && caracasHours < 21;
+    const caracasMinutes = now.getUTCMinutes();
+    const currentTimeMinutes = caracasHours * 60 + caracasMinutes;
+    const currentDay = now.getDay(); // 0 = Domingo, 1 = Lunes...
+
+    const daySchedule = weeklySchedule[currentDay];
+    if (!daySchedule || !daySchedule.active) return false;
+
+    const [openH, openM] = daySchedule.open.split(':').map(Number);
+    const [closeH, closeM] = daySchedule.close.split(':').map(Number);
+    const openTimeMinutes = openH * 60 + openM;
+    const closeTimeMinutes = closeH * 60 + closeM;
+
+    return currentTimeMinutes >= openTimeMinutes && currentTimeMinutes < closeTimeMinutes;
   }
 
   function checkStoreStatus() {
@@ -470,7 +486,6 @@
     return R * c;
   }
 
-  // GEOCODIFICACIÓN INVERSA (MAPA ➔ TEXTO DE DIRECCIÓN) Y CÁLCULO DE TARIFA
   async function updateDeliveryCostFromCoords(lat, lng) {
     calculatedDistanceKm = calculateDistanceInKm(STORE_LAT, STORE_LNG, lat, lng);
     
@@ -546,6 +561,7 @@
       const bcv = data.find(s => s.key === 'bcv_rate');
       const rain = data.find(s => s.key === 'rain_mode');
       const override = data.find(s => s.key === 'store_override');
+      const schedule = data.find(s => s.key === 'weekly_schedule');
       if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
       if (rain && rain.value === 'true') {
         isRainModeActive = true;
@@ -554,6 +570,9 @@
       if (override && override.value) {
         storeOverride = override.value;
         updateOverrideButtonsUI();
+      }
+      if (schedule && schedule.value) {
+        try { weeklySchedule = JSON.parse(schedule.value); } catch(e){}
       }
     }
     document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
@@ -572,7 +591,7 @@
         category: item.category || 'Sopas, Hervidos & Parrillas',
         desc: item.description || '',
         price: Number(item.price),
-        badge: item.is_best_seller ? 'BEST SELLER' : null,
+        badge: item.badge || null,
         free_delivery: item.free_delivery || false,
         available: item.available !== false,
         img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
@@ -583,6 +602,7 @@
       renderAdminProducts();
       renderAdminCategories();
       populateCategorySelect();
+      renderWeeklyScheduleUI();
     }
   }
 
@@ -822,6 +842,48 @@
     document.getElementById('btn-override-closed').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'closed' ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-800 border-red-600'}`;
   }
 
+  function renderWeeklyScheduleUI() {
+    const container = document.getElementById('weekly-schedule-container');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    // Ordenar de Lunes (1) a Domingo (0)
+    const daysOrder = [1, 2, 3, 4, 5, 6, 0];
+    daysOrder.forEach(dayKey => {
+      const d = weeklySchedule[dayKey];
+      container.innerHTML += `
+        <div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200 text-xs">
+          <div class="flex items-center gap-2 w-28">
+            <input type="checkbox" id="sched-active-${dayKey}" ${d.active ? 'checked' : ''} class="w-4 h-4 text-amber-600 rounded">
+            <span class="font-bold text-gray-900">${d.name}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="text-[10px] text-gray-500">Apertura:</span>
+            <input type="time" id="sched-open-${dayKey}" value="${d.open}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs">
+            <span class="text-[10px] text-gray-500 ml-2">Cierre:</span>
+            <input type="time" id="sched-close-${dayKey}" value="${d.close}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs">
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  async function saveWeeklySchedule() {
+    const daysOrder = [1, 2, 3, 4, 5, 6, 0];
+    daysOrder.forEach(dayKey => {
+      const active = document.getElementById(`sched-active-${dayKey}`).checked;
+      const open = document.getElementById(`sched-open-${dayKey}`).value;
+      const close = document.getElementById(`sched-close-${dayKey}`).value;
+      weeklySchedule[dayKey].active = active;
+      weeklySchedule[dayKey].open = open;
+      weeklySchedule[dayKey].close = close;
+    });
+
+    await supabaseClient.from('settings').upsert({ key: 'weekly_schedule', value: JSON.stringify(weeklySchedule) });
+    checkStoreStatus();
+    alert('¡Horarios semanales guardados en Supabase con éxito!');
+  }
+
   async function submitOrder() {
     if (!isCaracasOpen()) return alert('El establecimiento está cerrado en este momento.');
     if (cart.length === 0) return alert('Agrega al menos un producto al pedido.');
@@ -880,7 +942,6 @@
     updateCart();
   }
 
-  // GESTIÓN DE CATEGORÍAS (CREAR Y ELIMINAR)
   function renderAdminCategories() {
     const list = document.getElementById('admin-category-list');
     if (!list) return;
@@ -930,7 +991,6 @@
     });
   }
 
-  // GESTIÓN CMS DE PRODUCTOS
   function renderAdminProducts() {
     const list = document.getElementById('admin-product-list');
     if (!list) return;
@@ -941,7 +1001,7 @@
         <div class="flex justify-between items-center bg-gray-100 p-2.5 rounded border border-gray-200">
           <div>
             <p class="font-bold text-gray-900">${p.name} - $${p.price.toFixed(2)}</p>
-            <p class="text-[10px] text-gray-500">${p.category} ${p.free_delivery ? ' | 🛵 Gratis' : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
+            <p class="text-[10px] text-gray-500">${p.category} ${p.badge ? ' | 🏷️ ' + p.badge : ''} ${p.free_delivery ? ' | 🛵 Gratis' : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
           </div>
           <div class="flex gap-1">
             <button onclick="toggleProductAvailability(${p.id})" class="${isAvailable ? 'bg-amber-600' : 'bg-emerald-600'} text-white px-2 py-1 rounded text-[10px] font-bold">${isAvailable ? 'Agotar' : 'Activar'}</button>
@@ -971,9 +1031,8 @@
     document.getElementById('edit-price').value = p.price;
     document.getElementById('edit-img').value = p.img;
     document.getElementById('edit-category').value = p.category;
+    document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
-    document.getElementById('edit-best-seller').checked = (p.badge !== null);
-    document.getElementById('edit-available').checked = p.available !== false;
     document.getElementById('visual-edit-name').innerText = p.name;
   }
 
@@ -984,22 +1043,21 @@
     const price = parseFloat(document.getElementById('edit-price').value);
     const category = document.getElementById('edit-category').value;
     const img = document.getElementById('edit-img').value.trim();
+    const badge = document.getElementById('edit-badge').value.trim() || null;
     const free_delivery = document.getElementById('edit-free-delivery').checked;
-    const is_best_seller = document.getElementById('edit-best-seller').checked;
-    const available = document.getElementById('edit-available').checked;
 
     if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
 
     if (id) {
       const { error } = await supabaseClient.from('menu_items').update({
-        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller, available
+        name, description: desc, price, category, image_url: img, badge, free_delivery
       }).eq('id', id);
 
       if (error) return alert('Error al actualizar: ' + error.message);
       alert('¡Plato actualizado con éxito!');
     } else {
       const { error } = await supabaseClient.from('menu_items').insert([{
-        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller, available
+        name, description: desc, price, category, image_url: img, badge, free_delivery, available: true
       }]);
 
       if (error) return alert('Error al crear: ' + error.message);
@@ -1015,11 +1073,10 @@
     document.getElementById('edit-desc').value = '';
     document.getElementById('edit-price').value = '';
     document.getElementById('edit-img').value = '';
+    document.getElementById('edit-badge').value = '';
     document.getElementById('edit-free-delivery').checked = false;
-    document.getElementById('edit-best-seller').checked = false;
-    document.getElementById('edit-available').checked = true;
     document.getElementById('visual-edit-name').innerText = 'Nuevo Plato';
-    alert('Llena los campos en el formulario de edición arriba y haz clic en Guardar.');
+    alert('Llena los campos en el formulario superior y haz clic en Guardar.');
   }
 
   async function deleteProduct(id) {
@@ -1032,7 +1089,6 @@
 
   function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
   
-  // SEGURIDAD ESTRICTA: Destruir sesión al cerrar el modal
   function closeAdmin() { 
     isAdminAuthenticated = false;
     document.getElementById('admin-pass').value = '';
@@ -1049,6 +1105,7 @@
       renderAdminProducts();
       renderAdminCategories();
       populateCategorySelect();
+      renderWeeklyScheduleUI();
       loadOrdersInCMS();
     } else {
       alert('Clave incorrecta');
@@ -1063,6 +1120,7 @@
     if (tab === 'orders') loadOrdersInCMS();
     if (tab === 'products') renderAdminProducts();
     if (tab === 'categories') renderAdminCategories();
+    if (tab === 'operations') renderWeeklyScheduleUI();
   }
 
   async function loadOrdersInCMS() {
