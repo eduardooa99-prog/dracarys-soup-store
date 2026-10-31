@@ -236,7 +236,7 @@
   </main>
 </div>
 
-<!-- 7. SUPER PANEL ADMIN CMS VISUAL -->
+<!-- 7. SUPER PANEL ADMIN CMS PODEROSO -->
 <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
   <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
     <div class="flex justify-between items-center border-b border-gray-200 pb-3">
@@ -255,44 +255,19 @@
     <div id="admin-panel-content" class="hidden space-y-6 text-xs">
       <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
         <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
           <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos</button>
+          <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
+          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Operaciones</button>
           <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos</button>
         </div>
       </div>
 
-      <!-- PESTAÑA: PEDIDOS EN VIVO DESDE SUPABASE -->
-      <div id="admin-tab-orders" class="space-y-4 hidden">
-        <h4 class="font-bold text-gray-900 border-b pb-2">📦 Pedidos Registrados en Tiempo Real</h4>
-        <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
-          <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
-        </div>
-      </div>
-
-      <!-- PESTAÑA: GESTIÓN DE PRODUCTOS Y CONFIGURACIÓN -->
+      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS Y DISPONIBILIDAD -->
       <div id="admin-tab-products" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-            <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
-            <div class="flex gap-2">
-              <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
-              <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar Tasa</button>
-            </div>
-          </div>
-          
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-            <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-gray-800">Modo Lluvia / Retraso:</span>
-              <button id="toggle-rain-btn" onclick="toggleRainMode()" class="px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow">Desactivado</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- GESTIÓN Y CREACIÓN DE PRODUCTOS -->
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-2">
-            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos del Menú</h4>
+            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos & Disponibilidad</h4>
             <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Plato Nuevo</button>
           </div>
           
@@ -315,22 +290,21 @@
               </div>
               <div>
                 <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
-                <select id="edit-category" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
-                  <option value="Sopas, Hervidos & Parrillas">Sopas, Hervidos & Parrillas</option>
-                  <option value="Salchipapas Mix">Salchipapas Mix</option>
-                  <option value="Bebidas & Postres">Bebidas & Postres</option>
-                </select>
+                <select id="edit-category" class="w-full border border-gray-300 p-1.5 rounded text-gray-900"></select>
               </div>
               <div>
                 <label class="block font-semibold text-gray-700 mb-1">URL Foto:</label>
                 <input type="text" id="edit-img" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
               </div>
-              <div class="flex items-center gap-4 md:col-span-2 pt-2">
+              <div class="flex items-center gap-4 md:col-span-2 pt-2 flex-wrap">
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
-                  <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery (Delivery Gratis)
+                  <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery
                 </label>
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
                   <input type="checkbox" id="edit-best-seller" class="w-4 h-4 text-amber-500 rounded"> ⭐ Best Seller
+                </label>
+                <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
+                  <input type="checkbox" id="edit-available" class="w-4 h-4 text-blue-600 rounded" checked> 🟢 Disponible para Pedidos
                 </label>
               </div>
             </div>
@@ -338,6 +312,60 @@
           </div>
 
           <div id="admin-product-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: GESTIÓN DE CATEGORÍAS -->
+      <div id="admin-tab-categories" class="space-y-4 hidden">
+        <h4 class="font-bold text-gray-900 border-b pb-2">📂 Gestión de Categorías del Menú</h4>
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+          <div class="flex gap-2">
+            <input type="text" id="new-category-name" placeholder="Nombre de la nueva categoría..." class="w-full border border-gray-300 p-2 rounded text-gray-900">
+            <button onclick="createCategory()" class="bg-black text-white px-4 py-2 rounded font-bold shadow whitespace-nowrap">+ Crear Categoría</button>
+          </div>
+          <div id="admin-category-list" class="space-y-2 mt-4 max-h-48 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: OPERACIONES, TASA Y HORARIOS -->
+      <div id="admin-tab-operations" class="space-y-6 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Tasa BCV -->
+          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+            <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
+            <div class="flex gap-2">
+              <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
+              <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar Tasa</button>
+            </div>
+          </div>
+          
+          <!-- Modo Lluvia -->
+          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+            <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-gray-800">Modo Lluvia / Retraso:</span>
+              <button id="toggle-rain-btn" onclick="toggleRainMode()" class="px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow">Desactivado</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROL MANUAL DE HORARIOS (OVERRIDE) -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+          <h4 class="font-bold text-dracarys-bronze">Control Manual de Apertura (Override):</h4>
+          <p class="text-[11px] text-gray-600">Puedes dejar que el sistema opere por su horario automático o forzar el estado de la taberna:</p>
+          <div class="flex gap-2">
+            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border border-gray-300 bg-white text-gray-800 shadow-sm">🕒 Automático (11am - 9pm)</button>
+            <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border border-emerald-600 bg-emerald-50 text-emerald-800 shadow-sm">🟢 Forzar Abierto</button>
+            <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border border-red-600 bg-red-50 text-red-800 shadow-sm">🔴 Forzar Cerrado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 4: PEDIDOS EN VIVO -->
+      <div id="admin-tab-orders" class="space-y-4 hidden">
+        <h4 class="font-bold text-gray-900 border-b pb-2">📦 Pedidos Registrados en Tiempo Real</h4>
+        <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
+          <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
         </div>
       </div>
     </div>
@@ -382,7 +410,7 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER DEFINITIVO BLINDADO Y SINCRONIZADO -->
+<!-- SCRIPT MASTER DEFINITIVO PODEROSO -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -397,6 +425,7 @@
   let products = [];
   let bcvRate = 889.25;
   let isRainModeActive = false;
+  let storeOverride = 'auto'; // 'auto', 'open', 'closed'
   let isAdminAuthenticated = false;
   let cart = [];
   let currentFilter = 'all';
@@ -408,6 +437,9 @@
   let searchTimeout = null;
 
   function isCaracasOpen() {
+    if (storeOverride === 'open') return true;
+    if (storeOverride === 'closed') return false;
+
     const now = new Date();
     const caracasHours = (now.getUTCHours() - 4 + 24) % 24;
     return caracasHours >= 11 && caracasHours < 21;
@@ -419,11 +451,11 @@
     const open = isCaracasOpen();
     if (open) {
       badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600";
-      badge.innerText = "🟢 ABIERTO";
+      badge.innerText = storeOverride === 'open' ? "🟢 ABIERTO (Forzado)" : "🟢 ABIERTO";
       if (submitBtn) submitBtn.disabled = false;
     } else {
       badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
-      badge.innerText = "🔴 CERRADO (FUERA DE HORARIO)";
+      badge.innerText = storeOverride === 'closed' ? "🔴 CERRADO (Forzado)" : "🔴 CERRADO (Fuera de Horario)";
     }
   }
 
@@ -454,7 +486,6 @@
     document.getElementById('calculated-distance-text').innerText = `${calculatedDistanceKm.toFixed(1)} km ($${calculatedDeliveryCostUSD.toFixed(2)})`;
     document.getElementById('cust-coords').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     
-    // Obtener dirección legible por Nominatim Reverse
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
       const data = await res.json();
@@ -514,15 +545,21 @@
     if (data) {
       const bcv = data.find(s => s.key === 'bcv_rate');
       const rain = data.find(s => s.key === 'rain_mode');
+      const override = data.find(s => s.key === 'store_override');
       if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
       if (rain && rain.value === 'true') {
         isRainModeActive = true;
         document.getElementById('rain-alert-bar').classList.remove('hidden');
       }
+      if (override && override.value) {
+        storeOverride = override.value;
+        updateOverrideButtonsUI();
+      }
     }
     document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
     const inputBcv = document.getElementById('input-bcv');
     if (inputBcv) inputBcv.value = bcvRate;
+    checkStoreStatus();
     updateCart();
   }
 
@@ -537,11 +574,16 @@
         price: Number(item.price),
         badge: item.is_best_seller ? 'BEST SELLER' : null,
         free_delivery: item.free_delivery || false,
+        available: item.available !== false,
         img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
       }));
     }
     renderProducts('all');
-    if (isAdminAuthenticated) renderAdminProducts();
+    if (isAdminAuthenticated) {
+      renderAdminProducts();
+      renderAdminCategories();
+      populateCategorySelect();
+    }
   }
 
   function renderCategoriesNav() {
@@ -561,19 +603,22 @@
 
     let filtered = filterCat === 'all' ? products : products.filter(p => p.category === filterCat);
     if (filtered.length === 0) {
-      grid.innerHTML = '<p class="text-gray-300 italic col-span-2 text-center py-10 bg-black/40 rounded-xl">No hay productos disponibles.</p>';
+      grid.innerHTML = '<p class="text-gray-300 italic col-span-2 text-center py-10 bg-black/40 rounded-xl">No hay productos disponibles en esta categoría.</p>';
       return;
     }
 
     filtered.forEach(p => {
       const bsPrice = (p.price * bcvRate).toFixed(2);
+      const isAvailable = p.available !== false;
+
       grid.innerHTML += `
-        <div class="dracarys-card p-4 gap-3 relative flex">
+        <div class="dracarys-card p-4 gap-3 relative flex ${!isAvailable ? 'opacity-60 bg-gray-200' : ''}">
           <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}">
           <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
             <div>
               ${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}
               ${p.free_delivery ? `<span class="bg-emerald-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🛵 DELIVERY GRATIS</span>` : ''}
+              ${!isAvailable ? `<span class="bg-red-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🔴 AGOTADO</span>` : ''}
               <h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3>
               <p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p>
             </div>
@@ -582,7 +627,10 @@
                 <span class="font-black text-gray-950 text-sm">$${p.price.toFixed(2)}</span>
                 <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
               </div>
-              <button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">+ Añadir</button>
+              ${isAvailable ? 
+                `<button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">+ Añadir</button>` :
+                `<span class="text-red-700 font-bold text-[11px]">No disponible</span>`
+              }
             </div>
           </div>
         </div>
@@ -653,7 +701,7 @@
 
   function addToCart(id) {
     const p = products.find(item => item.id === id);
-    if (!p) return;
+    if (!p || !p.available) return;
     const existing = cart.find(item => item.id === id);
     if (existing) { existing.qty += 1; } else { cart.push({ ...p, qty: 1 }); }
     updateCart();
@@ -760,6 +808,20 @@
     btn.className = isRainModeActive ? 'px-4 py-2 rounded-lg font-bold text-white bg-amber-600 shadow' : 'px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow';
   }
 
+  async function setStoreOverride(mode) {
+    storeOverride = mode;
+    await supabaseClient.from('settings').upsert({ key: 'store_override', value: mode });
+    updateOverrideButtonsUI();
+    checkStoreStatus();
+    alert(`Modo de horario cambiado a: ${mode.toUpperCase()}`);
+  }
+
+  function updateOverrideButtonsUI() {
+    document.getElementById('btn-override-auto').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'auto' ? 'bg-black text-white border-black' : 'bg-white text-gray-800 border-gray-300'}`;
+    document.getElementById('btn-override-open').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'open' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-emerald-50 text-emerald-800 border-emerald-600'}`;
+    document.getElementById('btn-override-closed').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'closed' ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-800 border-red-600'}`;
+  }
+
   async function submitOrder() {
     if (!isCaracasOpen()) return alert('El establecimiento está cerrado en este momento.');
     if (cart.length === 0) return alert('Agrega al menos un producto al pedido.');
@@ -818,25 +880,86 @@
     updateCart();
   }
 
+  // GESTIÓN DE CATEGORÍAS (CREAR Y ELIMINAR)
+  function renderAdminCategories() {
+    const list = document.getElementById('admin-category-list');
+    if (!list) return;
+    list.innerHTML = '';
+    categories.forEach((cat, index) => {
+      list.innerHTML += `
+        <div class="flex justify-between items-center bg-white p-2.5 rounded border border-gray-200">
+          <span class="font-bold text-gray-900">📂 ${cat}</span>
+          <button onclick="deleteCategory(${index})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button>
+        </div>
+      `;
+    });
+    populateCategorySelect();
+  }
+
+  function createCategory() {
+    const input = document.getElementById('new-category-name');
+    const name = input.value.trim();
+    if (!name) return alert('Ingresa un nombre para la categoría.');
+    if (categories.includes(name)) return alert('Esta categoría ya existe.');
+    categories.push(name);
+    localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+    input.value = '';
+    renderAdminCategories();
+    renderCategoriesNav();
+    alert('¡Categoría creada con éxito!');
+  }
+
+  function deleteCategory(index) {
+    if (categories.length <= 1) return alert('Debes tener al menos una categoría activa.');
+    const catName = categories[index];
+    if (!confirm(`¿Eliminar la categoría "${catName}"?`)) return;
+    categories.splice(index, 1);
+    localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+    renderAdminCategories();
+    renderCategoriesNav();
+    renderProducts(currentFilter);
+    alert('Categoría eliminada.');
+  }
+
+  function populateCategorySelect() {
+    const select = document.getElementById('edit-category');
+    if (!select) return;
+    select.innerHTML = '';
+    categories.forEach(cat => {
+      select.innerHTML += `<option value="${cat}">${cat}</option>`;
+    });
+  }
+
   // GESTIÓN CMS DE PRODUCTOS
   function renderAdminProducts() {
     const list = document.getElementById('admin-product-list');
     if (!list) return;
     list.innerHTML = '';
     products.forEach(p => {
+      const isAvailable = p.available !== false;
       list.innerHTML += `
-        <div class="flex justify-between items-center bg-gray-100 p-2 rounded border border-gray-200">
+        <div class="flex justify-between items-center bg-gray-100 p-2.5 rounded border border-gray-200">
           <div>
             <p class="font-bold text-gray-900">${p.name} - $${p.price.toFixed(2)}</p>
-            <p class="text-[10px] text-gray-500">${p.category} ${p.free_delivery ? ' | 🛵 Gratis' : ''}</p>
+            <p class="text-[10px] text-gray-500">${p.category} ${p.free_delivery ? ' | 🛵 Gratis' : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
           </div>
           <div class="flex gap-1">
+            <button onclick="toggleProductAvailability(${p.id})" class="${isAvailable ? 'bg-amber-600' : 'bg-emerald-600'} text-white px-2 py-1 rounded text-[10px] font-bold">${isAvailable ? 'Agotar' : 'Activar'}</button>
             <button onclick="selectProductToEdit(${p.id})" class="bg-black text-white px-2 py-1 rounded text-[10px] font-bold">Editar</button>
             <button onclick="deleteProduct(${p.id})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button>
           </div>
         </div>
       `;
     });
+  }
+
+  async function toggleProductAvailability(id) {
+    const p = products.find(item => item.id === id);
+    if (!p) return;
+    const newStatus = p.available === false ? true : false;
+    const { error } = await supabaseClient.from('menu_items').update({ available: newStatus }).eq('id', id);
+    if (error) return alert('Error al actualizar disponibilidad: ' + error.message);
+    loadProductsFromSupabase();
   }
 
   function selectProductToEdit(id) {
@@ -850,6 +973,7 @@
     document.getElementById('edit-category').value = p.category;
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
     document.getElementById('edit-best-seller').checked = (p.badge !== null);
+    document.getElementById('edit-available').checked = p.available !== false;
     document.getElementById('visual-edit-name').innerText = p.name;
   }
 
@@ -862,21 +986,20 @@
     const img = document.getElementById('edit-img').value.trim();
     const free_delivery = document.getElementById('edit-free-delivery').checked;
     const is_best_seller = document.getElementById('edit-best-seller').checked;
+    const available = document.getElementById('edit-available').checked;
 
     if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
 
     if (id) {
-      // Actualizar existente
       const { error } = await supabaseClient.from('menu_items').update({
-        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller
+        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller, available
       }).eq('id', id);
 
       if (error) return alert('Error al actualizar: ' + error.message);
       alert('¡Plato actualizado con éxito!');
     } else {
-      // Crear nuevo
       const { error } = await supabaseClient.from('menu_items').insert([{
-        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller
+        name, description: desc, price, category, image_url: img, free_delivery, is_best_seller, available
       }]);
 
       if (error) return alert('Error al crear: ' + error.message);
@@ -894,6 +1017,7 @@
     document.getElementById('edit-img').value = '';
     document.getElementById('edit-free-delivery').checked = false;
     document.getElementById('edit-best-seller').checked = false;
+    document.getElementById('edit-available').checked = true;
     document.getElementById('visual-edit-name').innerText = 'Nuevo Plato';
     alert('Llena los campos en el formulario de edición arriba y haz clic en Guardar.');
   }
@@ -923,6 +1047,8 @@
       document.getElementById('admin-login-box').classList.add('hidden');
       document.getElementById('admin-panel-content').classList.remove('hidden');
       renderAdminProducts();
+      renderAdminCategories();
+      populateCategorySelect();
       loadOrdersInCMS();
     } else {
       alert('Clave incorrecta');
@@ -931,9 +1057,12 @@
 
   function switchAdminTab(tab) {
     document.getElementById('admin-tab-products').classList.toggle('hidden', tab !== 'products');
+    document.getElementById('admin-tab-categories').classList.toggle('hidden', tab !== 'categories');
+    document.getElementById('admin-tab-operations').classList.toggle('hidden', tab !== 'operations');
     document.getElementById('admin-tab-orders').classList.toggle('hidden', tab !== 'orders');
     if (tab === 'orders') loadOrdersInCMS();
     if (tab === 'products') renderAdminProducts();
+    if (tab === 'categories') renderAdminCategories();
   }
 
   async function loadOrdersInCMS() {
