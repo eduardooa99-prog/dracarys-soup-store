@@ -72,15 +72,23 @@
       color: #111827;
     }
     #delivery-map {
-      height: 180px;
+      height: 190px;
       border-radius: 0.55rem;
       border: 1px solid #cbd5e1;
+    }
+    .suggestion-item:hover {
+      background-color: #f3f4f6;
     }
   </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
 
 <div>
+  <!-- AVISO CLIMÁTICO / MODO LLUVIA (DINÁMICO DESDE CMS) -->
+  <div id="rain-alert-bar" class="hidden bg-amber-600 text-white text-xs py-2 px-4 text-center font-bold shadow-lg animate-pulse">
+    🌧️ ATENCIÓN CARACAS: Debido a condiciones climáticas / lluvia, las entregas pueden presentar demoras de 20 a 30 min por seguridad de los motorizados.
+  </div>
+
   <!-- 1. TOP BAR DE ESTADO Y BCV -->
   <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2 px-4 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -136,14 +144,16 @@
           <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
         </div>
 
-        <!-- Opción de Delivery y Zonas -->
-        <div id="delivery-zone-box" class="border-t border-gray-200 pt-3 space-y-2 text-xs">
-          <label class="block font-bold text-gray-800">Zona de Envío (Caracas):</label>
-          <select id="delivery-zone-select" onchange="updateCart()" class="w-full bg-white border border-gray-300 p-2 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-            <option value="0">Centro / Libertador ($2.00)</option>
-            <option value="1.5">Chacao / Las Mercedes ($3.50)</option>
-            <option value="3">Baruta / Sucre / El Hatillo ($5.00)</option>
-          </select>
+        <!-- INDICADOR DE CÁLCULO DE DISTANCIA AUTOMÁTICO -->
+        <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-gray-900">Origen:</span>
+            <span class="text-[11px] text-gray-600">Altagracia, Caracas</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-gray-900">Distancia calculada:</span>
+            <span id="calculated-distance-text" class="font-bold text-dracarys-fire">0.0 km</span>
+          </div>
         </div>
 
         <!-- Totales -->
@@ -153,8 +163,8 @@
             <span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span>
           </div>
           <div id="delivery-cost-row" class="flex justify-between text-gray-600 text-xs">
-            <span>Envío (Delivery):</span>
-            <span id="delivery-cost-usd" class="font-bold text-gray-950">$2.00</span>
+            <span>Envío (Delivery Automático):</span>
+            <span id="delivery-cost-usd" class="font-bold text-gray-950">$0.00</span>
           </div>
           <div class="flex justify-between text-dracarys-fire font-bold text-base pt-1 border-t">
             <span>Total ($ USD):</span>
@@ -166,7 +176,7 @@
           </div>
         </div>
 
-        <!-- FORMULARIO DE CHECKOUT COMPLETO -->
+        <!-- FORMULARIO DE CHECKOUT BLINDADO -->
         <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
           <div>
             <input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
@@ -175,14 +185,18 @@
             <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04127120538) *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
           </div>
           
-          <div id="address-box" class="space-y-2">
-            <textarea id="cust-address" placeholder="Dirección Exacta de Entrega & Punto de Referencia *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none h-14"></textarea>
+          <div id="address-box" class="space-y-2 relative">
+            <label class="block font-bold text-gray-800">Dirección Exacta de Entrega *</label>
+            <input type="text" id="cust-address" oninput="handleAddressInput(this.value)" placeholder="Escribe tu zona/calle en Caracas para buscar..." class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
             
-            <!-- MAPA INTERACTIVO GRATUITO & GPS -->
-            <div class="space-y-1">
+            <!-- LISTA DESPLEGABLE DE AUTOCOMPLETADO (NOMINATIM) -->
+            <div id="address-suggestions" class="hidden absolute top-14 left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto"></div>
+
+            <!-- MAPA INTERACTIVO CON REGLA AUTOMÁTICA DE COSTOS -->
+            <div class="space-y-1 mt-2">
               <div class="flex justify-between items-center text-[10px] text-gray-600 font-semibold">
-                <span>📍 Mueve el pin en el mapa o usa GPS:</span>
-                <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar mi GPS actual</button>
+                <span>📍 Mueve el pin o usa GPS (Calcula $2 / 2km):</span>
+                <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar GPS</button>
               </div>
               <div id="delivery-map"></div>
               <input type="hidden" id="cust-coords" value="No especificado">
@@ -211,6 +225,11 @@
           <button id="btn-submit-order" onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2">
             <span>✅ Confirmar & Pagar</span>
           </button>
+
+          <!-- BOTÓN DE ATENCIÓN DIRECTA POR WHATSAPP -->
+          <a href="https://wa.me/584127120538?text=Hola,%20necesito%20asesor%C3%ADa%20con%20mi%20pedido%20en%20Dracarys%20Soup" target="_blank" class="block text-center w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded-xl shadow transition text-[11px]">
+            💬 ¿Dudas con tu ubicación o pago? Escríbenos por WhatsApp
+          </a>
         </div>
       </div>
     </aside>
@@ -238,7 +257,7 @@
         <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
         <div class="flex gap-2">
           <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos</button>
-          <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Gestión de Pedidos</button>
+          <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos</button>
         </div>
       </div>
 
@@ -252,63 +271,22 @@
 
       <!-- PESTAÑA: GESTIÓN DE PRODUCTOS Y CONFIGURACIÓN -->
       <div id="admin-tab-products" class="space-y-6">
-        <div class="flex justify-between items-center">
-          <h4 class="font-bold text-gray-800">Menú de Platos</h4>
-          <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Nuevo Plato</button>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
             <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
             <div class="flex gap-2">
               <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
-              <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar</button>
+              <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar Tasa</button>
             </div>
           </div>
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
-            <h4 class="font-bold text-dracarys-bronze">Gestión de Categorías:</h4>
-            <div class="flex gap-2">
-              <input type="text" id="new-category-input" placeholder="Nueva categoría" class="w-full bg-white border border-gray-300 p-1.5 rounded text-gray-900">
-              <button onclick="createCategory()" class="bg-black text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">+ Crear</button>
-            </div>
-            <div id="category-management-list" class="flex flex-wrap gap-1 mt-2 max-h-20 overflow-y-auto"></div>
-          </div>
-        </div>
-
-        <!-- EDITAR PLATO VISUAL -->
-        <div id="cms-edit-visual" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-          <h4 class="font-bold text-dracarys-gold border-b pb-2">✏️ EDITANDO: <span id="visual-edit-name" class="text-black font-bold">Selecciona un plato abajo</span></h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-3">
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
-                <input type="text" id="edit-name" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
-                <textarea id="edit-desc" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900 h-20"></textarea>
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Precio Regular ($):</label>
-                <input type="number" step="0.1" id="edit-price" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-              </div>
-            </div>
-            <div class="space-y-3">
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Insignia (Badge):</label>
-                <input type="text" id="edit-badge" placeholder="Ej. BEST SELLER" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">URL de la Foto:</label>
-                <input type="text" id="edit-img" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
-                <select id="edit-category" class="w-full bg-white border border-gray-300 p-2 rounded text-gray-900"></select>
-              </div>
+          
+          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+            <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-gray-800">Modo Lluvia / Retraso:</span>
+              <button id="toggle-rain-btn" onclick="toggleRainMode()" class="px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow">Desactivado</button>
             </div>
           </div>
-          <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2.5 rounded font-bold shadow mt-2">💾 Guardar Cambios en Supabase</button>
         </div>
 
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
@@ -320,7 +298,7 @@
   </div>
 </div>
 
-<!-- MODAL LEGAL Y DE CONFIANZA -->
+<!-- MODAL LEGAL -->
 <div id="legal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
   <div class="bg-white max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl">
     <div class="flex justify-between items-center border-b pb-2">
@@ -358,30 +336,34 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON SUPABASE, MAPAS Y TASA EN TIEMPO REAL -->
+<!-- SCRIPT MASTER DEFINITIVO BLINDADO -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // COORDENADAS BASE: Avenida Norte 14, Altagracia, Caracas
+  const STORE_LAT = 10.5100;
+  const STORE_LNG = -66.9150;
+
   let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
   let categories = JSON.parse(localStorage.getItem('dracarys_categories')) || defaultCategories;
   let products = [];
-  let bcvRate = 889.25; // Valor por defecto
+  let bcvRate = 889.25;
+  let isRainModeActive = false;
   let isAdminAuthenticated = false;
   let cart = [];
-  let editingProductId = null;
   let currentFilter = 'all';
   let orderType = 'Delivery';
   let deliveryMap = null;
   let deliveryMarker = null;
-  let selectedCoords = "Caracas (Centro)";
+  let calculatedDistanceKm = 0;
+  let calculatedDeliveryCostUSD = 2.00;
+  let searchTimeout = null;
 
-  // EVALUAR HORA OFICIAL DE CARACAS (UTC-4)
   function isCaracasOpen() {
     const now = new Date();
-    const utcHours = now.getUTCHours();
-    const caracasHours = (utcHours - 4 + 24) % 24;
+    const caracasHours = (now.getUTCHours() - 4 + 24) % 24;
     return caracasHours >= 11 && caracasHours < 21;
   }
 
@@ -389,7 +371,6 @@
     const badge = document.getElementById('kitchen-badge');
     const submitBtn = document.getElementById('btn-submit-order');
     const open = isCaracasOpen();
-
     if (open) {
       badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600";
       badge.innerText = "🟢 ABIERTO";
@@ -400,11 +381,88 @@
     }
   }
 
-  // CARGAR TASA BCV DESDE SUPABASE
+  // FÓRMULA HAVERSINE PARA DISTANCIA EXACTA EN KM
+  function calculateDistanceInKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
+  // CÁLCULO DE TARIFA: $2.00 CADA 2 KM ($1.00 / KM, MÍNIMO $2.00)
+  function updateDeliveryCostFromCoords(lat, lng) {
+    calculatedDistanceKm = calculateDistanceInKm(STORE_LAT, STORE_LNG, lat, lng);
+    
+    // Regla matemática: $1 por km, mínimo $2
+    let rawCost = Math.ceil(calculatedDistanceKm);
+    if (rawCost < 2) rawCost = 2;
+    calculatedDeliveryCostUSD = rawCost;
+
+    // Verificar si en el carrito hay platos con delivery gratis
+    const hasFreeDeliveryItem = cart.some(item => item.free_delivery === true);
+    if (hasFreeDeliveryItem) {
+      calculatedDeliveryCostUSD = 0.00;
+    }
+
+    document.getElementById('calculated-distance-text').innerText = `${calculatedDistanceKm.toFixed(1)} km ($${calculatedDeliveryCostUSD.toFixed(2)})`;
+    document.getElementById('cust-coords').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    updateCart();
+  }
+
+  // AUTOCOMPLETADO DE DIRECCIONES CON OPENSTREETMAP (NOMINATIM)
+  function handleAddressInput(query) {
+    clearTimeout(searchTimeout);
+    const suggestionsBox = document.getElementById('address-suggestions');
+    if (query.trim().length < 3) {
+      suggestionsBox.classList.add('hidden');
+      return;
+    }
+
+    searchTimeout = setTimeout(() => {
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Caracas, Venezuela')}&limit=5`)
+        .then(res => res.json())
+        .then(data => {
+          suggestionsBox.innerHTML = '';
+          if (data && data.length > 0) {
+            data.forEach(item => {
+              const div = document.createElement('div');
+              div.className = 'p-2 text-xs text-gray-800 cursor-pointer border-b border-gray-100 suggestion-item';
+              div.innerText = item.display_name;
+              div.onclick = () => selectAddressSuggestion(item.display_name, parseFloat(item.lat), parseFloat(item.lon));
+              suggestionsBox.appendChild(div);
+            });
+            suggestionsBox.classList.remove('hidden');
+          } else {
+            suggestionsBox.classList.add('hidden');
+          }
+        });
+    }, 400);
+  }
+
+  function selectAddressSuggestion(name, lat, lng) {
+    document.getElementById('cust-address').value = name;
+    document.getElementById('address-suggestions').classList.add('hidden');
+    if (deliveryMap && deliveryMarker) {
+      deliveryMap.setView([lat, lng], 15);
+      deliveryMarker.setLatLng([lat, lng]);
+    }
+    updateDeliveryCostFromCoords(lat, lng);
+  }
+
   async function loadSettingsFromSupabase() {
-    const { data, error } = await supabaseClient.from('settings').select('*').eq('key', 'bcv_rate').single();
-    if (data && data.value) {
-      bcvRate = parseFloat(data.value);
+    const { data } = await supabaseClient.from('settings').select('*');
+    if (data) {
+      const bcv = data.find(s => s.key === 'bcv_rate');
+      const rain = data.find(s => s.key === 'rain_mode');
+      if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
+      if (rain && rain.value === 'true') {
+        isRainModeActive = true;
+        document.getElementById('rain-alert-bar').classList.remove('hidden');
+      }
     }
     document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
     const inputBcv = document.getElementById('input-bcv');
@@ -413,10 +471,8 @@
   }
 
   async function loadProductsFromSupabase() {
-    const { data, error } = await supabaseClient.from('menu_items').select('*');
-    if (error) {
-      console.error('Error al cargar desde Supabase:', error);
-    } else if (data && data.length > 0) {
+    const { data } = await supabaseClient.from('menu_items').select('*');
+    if (data && data.length > 0) {
       products = data.map(item => ({
         id: item.id,
         name: item.name,
@@ -424,7 +480,7 @@
         desc: item.description || '',
         price: Number(item.price),
         badge: item.is_best_seller ? 'BEST SELLER' : null,
-        available: true,
+        free_delivery: item.free_delivery || false,
         img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
       }));
     }
@@ -433,9 +489,9 @@
 
   function renderCategoriesNav() {
     const navBar = document.getElementById('category-nav-bar');
-    navBar.innerHTML = `<button onclick="filterCategory('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow border border-gray-300">🔥 Todo el Menú</button>`;
+    navBar.innerHTML = `<button onclick="renderProducts('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow border border-gray-300">🔥 Todo el Menú</button>`;
     categories.forEach(cat => {
-      navBar.innerHTML += `<button onclick="filterCategory('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">${cat}</button>`;
+      navBar.innerHTML += `<button onclick="renderProducts('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">${cat}</button>`;
     });
   }
 
@@ -443,8 +499,7 @@
     currentFilter = filterCat;
     renderCategoriesNav();
     const grid = document.getElementById('catalog-grid');
-    const titleEl = document.getElementById('current-category-title');
-    titleEl.innerText = filterCat === 'all' ? '🔥 Todo el Menú' : filterCat;
+    document.getElementById('current-category-title').innerText = filterCat === 'all' ? '🔥 Todo el Menú' : filterCat;
     grid.innerHTML = '';
 
     let filtered = filterCat === 'all' ? products : products.filter(p => p.category === filterCat);
@@ -461,6 +516,7 @@
           <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
             <div>
               ${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}
+              ${p.free_delivery ? `<span class="bg-emerald-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🛵 DELIVERY GRATIS</span>` : ''}
               <h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3>
               <p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p>
             </div>
@@ -482,7 +538,7 @@
     document.getElementById('btn-delivery').className = type === 'Delivery' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
     document.getElementById('btn-pickup').className = type === 'Retiro' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
     
-    document.getElementById('delivery-zone-box').style.display = type === 'Delivery' ? 'block' : 'none';
+    document.getElementById('distance-info-box').style.display = type === 'Delivery' ? 'block' : 'none';
     document.getElementById('delivery-cost-row').style.display = type === 'Delivery' ? 'flex' : 'none';
     document.getElementById('address-box').style.display = type === 'Delivery' ? 'block' : 'none';
     updateCart();
@@ -492,32 +548,30 @@
     }
   }
 
-  // INICIALIZAR MAPA LEAFLET DE CARACAS
   function initDeliveryMap() {
     const mapContainer = document.getElementById('delivery-map');
     if (!mapContainer || deliveryMap) return;
 
-    mapContainer.style.height = "180px";
+    mapContainer.style.height = "190px";
     mapContainer.style.width = "100%";
 
-    deliveryMap = L.map('delivery-map').setView([10.4806, -66.9036], 13);
+    deliveryMap = L.map('delivery-map').setView([STORE_LAT, STORE_LNG], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap'
     }).addTo(deliveryMap);
 
-    deliveryMarker = L.marker([10.4806, -66.9036], { draggable: true }).addTo(deliveryMap);
-    
-    deliveryMarker.on('dragend', function(event) {
+    deliveryMarker = L.marker([STORE_LAT, STORE_LNG], { draggable: true }).addTo(deliveryMap);
+    updateDeliveryCostFromCoords(STORE_LAT, STORE_LNG);
+
+    deliveryMarker.on('dragend', function() {
       const pos = deliveryMarker.getLatLng();
-      selectedCoords = `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`;
-      document.getElementById('cust-coords').value = selectedCoords;
+      updateDeliveryCostFromCoords(pos.lat, pos.lng);
     });
 
     deliveryMap.on('click', function(e) {
       deliveryMarker.setLatLng(e.latlng);
-      selectedCoords = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-      document.getElementById('cust-coords').value = selectedCoords;
+      updateDeliveryCostFromCoords(e.latlng.lat, e.latlng.lng);
     });
 
     setTimeout(() => { deliveryMap.invalidateSize(); }, 200);
@@ -531,15 +585,12 @@
         if (deliveryMap && deliveryMarker) {
           deliveryMap.setView([lat, lng], 15);
           deliveryMarker.setLatLng([lat, lng]);
-          selectedCoords = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-          document.getElementById('cust-coords').value = selectedCoords;
-          alert('¡Ubicación GPS obtenida con éxito!');
+          updateDeliveryCostFromCoords(lat, lng);
+          alert('¡Ubicación GPS fijada y tarifa calculada!');
         }
       }, () => {
-        alert('No se pudo obtener la ubicación GPS automáticamente. Puedes mover el pin manualmente en el mapa.');
+        alert('No se pudo obtener el GPS automáticamente. Puedes mover el marcador en el mapa.');
       });
-    } else {
-      alert('Tu navegador no soporta geolocalización.');
     }
   }
 
@@ -547,19 +598,13 @@
     const p = products.find(item => item.id === id);
     if (!p) return;
     const existing = cart.find(item => item.id === id);
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ ...p, qty: 1 });
-    }
+    if (existing) { existing.qty += 1; } else { cart.push({ ...p, qty: 1 }); }
     updateCart();
   }
 
   function changeQty(index, delta) {
     cart[index].qty += delta;
-    if (cart[index].qty <= 0) {
-      cart.splice(index, 1);
-    }
+    if (cart[index].qty <= 0) cart.splice(index, 1);
     updateCart();
   }
 
@@ -571,6 +616,7 @@
     if (cart.length === 0) {
       container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>';
       document.getElementById('subtotal-usd').innerText = '$0.00';
+      document.getElementById('delivery-cost-usd').innerText = '$0.00';
       document.getElementById('total-usd').innerText = '$0.00';
       document.getElementById('total-bs').innerText = '0.00 Bs';
       return;
@@ -579,8 +625,7 @@
     container.innerHTML = '';
     let subtotal = 0;
     cart.forEach((item, index) => {
-      const itemTotal = item.price * item.qty;
-      subtotal += itemTotal;
+      subtotal += item.price * item.qty;
       container.innerHTML += `
         <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
           <div class="pr-2 truncate max-w-[150px]">
@@ -596,12 +641,13 @@
       `;
     });
 
-    const deliveryCost = orderType === 'Delivery' ? parseFloat(document.getElementById('delivery-zone-select').value) : 0;
-    const totalUSD = subtotal + deliveryCost;
+    const hasFreeDelivery = cart.some(item => item.free_delivery === true);
+    const finalDelivery = (orderType === 'Delivery' && !hasFreeDelivery) ? calculatedDeliveryCostUSD : 0.00;
+    const totalUSD = subtotal + finalDelivery;
     const totalBS = totalUSD * bcvRate;
 
     document.getElementById('subtotal-usd').innerText = `$${subtotal.toFixed(2)}`;
-    document.getElementById('delivery-cost-usd').innerText = `$${deliveryCost.toFixed(2)}`;
+    document.getElementById('delivery-cost-usd').innerText = hasFreeDelivery && orderType === 'Delivery' ? '¡EXONERADO ($0.00)!' : `$${finalDelivery.toFixed(2)}`;
     document.getElementById('total-usd').innerText = `$${totalUSD.toFixed(2)}`;
     document.getElementById('total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
   }
@@ -638,30 +684,27 @@
     }
   }
 
-  // GUARDAR TASA BCV EN SUPABASE DESDE EL CMS
   async function saveGeneralSettings() {
     const newRate = parseFloat(document.getElementById('input-bcv').value);
     if (isNaN(newRate)) return alert('Ingresa una tasa válida.');
-
-    const { error } = await supabaseClient
-      .from('settings')
-      .upsert({ key: 'bcv_rate', value: newRate.toString() });
-
-    if (error) {
-      alert('Error al guardar en Supabase: ' + error.message);
-    } else {
-      bcvRate = newRate;
-      document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
-      renderProducts(currentFilter);
-      alert('¡Tasa BCV actualizada en tiempo real para todos los dispositivos!');
-    }
+    await supabaseClient.from('settings').upsert({ key: 'bcv_rate', value: newRate.toString() });
+    bcvRate = newRate;
+    document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
+    renderProducts(currentFilter);
+    alert('¡Tasa BCV actualizada en tiempo real!');
   }
 
-  // SUBMIT DE PEDIDO A SUPABASE Y WHATSAPP
+  async function toggleRainMode() {
+    isRainModeActive = !isRainModeActive;
+    await supabaseClient.from('settings').upsert({ key: 'rain_mode', value: isRainModeActive.toString() });
+    document.getElementById('rain-alert-bar').classList.toggle('hidden', !isRainModeActive);
+    const btn = document.getElementById('toggle-rain-btn');
+    btn.innerText = isRainModeActive ? '🟢 ACTIVADO' : 'Desactivado';
+    btn.className = isRainModeActive ? 'px-4 py-2 rounded-lg font-bold text-white bg-amber-600 shadow' : 'px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow';
+  }
+
   async function submitOrder() {
-    if (!isCaracasOpen()) {
-      return alert('Lo sentimos, el establecimiento está cerrado en este momento.');
-    }
+    if (!isCaracasOpen()) return alert('El establecimiento está cerrado en este momento.');
     if (cart.length === 0) return alert('Agrega al menos un producto al pedido.');
     
     const name = document.getElementById('cust-name').value.trim();
@@ -670,15 +713,14 @@
     const coords = document.getElementById('cust-coords').value;
     const method = document.getElementById('pay-method').value;
     const ref = document.getElementById('pay-ref').value.trim();
-    const zoneSelect = document.getElementById('delivery-zone-select');
-    const zoneName = zoneSelect.options[zoneSelect.selectedIndex].text;
 
-    if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono de WhatsApp.');
-    if (orderType === 'Delivery' && !address) return alert('Ingresa la dirección exacta de entrega.');
+    if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono.');
+    if (orderType === 'Delivery' && !address) return alert('Ingresa tu dirección de entrega.');
     if (!ref) return alert('Por favor ingresa el número de referencia del pago.');
 
     const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-    const deliveryCost = orderType === 'Delivery' ? parseFloat(zoneSelect.value) : 0;
+    const hasFreeDelivery = cart.some(item => item.free_delivery === true);
+    const deliveryCost = (orderType === 'Delivery' && !hasFreeDelivery) ? calculatedDeliveryCostUSD : 0;
     const totalUSD = subtotal + deliveryCost;
     const totalBS = totalUSD * bcvRate;
 
@@ -686,8 +728,8 @@
       customer_name: name,
       phone: phone,
       order_type: orderType,
-      delivery_zone: orderType === 'Delivery' ? zoneName : 'N/A',
-      delivery_address: orderType === 'Delivery' ? `${address} [Coordenadas GPS: ${coords}]` : 'Retiro en Local',
+      delivery_zone: orderType === 'Delivery' ? `Distancia: ${calculatedDistanceKm.toFixed(1)} km` : 'N/A',
+      delivery_address: orderType === 'Delivery' ? `${address} [Coords: ${coords}]` : 'Retiro en Local',
       items: cart,
       total_usd: totalUSD,
       total_bs: totalBS,
@@ -696,17 +738,15 @@
       status: 'Recibido'
     }]);
 
-    if (error) {
-      alert('Error al registrar pedido en la base de datos: ' + error.message);
-      return;
-    }
+    if (error) return alert('Error al guardar en base de datos: ' + error.message);
 
     let summary = `🛒 *¡NUEVO PEDIDO DRACARYS!*\n`;
     summary += `👤 *Cliente:* ${name}\n`;
     summary += `📱 *Teléfono:* ${phone}\n`;
-    summary += `🛵 *Modalidad:* ${orderType} (${orderType === 'Delivery' ? zoneName : 'Retiro'})\n`;
+    summary += `🛵 *Modalidad:* ${orderType}\n`;
     if (orderType === 'Delivery') {
       summary += `📍 *Dirección:* ${address}\n`;
+      summary += `📏 *Distancia Real:* ${calculatedDistanceKm.toFixed(1)} km\n`;
       summary += `🗺️ *Google Maps:* https://maps.google.com/?q=${coords}\n`;
     }
     summary += `💳 *Método de Pago:* ${method} (Ref: ${ref})\n\n`;
@@ -715,15 +755,12 @@
     summary += `\n💵 *Total USD:* $${totalUSD.toFixed(2)}\n`;
     summary += `🇻🇪 *Total Bs (BCV):* ${totalBS.toFixed(2)} Bs`;
 
-    const waUrl = `https://wa.me/584127120538?text=${encodeURIComponent(summary)}`;
-    window.open(waUrl, '_blank');
-
-    alert(`¡Pedido registrado exitosamente en la taberna!\nRedirigiendo a WhatsApp para confirmar...`);
+    window.open(`https://wa.me/584127120538?text=${encodeURIComponent(summary)}`, '_blank');
+    alert('¡Pedido registrado! Redirigiendo a WhatsApp...');
     cart = [];
     updateCart();
   }
 
-  // CMS ADMIN
   function openAdmin() { document.getElementById('admin-modal').classList.remove('hidden'); }
   function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
@@ -732,7 +769,6 @@
       isAdminAuthenticated = true;
       document.getElementById('admin-login-box').classList.add('hidden');
       document.getElementById('admin-panel-content').classList.remove('hidden');
-      renderAdminProducts();
       loadOrdersInCMS();
     } else {
       alert('Clave incorrecta');
@@ -747,18 +783,11 @@
 
   async function loadOrdersInCMS() {
     const container = document.getElementById('orders-list-container');
-    const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
-
-    if (error || !data) {
-      container.innerHTML = '<p class="text-red-500 text-center">Error al cargar pedidos.</p>';
-      return;
-    }
-
-    if (data.length === 0) {
+    const { data } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
+    if (!data || data.length === 0) {
       container.innerHTML = '<p class="text-gray-500 text-center py-4">No hay pedidos registrados aún.</p>';
       return;
     }
-
     container.innerHTML = '';
     data.forEach(o => {
       container.innerHTML += `
@@ -771,7 +800,6 @@
             <p><strong>Teléfono:</strong> ${o.phone} | <strong>Tipo:</strong> ${o.order_type}</p>
             <p><strong>Dirección:</strong> ${o.delivery_address}</p>
             <p><strong>Pago:</strong> ${o.payment_method} (Ref: ${o.payment_ref})</p>
-            <p><strong>Estado Actual:</strong> <span class="font-bold text-blue-700">${o.status}</span></p>
           </div>
         </div>
       `;
@@ -780,25 +808,19 @@
 
   function showLegalModal(type) {
     const modal = document.getElementById('legal-modal');
-    const title = document.getElementById('legal-modal-title');
     const body = document.getElementById('legal-modal-body');
-
     if (type === 'delivery') {
-      title.innerText = '🛵 Políticas de Delivery & Envíos';
-      body.innerHTML = '<p>Nuestros despachos en Caracas se ejecutan en horarios de 11:00 AM a 9:00 PM. El costo de envío se establece según la zona geográfica seleccionada al pagar.</p>';
+      body.innerHTML = '<p>Delivery calculado en tiempo real mediante geolocalización desde Altagracia a razón de $2.00 cada 2 km.</p>';
     } else if (type === 'freshness') {
-      title.innerText = '🌿 Garantía de Frescura & Alérgenos';
-      body.innerHTML = '<p>Nuestras sopas y hervidos son elaborados a la leña diariamente con ingredientes 100% frescos. Si posee alguna alergia severa, por favor indíquelo en las notas de su pedido.</p>';
+      body.innerHTML = '<p>Sopas y parrillas elaboradas al momento a la leña con ingredientes frescos.</p>';
     } else {
-      title.innerText = '📋 Términos del Servicio';
-      body.innerHTML = '<p>Dracarys C.A. garantiza la preparación e higienización de cada platillo. Los pagos realizados vía Pago Móvil, Wally o Binance Pay son verificados manualmente por nuestro personal.</p>';
+      body.innerHTML = '<p>Pagos verificados manualmente contra referencia en Pago Móvil, Wally y Binance.</p>';
     }
     modal.classList.remove('hidden');
   }
 
   function closeLegalModal() { document.getElementById('legal-modal').classList.add('hidden'); }
 
-  // INICIALIZACIÓN GLOBAL
   loadSettingsFromSupabase();
   loadProductsFromSupabase();
   checkStoreStatus();
