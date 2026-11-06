@@ -251,6 +251,7 @@
           <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
             <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
             <input type="hidden" id="edit-id">
+            <input type="hidden" id="edit-img"> <!-- Almacena la URL o imagen en Base64 -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="md:col-span-2">
                 <label class="block font-semibold text-gray-700 mb-1">Nombre:</label>
@@ -277,8 +278,8 @@
                 <textarea id="edit-desc" class="w-full border border-gray-300 p-1.5 rounded text-gray-950 h-16"></textarea>
               </div>
               <div class="md:col-span-3">
-                <label class="block font-semibold text-gray-700 mb-1">URL Foto:</label>
-                <input type="text" id="edit-img" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                <label class="block font-semibold text-gray-700 mb-1">📷 Foto del Plato (Seleccionar archivo):</label>
+                <input type="file" id="edit-img-file" accept="image/*" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-dracarys-fire file:text-white hover:file:bg-orange-600">
               </div>
               <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-3">
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
@@ -1023,7 +1024,8 @@
     document.getElementById('edit-desc').value = p.desc;
     document.getElementById('edit-price').value = p.price;
     document.getElementById('edit-old-price').value = p.old_price || '';
-    document.getElementById('edit-img').value = p.img;
+    document.getElementById('edit-img').value = p.img || '';
+    document.getElementById('edit-img-file').value = ''; // Limpiar selector de archivo
     document.getElementById('edit-category').value = p.category;
     document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
@@ -1037,9 +1039,21 @@
     const price = parseFloat(document.getElementById('edit-price').value);
     const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
     const category = document.getElementById('edit-category').value;
-    const img = document.getElementById('edit-img').value.trim();
     const badge = document.getElementById('edit-badge').value.trim() || null;
     const free_delivery = document.getElementById('edit-free-delivery').checked;
+
+    let img = document.getElementById('edit-img').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
+
+    // Si se seleccionó un archivo de imagen nuevo, se convierte a Base64 automáticamente
+    const fileInput = document.getElementById('edit-img-file');
+    if (fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      img = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
+    }
 
     if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
 
@@ -1069,10 +1083,11 @@
     document.getElementById('edit-price').value = '';
     document.getElementById('edit-old-price').value = '';
     document.getElementById('edit-img').value = '';
+    document.getElementById('edit-img-file').value = '';
     document.getElementById('edit-badge').value = '';
     document.getElementById('edit-free-delivery').checked = false;
     document.getElementById('visual-edit-name').innerText = 'Nuevo Plato';
-    alert('Llena los campos en el formulario superior y haz clic en Guardar.');
+    alert('Llena los campos y selecciona tu foto de archivo en el formulario superior, luego haz clic en Guardar.');
   }
 
   async function deleteProduct(id) {
@@ -1083,7 +1098,6 @@
     alert('Plato eliminado.');
   }
 
-  // --- FUNCIÓN CORREGIDA PARA ABRIR EL ADMIN ---
   function openAdmin() { 
     const modal = document.getElementById('admin-modal');
     modal.classList.remove('hidden');
