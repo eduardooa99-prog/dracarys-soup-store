@@ -79,9 +79,12 @@
     .suggestion-item:hover {
       background-color: #f3f4f6;
     }
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col justify-between">
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between pb-16 lg:pb-0">
 
 <div>
   <!-- AVISO CLIMÁTICO / MODO LLUVIA (DINÁMICO DESDE CMS) -->
@@ -111,10 +114,6 @@
       <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">BIENVENIDOS</h1>
       <p class="font-serif italic text-base md:text-lg mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
       <div class="separator w-48 mx-auto my-4"></div>
-      <div class="bg-white/80 p-1.5 rounded-xl border border-gray-300 flex gap-2 shadow-sm mt-1">
-        <button id="btn-delivery" onclick="setOrderType('Delivery')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
-        <button id="btn-pickup" onclick="setOrderType('Retiro')" class="px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
-      </div>
     </div>
   </header>
 
@@ -132,13 +131,20 @@
     </section>
 
     <!-- 6. CHECKOUT Y CARRITO EN VIVO -->
-    <aside class="space-y-6">
+    <aside id="cart-section" class="space-y-6">
       <div class="dracarys-card p-6 sticky top-28">
         <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
           <span>🛒 Tu Pedido</span>
           <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
         </h2>
-        <div id="cart-items" class="py-4 space-y-3 max-h-60 overflow-y-auto text-xs">
+
+        <!-- SELECTOR DE TIPO DE PEDIDO (DELIVERY / RETIRO) DENTRO DEL CARRITO -->
+        <div class="bg-gray-100 p-1.5 rounded-xl border border-gray-300 flex gap-2 my-4">
+          <button id="btn-delivery" onclick="setOrderType('Delivery')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
+          <button id="btn-pickup" onclick="setOrderType('Retiro')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
+        </div>
+
+        <div id="cart-items" class="py-2 space-y-3 max-h-60 overflow-y-auto text-xs">
           <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
         </div>
         <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
@@ -213,6 +219,18 @@
   </main>
 </div>
 
+<!-- BARRA FLOTANTE FIJA PARA MÓVILES -->
+<div id="mobile-cart-bar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-black/95 border-t border-dracarys-gold p-3 z-40 flex justify-between items-center shadow-2xl">
+  <div>
+    <p class="text-[10px] text-gray-400">Total acumulado:</p>
+    <p class="font-bold text-dracarys-gold text-sm"><span id="mobile-total-usd">$0.00</span> <span class="text-xs text-gray-300">(<span id="mobile-total-bs">0.00 Bs</span>)</span></p>
+  </div>
+  <button onclick="scrollToCart()" class="bg-dracarys-fire hover:bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-lg">
+    <span>🛒 Ver Pedido</span>
+    <span id="mobile-cart-badge" class="bg-white text-dracarys-fire px-2 py-0.5 rounded-full font-extrabold text-[10px]">0</span>
+  </button>
+</div>
+
 <!-- 7. SUPER PANEL ADMIN CMS OMNIPOTENTE -->
 <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
   <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
@@ -251,7 +269,7 @@
           <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
             <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
             <input type="hidden" id="edit-id">
-            <input type="hidden" id="edit-img"> <!-- Almacena la URL o imagen en Base64 -->
+            <input type="hidden" id="edit-img">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div class="md:col-span-2">
                 <label class="block font-semibold text-gray-700 mb-1">Nombre:</label>
@@ -406,8 +424,7 @@
   const STORE_LAT = 10.5100;
   const STORE_LNG = -66.9150;
 
-  let defaultCategories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
-  let categories = JSON.parse(localStorage.getItem('dracarys_categories')) || defaultCategories;
+  let categories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
   let products = [];
   let bcvRate = 889.25;
   let isRainModeActive = false;
@@ -430,6 +447,13 @@
   let calculatedDistanceKm = 0;
   let calculatedDeliveryCostUSD = 2.00;
   let searchTimeout = null;
+
+  function scrollToCart() {
+    const cartElement = document.getElementById('cart-section');
+    if (cartElement) {
+      cartElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   function isCaracasOpen() {
     if (storeOverride === 'open') return true;
@@ -553,6 +577,8 @@
       const rain = data.find(s => s.key === 'rain_mode');
       const override = data.find(s => s.key === 'store_override');
       const schedule = data.find(s => s.key === 'weekly_schedule');
+      const catData = data.find(s => s.key === 'categories');
+
       if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
       if (rain && rain.value === 'true') {
         isRainModeActive = true;
@@ -565,10 +591,15 @@
       if (schedule && schedule.value) {
         try { weeklySchedule = JSON.parse(schedule.value); } catch(e){}
       }
+      if (catData && catData.value) {
+        try { categories = JSON.parse(catData.value); } catch(e){}
+      }
     }
     document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
     const inputBcv = document.getElementById('input-bcv');
     if (inputBcv) inputBcv.value = bcvRate;
+    
+    renderCategoriesNav();
     checkStoreStatus();
     updateCart();
   }
@@ -655,8 +686,8 @@
 
   function setOrderType(type) {
     orderType = type;
-    document.getElementById('btn-delivery').className = type === 'Delivery' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
-    document.getElementById('btn-pickup').className = type === 'Retiro' ? 'px-5 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'px-5 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
+    document.getElementById('btn-delivery').className = type === 'Delivery' ? 'flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
+    document.getElementById('btn-pickup').className = type === 'Retiro' ? 'flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
     
     document.getElementById('distance-info-box').style.display = type === 'Delivery' ? 'block' : 'none';
     document.getElementById('delivery-cost-row').style.display = type === 'Delivery' ? 'flex' : 'none';
@@ -732,6 +763,7 @@
     const container = document.getElementById('cart-items');
     const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
     document.getElementById('cart-badge').innerText = totalQty;
+    document.getElementById('mobile-cart-badge').innerText = totalQty;
 
     if (cart.length === 0) {
       container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>';
@@ -739,6 +771,8 @@
       document.getElementById('delivery-cost-usd').innerText = '$0.00';
       document.getElementById('total-usd').innerText = '$0.00';
       document.getElementById('total-bs').innerText = '0.00 Bs';
+      document.getElementById('mobile-total-usd').innerText = '$0.00';
+      document.getElementById('mobile-total-bs').innerText = '0.00 Bs';
       return;
     }
 
@@ -770,6 +804,9 @@
     document.getElementById('delivery-cost-usd').innerText = hasFreeDelivery && orderType === 'Delivery' ? '¡EXONERADO ($0.00)!' : `$${finalDelivery.toFixed(2)}`;
     document.getElementById('total-usd').innerText = `$${totalUSD.toFixed(2)}`;
     document.getElementById('total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
+
+    document.getElementById('mobile-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
+    document.getElementById('mobile-total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
   }
 
   function updatePaymentInfo() {
@@ -951,25 +988,37 @@
     populateCategorySelect();
   }
 
-  function createCategory() {
+  async function createCategory() {
     const input = document.getElementById('new-category-name');
     const name = input.value.trim();
     if (!name) return alert('Ingresa un nombre para la categoría.');
     if (categories.includes(name)) return alert('Esta categoría ya existe.');
+    
     categories.push(name);
-    localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+    
+    // Guardar en Supabase para sincronización global
+    const { error } = await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
+    if (error) {
+      alert('Error al guardar categoría en Supabase: ' + error.message);
+      return;
+    }
+
     input.value = '';
     renderAdminCategories();
     renderCategoriesNav();
-    alert('¡Categoría creada con éxito!');
+    alert('¡Categoría creada y sincronizada globalmente!');
   }
 
-  function deleteCategory(index) {
+  async function deleteCategory(index) {
     if (categories.length <= 1) return alert('Debes tener al menos una categoría activa.');
     const catName = categories[index];
     if (!confirm(`¿Eliminar la categoría "${catName}"?`)) return;
+    
     categories.splice(index, 1);
-    localStorage.setItem('dracarys_categories', JSON.stringify(categories));
+    
+    // Sincronizar actualización en Supabase
+    await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
+    
     renderAdminCategories();
     renderCategoriesNav();
     renderProducts(currentFilter);
@@ -1025,7 +1074,7 @@
     document.getElementById('edit-price').value = p.price;
     document.getElementById('edit-old-price').value = p.old_price || '';
     document.getElementById('edit-img').value = p.img || '';
-    document.getElementById('edit-img-file').value = ''; // Limpiar selector de archivo
+    document.getElementById('edit-img-file').value = '';
     document.getElementById('edit-category').value = p.category;
     document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
@@ -1044,7 +1093,6 @@
 
     let img = document.getElementById('edit-img').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
 
-    // Si se seleccionó un archivo de imagen nuevo, se convierte a Base64 automáticamente
     const fileInput = document.getElementById('edit-img-file');
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
@@ -1188,7 +1236,7 @@
     const modal = document.getElementById('legal-modal');
     const body = document.getElementById('legal-modal-body');
     if (type === 'delivery') {
-      body.innerHTML = '<p>Delivery calculado en tiempo real mediante geolocalización desde Altagracia a razón de $2.00 cada 2 km.</p>';
+      body.innerHTML = '<p>Delivery calculated en tiempo real mediante geolocalización desde Altagracia a razón de $2.00 cada 2 km.</p>';
     } else if (type === 'freshness') {
       body.innerHTML = '<p>Sopas y parrillas elaboradas al momento a la leña con ingredientes frescos.</p>';
     } else {
