@@ -87,12 +87,12 @@
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between pb-16 lg:pb-0">
 
 <div>
-  <!-- AVISO CLIMÁTICO / MODO LLUVIA (DINÁMICO DESDE CMS) -->
+  <!-- AVISO CLIMÁTICO / MODO LLUVIA -->
   <div id="rain-alert-bar" class="hidden bg-amber-600 text-white text-xs py-2 px-4 text-center font-bold shadow-lg animate-pulse">
     🌧️ ATENCIÓN CARACAS: Debido a condiciones climáticas / lluvia, las entregas pueden presentar demoras de 20 a 30 min por seguridad de los motorizados.
   </div>
 
-  <!-- 1. TOP BAR DE ESTADO Y BCV (SIN BOTÓN CMS VISIBLE) -->
+  <!-- 1. TOP BAR DE ESTADO Y BCV -->
   <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2.5 px-4 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
@@ -251,7 +251,10 @@
     <!-- CONTENIDO CMS CON NAVEGACIÓN DE PESTAÑAS -->
     <div id="admin-panel-content" class="hidden space-y-6 text-xs">
       <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
-        <span class="font-cinzel font-bold text-amber-900">🔒 Sesión Autenticada</span>
+        <div class="flex items-center gap-2">
+          <span class="font-cinzel font-bold text-amber-900">🔒 Sesión Autenticada</span>
+          <span id="alarm-status-indicator" class="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">🔔 Alarma Activa</span>
+        </div>
         <div class="flex gap-2 flex-wrap">
           <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos & Orden</button>
           <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
@@ -260,7 +263,7 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS, ORDEN NUMÉRICO Y DISPONIBILIDAD -->
+      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS -->
       <div id="admin-tab-products" class="space-y-6">
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-2">
@@ -271,7 +274,6 @@
           <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
             <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
             <input type="hidden" id="edit-id">
-            <input type="hidden" id="edit-img">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div class="md:col-span-2">
                 <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
@@ -302,8 +304,8 @@
                 <textarea id="edit-desc" class="w-full border border-gray-300 p-1.5 rounded text-gray-950 h-16"></textarea>
               </div>
               <div class="md:col-span-4">
-                <label class="block font-semibold text-gray-700 mb-1">📷 URL de Foto o Enlace Imagen:</label>
-                <input type="text" id="edit-img-url" placeholder="https://..." class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs">
+                <label class="block font-semibold text-gray-700 mb-1">📷 URL de Supabase Storage (Ej. https://...):</label>
+                <input type="text" id="edit-img-url" placeholder="Pega aquí el enlace público de tu imagen en Supabase" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs">
               </div>
               <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-4">
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
@@ -330,7 +332,7 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 3: OPERACIONES, TASA, CLIMA Y HORARIOS -->
+      <!-- PESTAÑA 3: OPERACIONES, TASA Y HORARIOS -->
       <div id="admin-tab-operations" class="space-y-6 hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
@@ -366,9 +368,12 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 4: PEDIDOS CON CICLO DE VIDA (ESTATUS) -->
+      <!-- PESTAÑA 4: PEDIDOS CON ALARMA Y CICLO DE VIDA -->
       <div id="admin-tab-orders" class="space-y-4 hidden">
-        <h4 class="font-bold text-gray-900 border-b pb-2">📦 Gestión & Ciclo de Vida de Pedidos</h4>
+        <div class="flex justify-between items-center border-b pb-2">
+          <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
+          <button onclick="stopAdminAlarm()" class="bg-amber-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-amber-700">🔕 Silenciar Alarma</button>
+        </div>
         <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
           <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
         </div>
@@ -388,7 +393,7 @@
   </div>
 </div>
 
-<!-- 8. FOOTER PROFESIONAL (CON ACCESO PRIVADO AL CMS Y DATOS OFICIALES) -->
+<!-- 8. FOOTER PROFESIONAL CON ACCESO DISCRETO AL CMS -->
 <footer class="bg-black text-gray-400 py-10 px-4 mt-16 border-t border-dracarys-border text-xs">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
     <div class="space-y-2">
@@ -413,14 +418,13 @@
       <p class="mt-2"><a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram: @dracarysoup</a></p>
       <p class="text-[10px] text-gray-600 mt-4">
         © 2026 Dracarys Soup. Todos los derechos reservados. | 
-        <!-- ACCESO DISCRETO AL CMS PARA EDUARDO -->
         <button onclick="openAdmin()" class="text-gray-700 hover:text-gray-400 transition underline cursor-pointer">Administración</button>
       </p>
     </div>
   </div>
 </footer>
 
-<!-- SCRIPT MASTER DEFINITIVO -->
+<!-- SCRIPT MASTER CON ALARMA SONORA ADMIN Y TIEMPO REAL -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -452,6 +456,62 @@
   let calculatedDistanceKm = 0;
   let calculatedDeliveryCostUSD = 2.00;
   let searchTimeout = null;
+
+  // SINTETIZADOR DE ALARMA SONORA (SOLO PARA ADMIN)
+  let audioCtx = null;
+  let alarmInterval = null;
+
+  function playAdminBeep() {
+    if (!isAdminAuthenticated) return; // LOS CLIENTES NUNCA ESCUCHAN NADA
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tono agudo de alerta
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6); // Dura 0.6s
+    } catch(e) {
+      console.log('Audio no soportado automáticamente', e);
+    }
+  }
+
+  function startAdminAlarm() {
+    if (alarmInterval || !isAdminAuthenticated) return;
+    playAdminBeep();
+    alarmInterval = setInterval(() => {
+      playAdminBeep();
+    }, 1500); // Pitido cada 1.5 segundos hasta que el admin lo detenga
+  }
+
+  function stopAdminAlarm() {
+    if (alarmInterval) {
+      clearInterval(alarmInterval);
+      alarmInterval = null;
+    }
+  }
+
+  // SUSCRIPCIÓN EN TIEMPO REAL A NUEVOS PEDIDOS (SUPABASE REALTIME)
+  function initRealtimeOrders() {
+    supabaseClient
+      .channel('public:orders')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, payload => {
+        if (isAdminAuthenticated) {
+          startAdminAlarm();
+          loadOrdersInCMS();
+          alert('🚨 ¡Nuevo pedido recibido en la Taberna!');
+        }
+      })
+      .subscribe();
+  }
 
   function scrollToCart() {
     const cartElement = document.getElementById('cart-section');
@@ -626,7 +686,6 @@
         img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
       }));
 
-      // Ordenar productos por número de secuencia
       products.sort((a, b) => a.sort_order - b.sort_order);
     }
     renderProducts('all');
@@ -945,7 +1004,6 @@
     const totalUSD = subtotal + deliveryCost;
     const totalBS = totalUSD * bcvRate;
 
-    // ESTE ES EL ENLACE EXACTO OFICIAL DE GOOGLE MAPS QUE SÍ ABRE EL PIN EN CARACAS
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords)}`;
 
     const { error } = await supabaseClient.from('orders').insert([{
@@ -1147,6 +1205,7 @@
   
   function closeAdmin() { 
     isAdminAuthenticated = false;
+    stopAdminAlarm();
     document.getElementById('admin-pass').value = '';
     document.getElementById('admin-login-box').classList.remove('hidden');
     document.getElementById('admin-panel-content').classList.add('hidden');
@@ -1184,6 +1243,7 @@
   async function updateOrderStatus(orderId, newStatus) {
     const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
     if (error) return alert('Error al actualizar estatus: ' + error.message);
+    stopAdminAlarm(); // Silenciar alarma al interactuar con el pedido
     loadOrdersInCMS();
   }
 
@@ -1267,6 +1327,7 @@
   loadProductsFromSupabase();
   checkStoreStatus();
   updatePaymentInfo();
+  initRealtimeOrders(); // Activar escucha de nuevos pedidos en tiempo real
   setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
   setInterval(checkStoreStatus, 60000);
 </script>
