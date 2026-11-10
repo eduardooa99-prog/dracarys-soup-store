@@ -368,7 +368,7 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 4: PEDIDOS CON ALARMA Y CICLO DE VIDA -->
+      <!-- PESTAÑA 4: PEDIDOS CON ALARMA E INTELIGENCIA INFALIBLE -->
       <div id="admin-tab-orders" class="space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-2">
           <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
@@ -427,7 +427,7 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON DESBLOQUEO DE AUDIO Y ALARMA SONORA -->
+<!-- SCRIPT MASTER CON ESCANEO AUTOMÁTICO (POLLING) Y ALARMA INFALIBLE -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -463,6 +463,7 @@
   // SINTETIZADOR DE ALARMA SONORA (SOLO PARA ADMIN)
   let audioCtx = null;
   let alarmInterval = null;
+  let lastKnownMaxOrderId = 0;
 
   function playAdminBeep() {
     if (!isAdminAuthenticated) return; // LOS CLIENTES NUNCA ESCUCHAN NADA
@@ -492,7 +493,7 @@
     playAdminBeep();
     alarmInterval = setInterval(() => {
       playAdminBeep();
-    }, 1500); // Pitido cada 1.5 segundos hasta que el admin lo detenga o presione Recibido
+    }, 1500); // Pitido cada 1.5 segundos hasta que el admin presione recibir o silenciar
   }
 
   function stopAdminAlarm() {
@@ -502,18 +503,22 @@
     }
   }
 
-  // SUSCRIPCIÓN EN TIEMPO REAL A NUEVOS PEDIDOS (SUPABASE REALTIME)
-  function initRealtimeOrders() {
-    supabaseClient
-      .channel('public:orders')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, payload => {
-        if (isAdminAuthenticated) {
+  // SISTEMA INFALIBLE DE DETECCIÓN AUTOMÁTICA (POLLING CADA 8 SEGUNDOS)
+  async function pollForNewOrders() {
+    if (!isAdminAuthenticated) return;
+    try {
+      const { data, error } = await supabaseClient.from('orders').select('id').order('id', { ascending: false }).limit(1);
+      if (data && data.length > 0) {
+        const currentMaxId = data[0].id;
+        if (lastKnownMaxOrderId === 0) {
+          lastKnownMaxOrderId = currentMaxId; // Sincroniza al abrir el panel
+        } else if (currentMaxId > lastKnownMaxOrderId) {
+          lastKnownMaxOrderId = currentMaxId;
           startAdminAlarm();
           loadOrdersInCMS();
-          alert('🚨 ¡Nuevo pedido recibido en la Taberna!');
         }
-      })
-      .subscribe();
+      }
+    } catch(e) {}
   }
 
   function scrollToCart() {
@@ -1204,6 +1209,7 @@
     const modal = document.getElementById('admin-modal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    pollForNewOrders(); // Chequear al abrir
   }
   
   function closeAdmin() { 
@@ -1221,7 +1227,7 @@
     if (document.getElementById('admin-pass').value === 'admin123') {
       isAdminAuthenticated = true;
       
-      // DESBLOQUEAR EL AUDIO CON EL CLIC DEL USUARIO
+      // DESBLOQUEAR EL AUDIO CON EL CLIC DE INGRESO
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1273,6 +1279,11 @@
     if (!data || data.length === 0) {
       container.innerHTML = '<p class="text-gray-500 text-center py-4">No hay pedidos registrados aún.</p>';
       return;
+    }
+
+    // Actualizar referencia del ID más alto
+    if (data.length > 0 && lastKnownMaxOrderId === 0) {
+      lastKnownMaxOrderId = data[0].id;
     }
 
     container.innerHTML = '';
@@ -1341,7 +1352,10 @@
   loadProductsFromSupabase();
   checkStoreStatus();
   updatePaymentInfo();
-  initRealtimeOrders(); // Activar escucha de nuevos pedidos en tiempo real
+  
+  // Activar escáner automático de pedidos cada 8 segundos si el admin está logueado
+  setInterval(pollForNewOrders, 8000);
+
   setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
   setInterval(checkStoreStatus, 60000);
 </script>
