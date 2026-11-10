@@ -8,11 +8,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Cliente Oficial de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Leaflet CSS (Mapa Interactivo Gratuito) -->
+  <!-- Leaflet CSS (Mapa Interactivo) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Fonts -->
+  <!-- Tipografías -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -92,8 +92,8 @@
     🌧️ ATENCIÓN CARACAS: Debido a condiciones climáticas / lluvia, las entregas pueden presentar demoras de 20 a 30 min por seguridad de los motorizados.
   </div>
 
-  <!-- 1. TOP BAR DE ESTADO Y BCV -->
-  <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2 px-4 shadow-md">
+  <!-- 1. TOP BAR DE ESTADO Y BCV (SIN BOTÓN CMS VISIBLE) -->
+  <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2.5 px-4 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
         <span id="kitchen-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600">🟢 ABIERTO</span>
@@ -101,8 +101,7 @@
       </div>
       <div class="flex items-center gap-4">
         <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">889.25</strong> Bs/$</span>
-        <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline hidden md:inline">📸 Instagram</a>
-        <button onclick="openAdmin()" class="bg-dracarys-gold/20 border border-dracarys-gold px-2.5 py-1 rounded text-dracarys-gold hover:bg-dracarys-gold hover:text-black font-semibold flex items-center gap-1 transition">⚙️ CMS</button>
+        <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram</a>
       </div>
     </div>
   </div>
@@ -111,7 +110,7 @@
   <header class="py-8 px-4 text-center">
     <div class="max-w-4xl mx-auto flex flex-col items-center">
       <img src="logo dracarys.jpg" alt="Logo Dracarys Soup" class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-2xl border-4 border-dracarys-gold mb-3" onerror="this.src='https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200'">
-      <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">BIENVENIDOS</h1>
+      <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">DRACARYS SOUP</h1>
       <p class="font-serif italic text-base md:text-lg mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
       <div class="separator w-48 mx-auto my-4"></div>
     </div>
@@ -138,7 +137,7 @@
           <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
         </h2>
 
-        <!-- SELECTOR DE TIPO DE PEDIDO (DELIVERY / RETIRO) DENTRO DEL CARRITO -->
+        <!-- SELECTOR DE TIPO DE PEDIDO DENTRO DEL CARRITO -->
         <div class="bg-gray-100 p-1.5 rounded-xl border border-gray-300 flex gap-2 my-4">
           <button id="btn-delivery" onclick="setOrderType('Delivery')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
           <button id="btn-pickup" onclick="setOrderType('Retiro')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
@@ -147,6 +146,7 @@
         <div id="cart-items" class="py-2 space-y-3 max-h-60 overflow-y-auto text-xs">
           <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
         </div>
+
         <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
           <div class="flex justify-between items-center">
             <span class="font-bold text-gray-900">Origen:</span>
@@ -157,6 +157,7 @@
             <span id="calculated-distance-text" class="font-bold text-dracarys-fire">0.0 km</span>
           </div>
         </div>
+
         <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold mt-3">
           <div class="flex justify-between text-gray-600 text-xs">
             <span>Subtotal:</span>
@@ -175,6 +176,7 @@
             <span id="total-bs">0.00 Bs</span>
           </div>
         </div>
+
         <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
           <div>
             <input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
@@ -192,7 +194,7 @@
                 <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar GPS</button>
               </div>
               <div id="delivery-map"></div>
-              <input type="hidden" id="cust-coords" value="No especificado">
+              <input type="hidden" id="cust-coords" value="10.5100, -66.9150">
             </div>
           </div>
           <div>
@@ -235,34 +237,34 @@
 <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
   <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
     <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-      <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Super Panel CMS Visual</h3>
+      <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Panel CMS Privado — Dracarys Soup</h3>
       <button onclick="closeAdmin()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
     </div>
 
     <!-- LOGIN ADMIN -->
     <div id="admin-login-box" class="space-y-4">
-      <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar la taberna:</p>
-      <input type="password" id="admin-pass" placeholder="Coloque su clave" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+      <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el sistema:</p>
+      <input type="password" id="admin-pass" placeholder="Coloque su clave secreta" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
       <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
     </div>
 
     <!-- CONTENIDO CMS CON NAVEGACIÓN DE PESTAÑAS -->
     <div id="admin-panel-content" class="hidden space-y-6 text-xs">
       <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
-        <span class="font-cinzel font-bold text-amber-900">🔒 Panel Autenticado (Admin Oronoz)</span>
+        <span class="font-cinzel font-bold text-amber-900">🔒 Sesión Autenticada</span>
         <div class="flex gap-2 flex-wrap">
-          <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos</button>
+          <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos & Orden</button>
           <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
-          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Operaciones & Horarios</button>
-          <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos</button>
+          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Tasa & Horarios</button>
+          <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos & Estatus</button>
         </div>
       </div>
 
-      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS, ETIQUETAS Y DISPONIBILIDAD -->
+      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS, ORDEN NUMÉRICO Y DISPONIBILIDAD -->
       <div id="admin-tab-products" class="space-y-6">
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
           <div class="flex justify-between items-center border-b pb-2">
-            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos, Ofertas & Disponibilidad</h4>
+            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos & Secuencia de Menú</h4>
             <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Plato Nuevo</button>
           </div>
           
@@ -270,36 +272,40 @@
             <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
             <input type="hidden" id="edit-id">
             <input type="hidden" id="edit-img">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div class="md:col-span-2">
-                <label class="block font-semibold text-gray-700 mb-1">Nombre:</label>
+                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
                 <input type="text" id="edit-name" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+              </div>
+              <div>
+                <label class="block font-semibold text-gray-700 mb-1">Orden (1, 2, 3...):</label>
+                <input type="number" id="edit-sort-order" placeholder="Ej: 1" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold bg-amber-50">
               </div>
               <div>
                 <label class="block font-semibold text-gray-700 mb-1">Precio Oferta ($):</label>
                 <input type="number" step="0.1" id="edit-price" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold">
               </div>
               <div>
-                <label class="block font-semibold text-gray-700 mb-1">Precio Original ($ Tachado):</label>
-                <input type="number" step="0.1" id="edit-old-price" placeholder="Opcional (Ej. 15.00)" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                <label class="block font-semibold text-gray-700 mb-1">Precio Tachado ($):</label>
+                <input type="number" step="0.1" id="edit-old-price" placeholder="Opcional" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
               </div>
-              <div>
+              <div class="md:col-span-2">
                 <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
                 <select id="edit-category" class="w-full border border-gray-300 p-1.5 rounded text-gray-900"></select>
               </div>
               <div>
                 <label class="block font-semibold text-gray-700 mb-1">Etiqueta / Badge:</label>
-                <input type="text" id="edit-badge" placeholder="Ej. 20% OFF o NUEVO" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                <input type="text" id="edit-badge" placeholder="Ej. 20% OFF" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
               </div>
-              <div class="md:col-span-3">
+              <div class="md:col-span-4">
                 <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
                 <textarea id="edit-desc" class="w-full border border-gray-300 p-1.5 rounded text-gray-950 h-16"></textarea>
               </div>
-              <div class="md:col-span-3">
-                <label class="block font-semibold text-gray-700 mb-1">📷 Foto del Plato (Seleccionar archivo):</label>
-                <input type="file" id="edit-img-file" accept="image/*" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-dracarys-fire file:text-white hover:file:bg-orange-600">
+              <div class="md:col-span-4">
+                <label class="block font-semibold text-gray-700 mb-1">📷 URL de Foto o Enlace Imagen:</label>
+                <input type="text" id="edit-img-url" placeholder="https://..." class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs">
               </div>
-              <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-3">
+              <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-4">
                 <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
                   <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery
                 </label>
@@ -324,10 +330,9 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 3: OPERACIONES, TASA, CLIMA Y HORARIOS POR DÍA -->
+      <!-- PESTAÑA 3: OPERACIONES, TASA, CLIMA Y HORARIOS -->
       <div id="admin-tab-operations" class="space-y-6 hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Tasa BCV -->
           <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
             <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
             <div class="flex gap-2">
@@ -336,7 +341,6 @@
             </div>
           </div>
           
-          <!-- Modo Lluvia -->
           <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
             <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
             <div class="flex items-center justify-between">
@@ -346,29 +350,25 @@
           </div>
         </div>
 
-        <!-- CONTROL MANUAL DE HORARIOS (OVERRIDE) -->
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
           <h4 class="font-bold text-dracarys-bronze">Control Manual de Apertura (Override):</h4>
-          <p class="text-[11px] text-gray-600">Fuerza el estado operativo de la taberna al instante:</p>
           <div class="flex gap-2">
-            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border shadow-sm">🕒 Automático (Horarios)</button>
+            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border shadow-sm">🕒 Automático</button>
             <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border shadow-sm">🟢 Forzar Abierto</button>
             <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border shadow-sm">🔴 Forzar Cerrado</button>
           </div>
         </div>
 
-        <!-- HORARIOS POR DÍA DE LA SEMANA -->
         <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-          <h4 class="font-bold text-dracarys-bronze">📅 Configuración de Horarios por Día (Lunes a Domingo):</h4>
-          <p class="text-[11px] text-gray-600">Establece la hora de apertura y cierre para cada día de la semana:</p>
+          <h4 class="font-bold text-dracarys-bronze">📅 Configuración de Horarios Semanales:</h4>
           <div id="weekly-schedule-container" class="space-y-2 mt-2"></div>
-          <button onclick="saveWeeklySchedule()" class="bg-black text-white px-4 py-2 rounded font-bold shadow text-xs mt-2">💾 Guardar Horarios Semanales</button>
+          <button onclick="saveWeeklySchedule()" class="bg-black text-white px-4 py-2 rounded font-bold shadow text-xs mt-2">💾 Guardar Horarios</button>
         </div>
       </div>
 
-      <!-- PESTAÑA 4: PEDIDOS EN VIVO -->
+      <!-- PESTAÑA 4: PEDIDOS CON CICLO DE VIDA (ESTATUS) -->
       <div id="admin-tab-orders" class="space-y-4 hidden">
-        <h4 class="font-bold text-gray-900 border-b pb-2">📦 Pedidos Registrados en Tiempo Real</h4>
+        <h4 class="font-bold text-gray-900 border-b pb-2">📦 Gestión & Ciclo de Vida de Pedidos</h4>
         <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
           <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
         </div>
@@ -388,13 +388,14 @@
   </div>
 </div>
 
-<!-- 8. FOOTER -->
+<!-- 8. FOOTER PROFESIONAL (CON ACCESO PRIVADO AL CMS Y DATOS OFICIALES) -->
 <footer class="bg-black text-gray-400 py-10 px-4 mt-16 border-t border-dracarys-border text-xs">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
     <div class="space-y-2">
       <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
-      <p>Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
-      <p class="text-gray-500">RIF: J-50493821-0 | Dracarys C.A.</p>
+      <p class="font-semibold text-gray-300">CORPORACION GELEMAK C.A.</p>
+      <p class="text-gray-500">RIF: J-41251218-8</p>
+      <p class="text-gray-400">Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
     </div>
     <div class="space-y-2">
       <h4 class="font-bold text-white">Enlaces de Interés & Términos</h4>
@@ -408,14 +409,18 @@
       <h4 class="font-bold text-white">Ubicación & Contacto</h4>
       <p>📍 Caracas, Venezuela</p>
       <p>📱 WhatsApp: 0412-7120538 / 0414-2920866</p>
-      <p>✉️ Correo: eduardooa99@gmail.com</p>
+      <p>✉️ Correo: <a href="mailto:corporaciongelemak@gmail.com" class="hover:underline text-gray-300">corporaciongelemak@gmail.com</a></p>
       <p class="mt-2"><a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram: @dracarysoup</a></p>
-      <p class="text-[10px] text-gray-600 mt-2">© 2026 Dracarys Soup. Todos los derechos reservados.</p>
+      <p class="text-[10px] text-gray-600 mt-4">
+        © 2026 Dracarys Soup. Todos los derechos reservados. | 
+        <!-- ACCESO DISCRETO AL CMS PARA EDUARDO -->
+        <button onclick="openAdmin()" class="text-gray-700 hover:text-gray-400 transition underline cursor-pointer">Administración</button>
+      </p>
     </div>
   </div>
 </footer>
 
-<!-- SCRIPT MASTER DEFINITIVO OMNIPOTENTE -->
+<!-- SCRIPT MASTER DEFINITIVO -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -610,6 +615,7 @@
       products = data.map(item => ({
         id: item.id,
         name: item.name,
+        sort_order: item.sort_order || 99,
         category: item.category || 'Sopas, Hervidos & Parrillas',
         desc: item.description || '',
         price: Number(item.price),
@@ -619,6 +625,9 @@
         available: item.available !== false,
         img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
       }));
+
+      // Ordenar productos por número de secuencia
+      products.sort((a, b) => a.sort_order - b.sort_order);
     }
     renderProducts('all');
     if (isAdminAuthenticated) {
@@ -936,6 +945,9 @@
     const totalUSD = subtotal + deliveryCost;
     const totalBS = totalUSD * bcvRate;
 
+    // ESTE ES EL ENLACE EXACTO OFICIAL DE GOOGLE MAPS QUE SÍ ABRE EL PIN EN CARACAS
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords)}`;
+
     const { error } = await supabaseClient.from('orders').insert([{
       customer_name: name,
       phone: phone,
@@ -959,7 +971,7 @@
     if (orderType === 'Delivery') {
       summary += `📍 *Dirección:* ${address}\n`;
       summary += `📏 *Distancia Real:* ${calculatedDistanceKm.toFixed(1)} km\n`;
-      summary += `🗺️ *Google Maps:* https://maps.google.com/?q=${coords}\n`;
+      summary += `🗺️ *Google Maps:* ${googleMapsUrl}\n`;
     }
     summary += `💳 *Método de Pago:* ${method} (Ref: ${ref})\n\n`;
     summary += `🍲 *Platos Pedidos:*\n`;
@@ -995,13 +1007,7 @@
     if (categories.includes(name)) return alert('Esta categoría ya existe.');
     
     categories.push(name);
-    
-    // Guardar en Supabase para sincronización global
-    const { error } = await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
-    if (error) {
-      alert('Error al guardar categoría en Supabase: ' + error.message);
-      return;
-    }
+    await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
 
     input.value = '';
     renderAdminCategories();
@@ -1015,8 +1021,6 @@
     if (!confirm(`¿Eliminar la categoría "${catName}"?`)) return;
     
     categories.splice(index, 1);
-    
-    // Sincronizar actualización en Supabase
     await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
     
     renderAdminCategories();
@@ -1043,8 +1047,8 @@
       list.innerHTML += `
         <div class="flex justify-between items-center bg-gray-100 p-2.5 rounded border border-gray-200">
           <div>
-            <p class="font-bold text-gray-900">${p.name} - $${p.price.toFixed(2)} ${p.old_price ? '(Oferta)' : ''}</p>
-            <p class="text-[10px] text-gray-500">${p.category} ${p.badge ? ' | 🏷️ ' + p.badge : ''} ${p.free_delivery ? ' | 🛵 Gratis' : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
+            <p class="font-bold text-gray-900">#${p.sort_order || 99} — ${p.name} ($${p.price.toFixed(2)})</p>
+            <p class="text-[10px] text-gray-500">${p.category} ${p.badge ? ' | 🏷️ ' + p.badge : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
           </div>
           <div class="flex gap-1">
             <button onclick="toggleProductAvailability(${p.id})" class="${isAvailable ? 'bg-amber-600' : 'bg-emerald-600'} text-white px-2 py-1 rounded text-[10px] font-bold">${isAvailable ? 'Agotar' : 'Activar'}</button>
@@ -1070,11 +1074,11 @@
     if (!p) return;
     document.getElementById('edit-id').value = p.id;
     document.getElementById('edit-name').value = p.name;
+    document.getElementById('edit-sort-order').value = p.sort_order || 1;
     document.getElementById('edit-desc').value = p.desc;
     document.getElementById('edit-price').value = p.price;
     document.getElementById('edit-old-price').value = p.old_price || '';
-    document.getElementById('edit-img').value = p.img || '';
-    document.getElementById('edit-img-file').value = '';
+    document.getElementById('edit-img-url').value = p.img || '';
     document.getElementById('edit-category').value = p.category;
     document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
@@ -1084,37 +1088,27 @@
   async function saveVisualEdit() {
     const id = document.getElementById('edit-id').value;
     const name = document.getElementById('edit-name').value.trim();
+    const sort_order = parseInt(document.getElementById('edit-sort-order').value) || 99;
     const desc = document.getElementById('edit-desc').value.trim();
     const price = parseFloat(document.getElementById('edit-price').value);
     const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
     const category = document.getElementById('edit-category').value;
     const badge = document.getElementById('edit-badge').value.trim() || null;
     const free_delivery = document.getElementById('edit-free-delivery').checked;
-
-    let img = document.getElementById('edit-img').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
-
-    const fileInput = document.getElementById('edit-img-file');
-    if (fileInput.files && fileInput.files[0]) {
-      const file = fileInput.files[0];
-      img = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.readAsDataURL(file);
-      });
-    }
+    const img = document.getElementById('edit-img-url').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
 
     if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
 
     if (id) {
       const { error } = await supabaseClient.from('menu_items').update({
-        name, description: desc, price, old_price, category, image_url: img, badge, free_delivery
+        name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery
       }).eq('id', id);
 
       if (error) return alert('Error al actualizar: ' + error.message);
       alert('¡Plato actualizado con éxito!');
     } else {
       const { error } = await supabaseClient.from('menu_items').insert([{
-        name, description: desc, price, old_price, category, image_url: img, badge, free_delivery, available: true
+        name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery, available: true
       }]);
 
       if (error) return alert('Error al crear: ' + error.message);
@@ -1127,15 +1121,14 @@
   function addNewProductPrompt() {
     document.getElementById('edit-id').value = '';
     document.getElementById('edit-name').value = '';
+    document.getElementById('edit-sort-order').value = products.length + 1;
     document.getElementById('edit-desc').value = '';
     document.getElementById('edit-price').value = '';
     document.getElementById('edit-old-price').value = '';
-    document.getElementById('edit-img').value = '';
-    document.getElementById('edit-img-file').value = '';
+    document.getElementById('edit-img-url').value = '';
     document.getElementById('edit-badge').value = '';
     document.getElementById('edit-free-delivery').checked = false;
     document.getElementById('visual-edit-name').innerText = 'Nuevo Plato';
-    alert('Llena los campos y selecciona tu foto de archivo en el formulario superior, luego haz clic en Guardar.');
   }
 
   async function deleteProduct(id) {
@@ -1188,6 +1181,12 @@
     if (tab === 'operations') renderWeeklyScheduleUI();
   }
 
+  async function updateOrderStatus(orderId, newStatus) {
+    const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+    if (error) return alert('Error al actualizar estatus: ' + error.message);
+    loadOrdersInCMS();
+  }
+
   async function loadOrdersInCMS() {
     const container = document.getElementById('orders-list-container');
     const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
@@ -1211,6 +1210,8 @@
         });
       }
 
+      const currentStatus = o.status || 'Recibido';
+
       container.innerHTML += `
         <div class="bg-white p-4 rounded-xl border border-gray-300 space-y-2 shadow-sm">
           <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
@@ -1220,11 +1221,21 @@
           <div class="text-[11px] text-gray-700 space-y-1">
             <p><strong>📱 Teléfono:</strong> <a href="https://wa.me/58${o.phone.replace(/\D/g,'')}" target="_blank" class="text-emerald-700 font-bold hover:underline">${o.phone}</a></p>
             <p><strong>🛵 Modalidad:</strong> ${o.order_type}</p>
-            <p><strong>📍 Dirección / Ubicación:</strong> ${o.delivery_address}</p>
+            <p><strong>📍 Dirección:</strong> ${o.delivery_address}</p>
             <p><strong>💳 Pago:</strong> ${o.payment_method} | <strong>Ref:</strong> <span class="text-black font-bold bg-amber-100 px-1 rounded">${o.payment_ref}</span></p>
             <div class="border-t pt-1 mt-1">
               <p class="font-bold text-gray-900">🍲 Platos solicitados:</p>
               <ul class="pl-2 space-y-0.5">${itemsHtml}</ul>
+            </div>
+          </div>
+          <div class="pt-2 border-t flex items-center justify-between gap-2 flex-wrap bg-gray-50 p-2 rounded">
+            <span class="font-bold text-gray-800 text-[11px]">Estatus Actual: <strong class="text-dracarys-fire">${currentStatus}</strong></span>
+            <div class="flex gap-1 flex-wrap text-[10px]">
+              <button onclick="updateOrderStatus(${o.id}, '📥 Recibido')" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">📥 Recibido</button>
+              <button onclick="updateOrderStatus(${o.id}, '🔍 En Verificación')" class="bg-amber-600 text-white px-2 py-1 rounded font-bold">🔍 Verificado</button>
+              <button onclick="updateOrderStatus(${o.id}, '🔥 En Preparación')" class="bg-orange-600 text-white px-2 py-1 rounded font-bold">🔥 Cocina</button>
+              <button onclick="updateOrderStatus(${o.id}, '🛵 En Camino')" class="bg-purple-600 text-white px-2 py-1 rounded font-bold">🛵 En Camino</button>
+              <button onclick="updateOrderStatus(${o.id}, '✅ Entregado')" class="bg-emerald-700 text-white px-2 py-1 rounded font-bold">✅ Entregado</button>
             </div>
           </div>
         </div>
@@ -1236,11 +1247,11 @@
     const modal = document.getElementById('legal-modal');
     const body = document.getElementById('legal-modal-body');
     if (type === 'delivery') {
-      body.innerHTML = '<p>Delivery calculated en tiempo real mediante geolocalización desde Altagracia a razón de $2.00 cada 2 km.</p>';
+      body.innerHTML = '<p><strong>Políticas de Delivery:</strong> Calculado en tiempo real desde Altagracia, Caracas, a razón de $2.00 por cada 2 km. Las entregas se efectúan bajo estrictas medidas de seguridad alimentaria.</p>';
     } else if (type === 'freshness') {
-      body.innerHTML = '<p>Sopas y parrillas elaboradas al momento a la leña con ingredientes frescos.</p>';
+      body.innerHTML = '<p><strong>Garantía de Frescura:</strong> Sopas y parrillas elaboradas al momento a la leña con ingredientes de primera calidad. Si tu pedido presenta inconvenientes, contáctanos de inmediato vía WhatsApp.</p>';
     } else {
-      body.innerHTML = '<p>Pagos verificados manualmente contra referencia en Pago Móvil, Wally y Binance.</p>';
+      body.innerHTML = '<p><strong>Términos del Servicio:</strong> Operado legalmente por CORPORACION GELEMAK C.A. (RIF J-41251218-8). Pagos verificados en tiempo real mediante referencias de Pago Móvil, Wally Tech y Binance Pay.</p>';
     }
     modal.classList.add('flex');
     modal.classList.remove('hidden');
