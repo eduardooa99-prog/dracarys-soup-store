@@ -368,7 +368,7 @@
         </div>
       </div>
 
-      <!-- PESTAÑA 4: PEDIDOS CON ALARMA E INTELIGENCIA INFALIBLE -->
+      <!-- PESTAÑA 4: PEDIDOS CON CONSULTA OPTIMIZADA -->
       <div id="admin-tab-orders" class="space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-2">
           <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
@@ -427,7 +427,7 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON ESCANEO AUTOMÁTICO (POLLING) Y ALARMA INFALIBLE -->
+<!-- SCRIPT MASTER CON CONSULTAS OPTIMIZADAS Y LÍMITE DE PEDIDOS -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -1209,7 +1209,7 @@
     const modal = document.getElementById('admin-modal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    pollForNewOrders(); // Chequear al abrir
+    pollForNewOrders();
   }
   
   function closeAdmin() { 
@@ -1227,7 +1227,6 @@
     if (document.getElementById('admin-pass').value === 'admin123') {
       isAdminAuthenticated = true;
       
-      // DESBLOQUEAR EL AUDIO CON EL CLIC DE INGRESO
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1263,13 +1262,14 @@
   async function updateOrderStatus(orderId, newStatus) {
     const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
     if (error) return alert('Error al actualizar estatus: ' + error.message);
-    stopAdminAlarm(); // Silenciar alarma al interactuar con el pedido
+    stopAdminAlarm(); 
     loadOrdersInCMS();
   }
 
   async function loadOrdersInCMS() {
     const container = document.getElementById('orders-list-container');
-    const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false });
+    // Consulta optimizada limitando a los últimos 15 pedidos para evitar timeouts
+    const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false }).limit(15);
     
     if (error) {
       container.innerHTML = `<p class="text-red-600 text-center py-4">Error al cargar pedidos: ${error.message}</p>`;
@@ -1281,7 +1281,6 @@
       return;
     }
 
-    // Actualizar referencia del ID más alto
     if (data.length > 0 && lastKnownMaxOrderId === 0) {
       lastKnownMaxOrderId = data[0].id;
     }
@@ -1353,7 +1352,6 @@
   checkStoreStatus();
   updatePaymentInfo();
   
-  // Activar escáner automático de pedidos cada 8 segundos si el admin está logueado
   setInterval(pollForNewOrders, 8000);
 
   setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
