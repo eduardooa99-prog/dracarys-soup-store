@@ -1223,30 +1223,40 @@
     modal.classList.remove('flex');
   }
 
-  function authAdmin() {
-    if (document.getElementById('admin-pass').value === '..Drac889') {
-      isAdminAuthenticated = true;
-      
-      try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-      } catch(e) {}
+ async function authAdmin() {
+  const passInput = document.getElementById('admin-pass').value;
+  
+  // Validación segura y cifrada contra Supabase Auth
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: 'eduardooa99@gmail.com',
+    password: passInput
+  });
 
-      document.getElementById('admin-login-box').classList.add('hidden');
-      document.getElementById('admin-panel-content').classList.remove('hidden');
-      renderAdminProducts();
-      renderAdminCategories();
-      populateCategorySelect();
-      renderWeeklyScheduleUI();
-      loadOrdersInCMS();
-    } else {
-      alert('Clave incorrecta');
-    }
+  if (error || !data.session) {
+    alert('Clave incorrecta o acceso no autorizado');
+    return;
   }
+
+  // Si las credenciales son correctas, se otorga acceso seguro al panel
+  isAdminAuthenticated = true;
+  
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  } catch(e) {}
+
+  document.getElementById('admin-login-box').classList.add('hidden');
+  document.getElementById('admin-panel-content').classList.remove('hidden');
+  renderAdminProducts();
+  renderAdminCategories();
+  populateCategorySelect();
+  renderWeeklyScheduleUI();
+  loadOrdersInCMS();
+}
 
   function switchAdminTab(tab) {
     document.getElementById('admin-tab-products').classList.toggle('hidden', tab !== 'products');
