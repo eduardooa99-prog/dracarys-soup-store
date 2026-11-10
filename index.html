@@ -372,7 +372,10 @@
       <div id="admin-tab-orders" class="space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-2">
           <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
-          <button onclick="stopAdminAlarm()" class="bg-amber-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-amber-700">🔕 Silenciar Alarma</button>
+          <div class="flex gap-2">
+            <button onclick="playAdminBeep()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-blue-700">🔊 Probar Alarma</button>
+            <button onclick="stopAdminAlarm()" class="bg-amber-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-amber-700">🔕 Silenciar Alarma</button>
+          </div>
         </div>
         <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
           <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
@@ -424,7 +427,7 @@
   </div>
 </footer>
 
-<!-- SCRIPT MASTER CON ALARMA SONORA ADMIN Y TIEMPO REAL -->
+<!-- SCRIPT MASTER CON DESBLOQUEO DE AUDIO Y ALARMA SONORA -->
 <script>
   const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
@@ -489,7 +492,7 @@
     playAdminBeep();
     alarmInterval = setInterval(() => {
       playAdminBeep();
-    }, 1500); // Pitido cada 1.5 segundos hasta que el admin lo detenga
+    }, 1500); // Pitido cada 1.5 segundos hasta que el admin lo detenga o presione Recibido
   }
 
   function stopAdminAlarm() {
@@ -1217,6 +1220,17 @@
   function authAdmin() {
     if (document.getElementById('admin-pass').value === 'admin123') {
       isAdminAuthenticated = true;
+      
+      // DESBLOQUEAR EL AUDIO CON EL CLIC DEL USUARIO
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch(e) {}
+
       document.getElementById('admin-login-box').classList.add('hidden');
       document.getElementById('admin-panel-content').classList.remove('hidden');
       renderAdminProducts();
