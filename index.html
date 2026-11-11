@@ -919,15 +919,19 @@
     }
   }
 
-  async function saveGeneralSettings() {
+async function saveGeneralSettings() {
     const newRate = parseFloat(document.getElementById('input-bcv').value);
     if (isNaN(newRate)) return alert('Ingresa una tasa válida.');
-    await supabaseClient.from('settings').upsert({ key: 'bcv_rate', value: newRate.toString() });
-    bcvRate = newRate;
-    document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
-    renderProducts(currentFilter);
-    alert('¡Tasa BCV actualizada en tiempo real!');
-  }
+    
+    const { error } = await supabaseClient.from('settings').upsert({ key: 'bcv_rate', value: newRate.toString() });
+    if (error) return alert('Error al guardar la tasa: ' + error.message);
+    
+    // Recarga completa de los ajustes y productos para refrescar todos los montos en pantalla
+    await loadSettingsFromSupabase();
+    loadProductsFromSupabase();
+    
+    alert('¡Tasa BCV actualizada y sincronizada con éxito!');
+}
 
   async function toggleRainMode() {
     isRainModeActive = !isRainModeActive;
