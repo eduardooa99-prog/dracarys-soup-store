@@ -241,12 +241,13 @@
       <button onclick="closeAdmin()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
     </div>
 
-    <!-- LOGIN ADMIN -->
-    <div id="admin-login-box" class="space-y-4">
-      <p class="text-xs text-gray-600">Ingresa la clave maestra para gestionar el sistema:</p>
-      <input type="password" id="admin-pass" placeholder="Coloque su clave secreta" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
-      <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
-    </div>
+<!-- LOGIN ADMIN -->
+<div id="admin-login-box" class="space-y-3">
+  <p class="text-xs text-gray-600">Ingresa tus credenciales de administrador:</p>
+  <input type="email" id="admin-email" value="eduardooa99@gmail.com" placeholder="Correo electrónico" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+  <input type="password" id="admin-pass" placeholder="Contraseña de Supabase" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+  <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
+</div>
 
     <!-- CONTENIDO CMS CON NAVEGACIÓN DE PESTAÑAS -->
     <div id="admin-panel-content" class="hidden space-y-6 text-xs">
