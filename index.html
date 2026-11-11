@@ -1151,38 +1151,60 @@
     document.getElementById('visual-edit-name').innerText = p.name;
   }
 
-  async function saveVisualEdit() {
-    const id = document.getElementById('edit-id').value;
-    const name = document.getElementById('edit-name').value.trim();
-    const sort_order = parseInt(document.getElementById('edit-sort-order').value) || 99;
-    const desc = document.getElementById('edit-desc').value.trim();
-    const price = parseFloat(document.getElementById('edit-price').value);
-    const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
-    const category = document.getElementById('edit-category').value;
-    const badge = document.getElementById('edit-badge').value.trim() || null;
-    const free_delivery = document.getElementById('edit-free-delivery').checked;
-    const img = document.getElementById('edit-img-url').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
+async function saveVisualEdit() {
+  const id = document.getElementById('edit-id').value;
+  const name = document.getElementById('edit-name').value.trim();
+  const sort_order = parseInt(document.getElementById('edit-sort-order').value) || 99;
+  const desc = document.getElementById('edit-desc').value.trim();
+  const price = parseFloat(document.getElementById('edit-price').value);
+  const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
+  
+  // Captura segura del valor exacto del select de categoría
+  const categorySelect = document.getElementById('edit-category');
+  const category = categorySelect ? categorySelect.value : 'Sopas, Hervidos & Parrillas';
 
-    if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
+  const badge = document.getElementById('edit-badge').value.trim() || null;
+  const free_delivery = document.getElementById('edit-free-delivery').checked;
+  const img = document.getElementById('edit-img-url').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
 
-    if (id) {
-      const { error } = await supabaseClient.from('menu_items').update({
-        name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery
-      }).eq('id', id);
+  if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
 
-      if (error) return alert('Error al actualizar: ' + error.message);
-      alert('¡Plato actualizado con éxito!');
-    } else {
-      const { error } = await supabaseClient.from('menu_items').insert([{
-        name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery, available: true
-      }]);
+  if (id) {
+    // Convertimos el id a número o mantenemos el tipo correcto según tu BD
+    const { error } = await supabaseClient.from('menu_items').update({
+      name, 
+      sort_order, 
+      description: desc, 
+      price, 
+      old_price, 
+      category, // <--- Aquí se envía la categoría seleccionada correctamente
+      image_url: img, 
+      badge, 
+      free_delivery
+    }).eq('id', id);
 
-      if (error) return alert('Error al crear: ' + error.message);
-      alert('¡Plato creado con éxito!');
-    }
+    if (error) return alert('Error al actualizar: ' + error.message);
+    alert('¡Plato y categoría actualizados con éxito!');
+  } else {
+    const { error } = await supabaseClient.from('menu_items').insert([{
+      name, 
+      sort_order, 
+      description: desc, 
+      price, 
+      old_price, 
+      category, 
+      image_url: img, 
+      badge, 
+      free_delivery, 
+      available: true
+    }]);
 
-    loadProductsFromSupabase();
+    if (error) return alert('Error al crear: ' + error.message);
+    alert('¡Plato creado con éxito!');
   }
+
+  loadProductsFromSupabase();
+}
 
   function addNewProductPrompt() {
     document.getElementById('edit-id').value = '';
