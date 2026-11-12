@@ -1,449 +1,389 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta name="google-site-verification" content="Kk3vcW6z2oYnZxZ3tA4R-LWbUaAUftjuhENvYAI-QlQ" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dracarys Soup — Taberna de Caldos & Parrillas</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Cliente Oficial de Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Leaflet CSS (Mapa Interactivo) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Tipografías -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            dracarys: {
-              gold: '#D4AF37',
-              fire: '#E65100',
-              card: '#1E1E1E',
-              border: '#333333',
-              bg: '#121212',
-              sepia: '#fdfcf0',
-              bronze: '#8c7851'
+    <meta name="google-site-verification" content="Kk3vcW6z2oYnZxZ3tA4R-LWbUaAUftjuhENvYAI-QlQ" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dracarys Soup — Taberna de Caldos & Parrillas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Cliente Oficial de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Leaflet CSS (Mapa Interactivo) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Tipografías -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dracarys: { gold: '#D4AF37', fire: '#E65100', card: '#1E1E1E', border: '#333333', bg: '#121212', sepia: '#fdfcf0', bronze: '#8c7851' }
+                    },
+                    fontFamily: { cinzel: ['Cinzel', 'serif'], serif: ['Playfair Display', 'serif'], sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
             }
-          },
-          fontFamily: {
-            cinzel: ['Cinzel', 'serif'],
-            serif: ['Playfair Display', 'serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif']
-          }
         }
-      }
-    }
-  </script>
-  <style>
-    body {
-      background-color: #1a1a1a;
-      color: #fdfcf0;
-      background-image: linear-gradient(rgba(26, 26, 26, 0.35), rgba(26, 26, 26, 0.25)), url('fondo_fotografico.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .dracarys-card {
-      background-color: rgba(255, 255, 255, 0.98);
-      border: 1px solid #e0e0e0;
-      border-radius: 1rem;
-      box-shadow: 0 4px 15px rgba(140, 120, 81, 0.1);
-    }
-    .separator {
-      border-top: 2px solid #D4AF37;
-      border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
-    }
-    nav.sticky.top-10 {
-      background: transparent !important;
-      box-shadow: none !important;
-      border: none !important;
-    }
-    header p.font-serif, h2#current-category-title {
-      color: #E6C687 !important;
-      font-size: 1.2rem !important;
-    }
-    #admin-modal, #legal-modal, #admin-modal div, #admin-modal p, #admin-modal span, #admin-modal label {
-      color: #111827;
-    }
-    #delivery-map {
-      height: 190px;
-      border-radius: 0.55rem;
-      border: 1px solid #cbd5e1;
-    }
-    .suggestion-item:hover {
-      background-color: #f3f4f6;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
-  </style>
+    </script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fdfcf0;
+            background-image: linear-gradient(rgba(26, 26, 26, 0.35), rgba(26, 26, 26, 0.25)), url('fondo_fotografico.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .dracarys-card {
+            background-color: rgba(255, 255, 255, 0.98);
+            border: 1px solid #e0e0e0;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(140, 120, 81, 0.1);
+        }
+        .separator {
+            border-top: 2px solid #D4AF37;
+            border-image: linear-gradient(to right, #D4AF37, #E65100, #D4AF37) 1;
+        }
+        nav.sticky.top-10 { background: transparent !important; box-shadow: none !important; border: none !important; }
+        header p.font-serif, h2#current-category-title { color: #E6C687 !important; font-size: 1.2rem !important; }
+        #admin-modal, #legal-modal, #admin-modal div, #admin-modal p, #admin-modal span, #admin-modal label { color: #111827; }
+        #delivery-map { height: 190px; border-radius: 0.55rem; border: 1px solid #cbd5e1; }
+        .suggestion-item:hover { background-color: #f3f4f6; }
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between pb-16 lg:pb-0">
-
 <div>
-  <!-- AVISO CLIMÁTICO / MODO LLUVIA -->
-  <div id="rain-alert-bar" class="hidden bg-amber-600 text-white text-xs py-2 px-4 text-center font-bold shadow-lg animate-pulse">
-    🌧️ ATENCIÓN CARACAS: Debido a condiciones climáticas / lluvia, las entregas pueden presentar demoras de 20 a 30 min por seguridad de los motorizados.
-  </div>
-
-  <!-- 1. TOP BAR DE ESTADO Y BCV -->
-  <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2.5 px-4 shadow-md">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <span id="kitchen-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600">🟢 ABIERTO</span>
-        <span class="text-gray-300 hidden sm:inline">Caracas, Venezuela (UTC-4)</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">889.25</strong> Bs/$</span>
-        <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram</a>
-      </div>
+    <!-- AVISO CLIMÁTICO / MODO LLUVIA -->
+    <div id="rain-alert-bar" class="hidden bg-amber-600 text-white text-xs py-2 px-4 text-center font-bold shadow-lg animate-pulse">
+        🌧️ ATENCIÓN CARACAS: Debido a condiciones climáticas / lluvia, las entregas pueden presentar demoras de 20 a 30 min por seguridad de los motorizados.
     </div>
-  </div>
 
-  <!-- 2. HEADER CON LOGO OFICIAL -->
-  <header class="py-8 px-4 text-center">
-    <div class="max-w-4xl mx-auto flex flex-col items-center">
-      <img src="logo dracarys.jpg" alt="Logo Dracarys Soup" class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-2xl border-4 border-dracarys-gold mb-3" onerror="this.src='https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200'">
-      <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">DRACARYS SOUP</h1>
-      <p class="font-serif italic text-base md:text-lg mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
-      <div class="separator w-48 mx-auto my-4"></div>
-    </div>
-  </header>
-
-  <!-- 3. NAVEGACIÓN DE CATEGORÍAS -->
-  <nav class="sticky top-10 z-30 py-3 px-4">
-    <div id="category-nav-bar" class="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scrollbar font-medium text-xs"></div>
-  </nav>
-
-  <!-- 4 & 5. CONTENIDO PRINCIPAL Y CARRITO -->
-  <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- CATÁLOGO DE PRODUCTOS -->
-    <section class="lg:col-span-2 space-y-6">
-      <h2 id="current-category-title" class="font-cinzel text-xl font-bold pb-3 border-b border-dracarys-gold/30">🔥 Todo el Menú</h2>
-      <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    </section>
-
-    <!-- 6. CHECKOUT Y CARRITO EN VIVO -->
-    <aside id="cart-section" class="space-y-6">
-      <div class="dracarys-card p-6 sticky top-28">
-        <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
-          <span>🛒 Tu Pedido</span>
-          <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
-        </h2>
-
-        <!-- SELECTOR DE TIPO DE PEDIDO DENTRO DEL CARRITO -->
-        <div class="bg-gray-100 p-1.5 rounded-xl border border-gray-300 flex gap-2 my-4">
-          <button id="btn-delivery" onclick="setOrderType('Delivery')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
-          <button id="btn-pickup" onclick="setOrderType('Retiro')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
-        </div>
-
-        <div id="cart-items" class="py-2 space-y-3 max-h-60 overflow-y-auto text-xs">
-          <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
-        </div>
-
-        <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-gray-900">Origen:</span>
-            <span class="text-[11px] text-gray-600">Altagracia, Caracas</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-gray-900">Distancia calculada:</span>
-            <span id="calculated-distance-text" class="font-bold text-dracarys-fire">0.0 km</span>
-          </div>
-        </div>
-
-        <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold mt-3">
-          <div class="flex justify-between text-gray-600 text-xs">
-            <span>Subtotal:</span>
-            <span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span>
-          </div>
-          <div id="delivery-cost-row" class="flex justify-between text-gray-600 text-xs">
-            <span>Envío (Delivery Automático):</span>
-            <span id="delivery-cost-usd" class="font-bold text-gray-950">$0.00</span>
-          </div>
-          <div class="flex justify-between text-dracarys-fire font-bold text-base pt-1 border-t">
-            <span>Total ($ USD):</span>
-            <span id="total-usd" class="font-bold">$0.00</span>
-          </div>
-          <div class="flex justify-between text-amber-900 font-bold text-xs">
-            <span>Total (Bs BCV):</span>
-            <span id="total-bs">0.00 Bs</span>
-          </div>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
-          <div>
-            <input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-          </div>
-          <div>
-            <input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04127120538) *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-          </div>
-          <div id="address-box" class="space-y-2 relative">
-            <label class="block font-bold text-gray-800">Dirección Exacta de Entrega *</label>
-            <input type="text" id="cust-address" oninput="handleAddressInput(this.value)" placeholder="Escribe tu zona/calle en Caracas para buscar..." class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-            <div id="address-suggestions" class="hidden absolute top-14 left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto"></div>
-            <div class="space-y-1 mt-2">
-              <div class="flex justify-between items-center text-[10px] text-gray-600 font-semibold">
-                <span>📍 Mueve el pin o usa GPS (Calcula $2 / 2km):</span>
-                <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar GPS</button>
-              </div>
-              <div id="delivery-map"></div>
-              <input type="hidden" id="cust-coords" value="10.5100, -66.9150">
+    <!-- 1. TOP BAR DE ESTADO Y BCV -->
+    <div class="bg-black/95 text-white border-b border-dracarys-border sticky top-0 z-40 text-xs py-2.5 px-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span id="kitchen-badge" class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600">🟢 ABIERTO</span>
+                <span class="text-gray-300 hidden sm:inline">Caracas, Venezuela (UTC-4)</span>
             </div>
-          </div>
-          <div>
-            <select id="pay-method" onchange="updatePaymentInfo()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-              <option value="Pago Móvil">Pago Móvil (Banesco / BDV)</option>
-              <option value="Wally Tech">Wally Tech</option>
-              <option value="Binance Pay">Binance Pay (USDT)</option>
-              <option value="Efectivo">Efectivo en Entrega</option>
-            </select>
-          </div>
-          <div id="payment-details-box" class="bg-amber-50 border border-amber-300 p-2.5 rounded-lg text-[11px] text-amber-900 space-y-1"></div>
-          <div>
-            <input type="text" id="pay-ref" placeholder="N° Referencia o Comprobante de Pago *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
-          </div>
-          <button id="btn-submit-order" onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2">
-            <span>✅ Confirmar & Pagar</span>
-          </button>
-          <a href="https://wa.me/584127120538?text=Hola,%20necesito%20asesor%C3%ADa%20con%20mi%20pedido%20en%20Dracarys%20Soup" target="_blank" class="block text-center w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded-xl shadow transition text-[11px]">
-            💬 ¿Dudas con tu ubicación o pago? Escríbenos por WhatsApp
-          </a>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-200">Tasa BCV: <strong class="text-dracarys-gold" id="bcv-display">889.25</strong> Bs/$</span>
+                <a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram</a>
+            </div>
         </div>
-      </div>
-    </aside>
-  </main>
+    </div>
+
+    <!-- 2. HEADER CON LOGO OFICIAL -->
+    <header class="py-8 px-4 text-center">
+        <div class="max-w-4xl mx-auto flex flex-col items-center">
+            <img src="logo dracarys.jpg" alt="Logo Dracarys Soup" class="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-2xl border-4 border-dracarys-gold mb-3" onerror="this.src='https://images.unsplash.com/photo-1606132715015-188b776a3821?q=80&w=200'">
+            <h1 class="font-cinzel font-black text-3xl md:text-5xl text-dracarys-gold tracking-widest">DRACARYS SOUP</h1>
+            <p class="font-serif italic text-base md:text-lg mt-1">"Auténtica Sopa a la Leña & Sabores Legendarios"</p>
+            <div class="separator w-48 mx-auto my-4"></div>
+        </div>
+    </header>
+
+    <!-- 3. NAVEGACIÓN DE CATEGORÍAS -->
+    <nav class="sticky top-10 z-30 py-3 px-4">
+        <div id="category-nav-bar" class="max-w-7xl mx-auto flex gap-2 overflow-x-auto hide-scrollbar font-medium text-xs"></div>
+    </nav>
+
+    <!-- 4 & 5. CONTENIDO PRINCIPAL Y CARRITO -->
+    <main class="max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- CATÁLOGO DE PRODUCTOS -->
+        <section class="lg:col-span-2 space-y-6">
+            <h2 id="current-category-title" class="font-cinzel text-xl font-bold pb-3 border-b border-dracarys-gold/30">🔥 Todo el Menú</h2>
+            <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+
+        <!-- 6. CHECKOUT Y CARRITO EN VIVO -->
+        <aside id="cart-section" class="space-y-6">
+            <div class="dracarys-card p-6 sticky top-28">
+                <h2 class="font-cinzel text-xl font-bold text-gray-900 border-b border-gray-200 pb-3 flex justify-between items-center">
+                    <span>🛒 Tu Pedido</span>
+                    <span id="cart-badge" class="bg-dracarys-fire text-white text-xs px-2.5 py-0.5 rounded-full font-sans">0</span>
+                </h2>
+                
+                <!-- SELECTOR DE TIPO DE PEDIDO DENTRO DEL CARRITO -->
+                <div class="bg-gray-100 p-1.5 rounded-xl border border-gray-300 flex gap-2 my-4">
+                    <button id="btn-delivery" onclick="setOrderType('Delivery')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md">🚴 Delivery</button>
+                    <button id="btn-pickup" onclick="setOrderType('Retiro')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black">🏪 Retiro en Local</button>
+                </div>
+
+                <div id="cart-items" class="py-2 space-y-3 max-h-60 overflow-y-auto text-xs">
+                    <p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>
+                </div>
+
+                <div id="distance-info-box" class="border-t border-gray-200 pt-3 text-xs text-gray-700 space-y-1">
+                    <div class="flex justify-between items-center"><span class="font-bold text-gray-900">Origen:</span><span class="text-[11px] text-gray-600">Altagracia, Caracas</span></div>
+                    <div class="flex justify-between items-center"><span class="font-bold text-gray-900">Distancia calculada:</span><span id="calculated-distance-text" class="font-bold text-dracarys-fire">0.0 km</span></div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-3 space-y-1 text-sm font-semibold mt-3">
+                    <div class="flex justify-between text-gray-600 text-xs"><span>Subtotal:</span><span id="subtotal-usd" class="font-bold text-gray-950">$0.00</span></div>
+                    <div id="delivery-cost-row" class="flex justify-between text-gray-600 text-xs"><span>Envío (Delivery Automático):</span><span id="delivery-cost-usd" class="font-bold text-gray-950">$0.00</span></div>
+                    <div class="flex justify-between text-dracarys-fire font-bold text-base pt-1 border-t"><span>Total ($ USD):</span><span id="total-usd" class="font-bold">$0.00</span></div>
+                    <div class="flex justify-between text-amber-900 font-bold text-xs"><span>Total (Bs BCV):</span><span id="total-bs">0.00 Bs</span></div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200 space-y-3 text-xs">
+                    <div><input type="text" id="cust-name" placeholder="Tu Nombre Completo *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none"></div>
+                    <div><input type="tel" id="cust-phone" placeholder="WhatsApp (Ej. 04127120538) *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none"></div>
+                    
+                    <div id="address-box" class="space-y-2 relative">
+                        <label class="block font-bold text-gray-800">Dirección Exacta de Entrega *</label>
+                        <input type="text" id="cust-address" oninput="handleAddressInput(this.value)" placeholder="Escribe tu zona/calle en Caracas para buscar..." class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                        <div id="address-suggestions" class="hidden absolute top-14 left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto"></div>
+                        <div class="space-y-1 mt-2">
+                            <div class="flex justify-between items-center text-[10px] text-gray-600 font-semibold">
+                                <span>📍 Mueve el pin o usa GPS (Calcula $2 / 2km):</span>
+                                <button type="button" onclick="getGPSLocation()" class="text-dracarys-fire hover:underline font-bold">🎯 Usar GPS</button>
+                            </div>
+                            <div id="delivery-map"></div>
+                            <input type="hidden" id="cust-coords" value="10.5100, -66.9150">
+                        </div>
+                    </div>
+
+                    <div>
+                        <select id="pay-method" onchange="updatePaymentInfo()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none">
+                            <option value="Pago Móvil">Pago Móvil (Banesco / BDV)</option>
+                            <option value="Wally Tech">Wally Tech</option>
+                            <option value="Binance Pay">Binance Pay (USDT)</option>
+                            <option value="Efectivo">Efectivo en Entrega</option>
+                        </select>
+                    </div>
+
+                    <div id="payment-details-box" class="bg-amber-50 border border-amber-300 p-2.5 rounded-lg text-[11px] text-amber-900 space-y-1"></div>
+
+                    <div><input type="text" id="pay-ref" placeholder="N° Referencia o Comprobante de Pago *" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg text-gray-900 focus:border-dracarys-gold outline-none"></div>
+
+                    <button id="btn-submit-order" onclick="submitOrder()" class="w-full bg-dracarys-fire hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition text-xs flex justify-center items-center gap-2 mt-2">
+                        <span>✅ Confirmar & Pagar</span>
+                    </button>
+                    <a href="https://wa.me/584127120538?text=Hola,%20necesito%20asesor%C3%ADa%20con%20mi%20pedido%20en%20Dracarys%20Soup" target="_blank" class="block text-center w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold py-2.5 rounded-xl shadow transition text-[11px]">💬 ¿Dudas con tu ubicación o pago? Escríbenos por WhatsApp</a>
+                </div>
+            </div>
+        </aside>
+    </main>
 </div>
 
 <!-- BARRA FLOTANTE FIJA PARA MÓVILES -->
 <div id="mobile-cart-bar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-black/95 border-t border-dracarys-gold p-3 z-40 flex justify-between items-center shadow-2xl">
-  <div>
-    <p class="text-[10px] text-gray-400">Total acumulado:</p>
-    <p class="font-bold text-dracarys-gold text-sm"><span id="mobile-total-usd">$0.00</span> <span class="text-xs text-gray-300">(<span id="mobile-total-bs">0.00 Bs</span>)</span></p>
-  </div>
-  <button onclick="scrollToCart()" class="bg-dracarys-fire hover:bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-lg">
-    <span>🛒 Ver Pedido</span>
-    <span id="mobile-cart-badge" class="bg-white text-dracarys-fire px-2 py-0.5 rounded-full font-extrabold text-[10px]">0</span>
-  </button>
+    <div>
+        <p class="text-[10px] text-gray-400">Total acumulado:</p>
+        <p class="font-bold text-dracarys-gold text-sm"><span id="mobile-total-usd">$0.00</span><span class="text-xs text-gray-300">(<span id="mobile-total-bs">0.00 Bs</span>)</span></p>
+    </div>
+    <button onclick="scrollToCart()" class="bg-dracarys-fire hover:bg-orange-600 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-lg">
+        <span>🛒 Ver Pedido</span>
+        <span id="mobile-cart-badge" class="bg-white text-dracarys-fire px-2 py-0.5 rounded-full font-extrabold text-[10px]">0</span>
+    </button>
 </div>
 
 <!-- 7. SUPER PANEL ADMIN CMS OMNIPOTENTE -->
 <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-  <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
-    <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-      <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Panel CMS Privado — Dracarys Soup</h3>
-      <button onclick="closeAdmin()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
+    <div class="bg-white max-w-4xl w-full p-7 rounded-2xl border border-gray-300 max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+            <h3 class="font-cinzel text-xl font-bold text-dracarys-gold">⚙️ Panel CMS Privado — Dracarys Soup</h3>
+            <button onclick="closeAdmin()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
+        </div>
+
+        <!-- LOGIN ADMIN -->
+        <div id="admin-login-box" class="space-y-3">
+            <p class="text-xs text-gray-600">Ingresa tus credenciales de administrador:</p>
+            <input type="email" id="admin-email" placeholder="Correo electrónico de administrador" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+            <input type="password" id="admin-pass" placeholder="Contraseña de Supabase" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
+            <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
+        </div>
+
+        <!-- CONTENIDO CMS CON NAVEGACIÓN DE PESTAÑAS -->
+        <div id="admin-panel-content" class="hidden space-y-6 text-xs">
+            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
+                <div class="flex items-center gap-2">
+                    <span class="font-cinzel font-bold text-amber-900">🔒 Sesión Autenticada</span>
+                    <span id="alarm-status-indicator" class="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">🔔 Alarma Activa</span>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos & Orden</button>
+                    <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
+                    <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Tasa & Horarios</button>
+                    <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos & Estatus</button>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS -->
+            <div id="admin-tab-products" class="space-y-6">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h4 class="font-bold text-gray-900">🍔 Gestión de Platos & Secuencia de Menú</h4>
+                        <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Plato Nuevo</button>
+                    </div>
+                    <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
+                        <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
+                        <input type="hidden" id="edit-id">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div class="md:col-span-2">
+                                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
+                                <input type="text" id="edit-name" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Orden (1, 2, 3...):</label>
+                                <input type="number" id="edit-sort-order" placeholder="Ej: 1" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold bg-amber-50">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Precio Oferta ($):</label>
+                                <input type="number" step="0.1" id="edit-price" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Precio Tachado ($):</label>
+                                <input type="number" step="0.1" id="edit-old-price" placeholder="Opcional" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
+                                <select id="edit-category" class="w-full border border-gray-300 p-1.5 rounded text-gray-900"></select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-700 mb-1">Etiqueta / Badge:</label>
+                                <input type="text" id="edit-badge" placeholder="Ej. 20% OFF" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
+                            </div>
+                            <div class="md:col-span-4">
+                                <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
+                                <textarea id="edit-desc" class="w-full border border-gray-300 p-1.5 rounded text-gray-950 h-16"></textarea>
+                            </div>
+                            <div class="md:col-span-4">
+                                <label class="block font-semibold text-gray-700 mb-1">📷 URL de Supabase Storage (Ej. https://...):</label>
+                                <input type="text" id="edit-img-url" placeholder="Pega aquí el enlace público de tu imagen en Supabase" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs">
+                            </div>
+                            <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-4">
+                                <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
+                                    <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery
+                                </label>
+                            </div>
+                        </div>
+                        <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2 rounded font-bold shadow mt-2">💾 Guardar Cambios en Supabase</button>
+                    </div>
+                    <div id="admin-product-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 2: GESTIÓN DE CATEGORÍAS -->
+            <div id="admin-tab-categories" class="space-y-4 hidden">
+                <h4 class="font-bold text-gray-900 border-b pb-2">📂 Gestión de Categorías del Menú</h4>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <div class="flex gap-2">
+                        <input type="text" id="new-category-name" placeholder="Nombre de la nueva categoría..." class="w-full border border-gray-300 p-2 rounded text-gray-900">
+                        <button onclick="createCategory()" class="bg-black text-white px-4 py-2 rounded font-bold shadow whitespace-nowrap">+ Crear Categoría</button>
+                    </div>
+                    <div id="admin-category-list" class="space-y-2 mt-4 max-h-48 overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: OPERACIONES, TASA Y HORARIOS -->
+            <div id="admin-tab-operations" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                        <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
+                        <div class="flex gap-2">
+                            <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
+                            <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar Tasa</button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                        <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-gray-800">Modo Lluvia / Retraso:</span>
+                            <button id="toggle-rain-btn" onclick="toggleRainMode()" class="px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow">Desactivado</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h4 class="font-bold text-dracarys-bronze">Control Manual de Apertura (Override):</h4>
+                    <div class="flex gap-2">
+                        <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border shadow-sm">🕒 Automático</button>
+                        <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border shadow-sm">🟢 Forzar Abierto</button>
+                        <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border shadow-sm">🔴 Forzar Cerrado</button>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h4 class="font-bold text-dracarys-bronze">📅 Configuración de Horarios Semanales:</h4>
+                    <div id="weekly-schedule-container" class="space-y-2 mt-2"></div>
+                    <button onclick="saveWeeklySchedule()" class="bg-black text-white px-4 py-2 rounded font-bold shadow text-xs mt-2">💾 Guardar Horarios</button>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: PEDIDOS CON CONSULTA OPTIMIZADA Y FECHA -->
+            <div id="admin-tab-orders" class="space-y-4 hidden">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
+                    <div class="flex gap-2">
+                        <button onclick="playAdminBeep()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-blue-700">🔊 Probar Alarma</button>
+                        <button onclick="stopAdminAlarm()" class="bg-amber-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-amber-700">🔕 Silenciar Alarma</button>
+                    </div>
+                </div>
+                <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
+                    <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-<!-- LOGIN ADMIN -->
-<div id="admin-login-box" class="space-y-3">
-  <p class="text-xs text-gray-600">Ingresa tus credenciales de administrador:</p>
-  <input type="email" id="admin-email" placeholder="Correo electrónico de administrador" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
-  <input type="password" id="admin-pass" placeholder="Contraseña de Supabase" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg text-gray-900 text-xs">
-  <button onclick="authAdmin()" class="w-full bg-black text-white py-2.5 rounded-lg font-bold text-xs shadow">Ingresar al CMS</button>
-</div>
-
-    <!-- CONTENIDO CMS CON NAVEGACIÓN DE PESTAÑAS -->
-    <div id="admin-panel-content" class="hidden space-y-6 text-xs">
-      <div class="flex justify-between items-center bg-amber-50 p-3 rounded-lg border border-amber-200">
-        <div class="flex items-center gap-2">
-          <span class="font-cinzel font-bold text-amber-900">🔒 Sesión Autenticada</span>
-          <span id="alarm-status-indicator" class="bg-emerald-600 text-white px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">🔔 Alarma Activa</span>
-        </div>
-        <div class="flex gap-2 flex-wrap">
-          <button onclick="switchAdminTab('products')" class="bg-black text-white px-3 py-1.5 rounded font-bold">🍔 Productos & Orden</button>
-          <button onclick="switchAdminTab('categories')" class="bg-gray-800 text-white px-3 py-1.5 rounded font-bold">📂 Categorías</button>
-          <button onclick="switchAdminTab('operations')" class="bg-amber-800 text-white px-3 py-1.5 rounded font-bold">⏰ Tasa & Horarios</button>
-          <button onclick="switchAdminTab('orders')" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold">📦 Pedidos & Estatus</button>
-        </div>
-      </div>
-
-      <!-- PESTAÑA 1: GESTIÓN DE PRODUCTOS -->
-      <div id="admin-tab-products" class="space-y-6">
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-          <div class="flex justify-between items-center border-b pb-2">
-            <h4 class="font-bold text-gray-900">🍔 Gestión de Platos & Secuencia de Menú</h4>
-            <button onclick="addNewProductPrompt()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow">+ Añadir Plato Nuevo</button>
-          </div>
-          
-          <div id="cms-edit-visual" class="bg-white p-3 rounded-lg border border-gray-300 space-y-3">
-            <h5 class="font-bold text-dracarys-gold">✏️ Editando: <span id="visual-edit-name" class="text-black">Selecciona un plato abajo</span></h5>
-            <input type="hidden" id="edit-id">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div class="md:col-span-2">
-                <label class="block font-semibold text-gray-700 mb-1">Nombre del Plato:</label>
-                <input type="text" id="edit-name" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Orden (1, 2, 3...):</label>
-                <input type="number" id="edit-sort-order" placeholder="Ej: 1" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold bg-amber-50">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Precio Oferta ($):</label>
-                <input type="number" step="0.1" id="edit-price" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 font-bold">
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Precio Tachado ($):</label>
-                <input type="number" step="0.1" id="edit-old-price" placeholder="Opcional" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
-              </div>
-              <div class="md:col-span-2">
-                <label class="block font-semibold text-gray-700 mb-1">Categoría:</label>
-                <select id="edit-category" class="w-full border border-gray-300 p-1.5 rounded text-gray-900"></select>
-              </div>
-              <div>
-                <label class="block font-semibold text-gray-700 mb-1">Etiqueta / Badge:</label>
-                <input type="text" id="edit-badge" placeholder="Ej. 20% OFF" class="w-full border border-gray-300 p-1.5 rounded text-gray-900">
-              </div>
-              <div class="md:col-span-4">
-                <label class="block font-semibold text-gray-700 mb-1">Descripción:</label>
-                <textarea id="edit-desc" class="w-full border border-gray-300 p-1.5 rounded text-gray-950 h-16"></textarea>
-              </div>
-              <div class="md:col-span-4">
-                <label class="block font-semibold text-gray-700 mb-1">📷 URL de Supabase Storage (Ej. https://...):</label>
-                <input type="text" id="edit-img-url" placeholder="Pega aquí el enlace público de tu imagen en Supabase" class="w-full border border-gray-300 p-1.5 rounded text-gray-900 bg-white text-xs">
-              </div>
-              <div class="flex items-center gap-4 pt-2 flex-wrap md:col-span-4">
-                <label class="flex items-center gap-2 font-semibold text-gray-800 cursor-pointer">
-                  <input type="checkbox" id="edit-free-delivery" class="w-4 h-4 text-emerald-600 rounded"> 🛵 Exonerar Delivery
-                </label>
-              </div>
-            </div>
-            <button onclick="saveVisualEdit()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-2 rounded font-bold shadow mt-2">💾 Guardar Cambios en Supabase</button>
-          </div>
-
-          <div id="admin-product-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
-        </div>
-      </div>
-
-      <!-- PESTAÑA 2: GESTIÓN DE CATEGORÍAS -->
-      <div id="admin-tab-categories" class="space-y-4 hidden">
-        <h4 class="font-bold text-gray-900 border-b pb-2">📂 Gestión de Categorías del Menú</h4>
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-          <div class="flex gap-2">
-            <input type="text" id="new-category-name" placeholder="Nombre de la nueva categoría..." class="w-full border border-gray-300 p-2 rounded text-gray-900">
-            <button onclick="createCategory()" class="bg-black text-white px-4 py-2 rounded font-bold shadow whitespace-nowrap">+ Crear Categoría</button>
-          </div>
-          <div id="admin-category-list" class="space-y-2 mt-4 max-h-48 overflow-y-auto"></div>
-        </div>
-      </div>
-
-      <!-- PESTAÑA 3: OPERACIONES, TASA Y HORARIOS -->
-      <div id="admin-tab-operations" class="space-y-6 hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-            <h4 class="font-bold text-dracarys-bronze">Tasa BCV (Bs/$):</h4>
-            <div class="flex gap-2">
-              <input type="number" step="0.1" id="input-bcv" value="889.25" class="w-full bg-white border border-gray-300 p-1.5 rounded text-right text-gray-900 font-bold">
-              <button onclick="saveGeneralSettings()" class="bg-dracarys-fire text-white px-3 py-1.5 rounded font-bold shadow whitespace-nowrap">Guardar Tasa</button>
-            </div>
-          </div>
-          
-          <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-            <h4 class="font-bold text-dracarys-bronze">Control de Emergencia Climática:</h4>
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-gray-800">Modo Lluvia / Retraso:</span>
-              <button id="toggle-rain-btn" onclick="toggleRainMode()" class="px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow">Desactivado</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-          <h4 class="font-bold text-dracarys-bronze">Control Manual de Apertura (Override):</h4>
-          <div class="flex gap-2">
-            <button onclick="setStoreOverride('auto')" id="btn-override-auto" class="flex-1 py-2 rounded font-bold border shadow-sm">🕒 Automático</button>
-            <button onclick="setStoreOverride('open')" id="btn-override-open" class="flex-1 py-2 rounded font-bold border shadow-sm">🟢 Forzar Abierto</button>
-            <button onclick="setStoreOverride('closed')" id="btn-override-closed" class="flex-1 py-2 rounded font-bold border shadow-sm">🔴 Forzar Cerrado</button>
-          </div>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
-          <h4 class="font-bold text-dracarys-bronze">📅 Configuración de Horarios Semanales:</h4>
-          <div id="weekly-schedule-container" class="space-y-2 mt-2"></div>
-          <button onclick="saveWeeklySchedule()" class="bg-black text-white px-4 py-2 rounded font-bold shadow text-xs mt-2">💾 Guardar Horarios</button>
-        </div>
-      </div>
-
-      <!-- PESTAÑA 4: PEDIDOS CON CONSULTA OPTIMIZADA -->
-      <div id="admin-tab-orders" class="space-y-4 hidden">
-        <div class="flex justify-between items-center border-b pb-2">
-          <h4 class="font-bold text-gray-900">📦 Gestión & Ciclo de Vida de Pedidos</h4>
-          <div class="flex gap-2">
-            <button onclick="playAdminBeep()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-blue-700">🔊 Probar Alarma</button>
-            <button onclick="stopAdminAlarm()" class="bg-amber-600 text-white px-3 py-1 rounded text-xs font-bold shadow hover:bg-amber-700">🔕 Silenciar Alarma</button>
-          </div>
-        </div>
-        <div id="orders-list-container" class="space-y-3 max-h-96 overflow-y-auto">
-          <p class="text-gray-500 italic text-center py-4">Cargando pedidos desde Supabase...</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- MODAL LEGAL -->
 <div id="legal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-  <div class="bg-white max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl">
-    <div class="flex justify-between items-center border-b pb-2">
-      <h3 id="legal-modal-title" class="font-cinzel text-lg font-bold text-dracarys-fire">Información Legal</h3>
-      <button onclick="closeLegalModal()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
+    <div class="bg-white max-w-2xl w-full p-6 rounded-2xl space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b pb-2">
+            <h3 id="legal-modal-title" class="font-cinzel text-lg font-bold text-dracarys-fire">Información Legal</h3>
+            <button onclick="closeLegalModal()" class="bg-red-100 hover:bg-red-200 text-red-700 font-extrabold text-lg w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer">✖</button>
+        </div>
+        <div id="legal-modal-body" class="text-xs text-gray-700 space-y-3 leading-relaxed max-h-80 overflow-y-auto"></div>
     </div>
-    <div id="legal-modal-body" class="text-xs text-gray-700 space-y-3 leading-relaxed max-h-80 overflow-y-auto"></div>
-  </div>
 </div>
 
 <!-- 8. FOOTER PROFESIONAL CON ACCESO DISCRETO AL CMS -->
 <footer class="bg-black text-gray-400 py-10 px-4 mt-16 border-t border-dracarys-border text-xs">
-  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-    <div class="space-y-2">
-      <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
-      <p class="font-semibold text-gray-300">CORPORACION GELEMAK C.A.</p>
-      <p class="text-gray-500">RIF: J-41251218-8</p>
-      <p class="text-gray-400">Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div class="space-y-2">
+            <h3 class="font-cinzel font-bold text-dracarys-gold text-sm">DRACARYS SOUP</h3>
+            <p class="font-semibold text-gray-300">CORPORACION GELEMAK C.A.</p>
+            <p class="text-gray-500">RIF: J-41251218-8</p>
+            <p class="text-gray-400">Auténticas sopas a la leña, hervidos legendarios y parrillas artesanales en Caracas.</p>
+        </div>
+        <div class="space-y-2">
+            <h4 class="font-bold text-white">Enlaces de Interés & Términos</h4>
+            <div class="flex flex-col gap-1">
+                <a href="#" onclick="showLegalModal('delivery')" class="hover:text-dracarys-gold">Políticas de Delivery & Envíos</a>
+                <a href="#" onclick="showLegalModal('freshness')" class="hover:text-dracarys-gold">Garantía de Frescura & Alérgenos</a>
+                <a href="#" onclick="showLegalModal('terms')" class="hover:text-dracarys-gold">Términos del Servicio</a>
+            </div>
+        </div>
+        <div class="space-y-2">
+            <h4 class="font-bold text-white">Ubicación & Contacto</h4>
+            <p>📍 Caracas, Venezuela</p>
+            <p>📱 WhatsApp: 0412-7120538 / 0414-2920866</p>
+            <p>✉️ Correo: <a href="mailto:corporaciongelemak@gmail.com" class="hover:underline text-gray-300">corporaciongelemak@gmail.com</a></p>
+            <p class="mt-2"><a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram: @dracarysoup</a></p>
+            <p class="text-[10px] text-gray-600 mt-4">© 2026 Dracarys Soup. Todos los derechos reservados. | <button onclick="openAdmin()" class="text-gray-700 hover:text-gray-400 transition underline cursor-pointer">Administración</button></p>
+        </div>
     </div>
-    <div class="space-y-2">
-      <h4 class="font-bold text-white">Enlaces de Interés & Términos</h4>
-      <div class="flex flex-col gap-1">
-        <a href="#" onclick="showLegalModal('delivery')" class="hover:text-dracarys-gold">Políticas de Delivery & Envíos</a>
-        <a href="#" onclick="showLegalModal('freshness')" class="hover:text-dracarys-gold">Garantía de Frescura & Alérgenos</a>
-        <a href="#" onclick="showLegalModal('terms')" class="hover:text-dracarys-gold">Términos del Servicio</a>
-      </div>
-    </div>
-    <div class="space-y-2">
-      <h4 class="font-bold text-white">Ubicación & Contacto</h4>
-      <p>📍 Caracas, Venezuela</p>
-      <p>📱 WhatsApp: 0412-7120538 / 0414-2920866</p>
-      <p>✉️ Correo: <a href="mailto:corporaciongelemak@gmail.com" class="hover:underline text-gray-300">corporaciongelemak@gmail.com</a></p>
-      <p class="mt-2"><a href="https://www.instagram.com/dracarysoup/?hl=es" target="_blank" class="text-dracarys-gold hover:underline font-bold">📸 Instagram: @dracarysoup</a></p>
-      <p class="text-[10px] text-gray-600 mt-4">
-        © 2026 Dracarys Soup. Todos los derechos reservados. | 
-        <button onclick="openAdmin()" class="text-gray-700 hover:text-gray-400 transition underline cursor-pointer">Administración</button>
-      </p>
-    </div>
-  </div>
 </footer>
 
-<!-- SCRIPT MASTER CON CONSULTAS OPTIMIZADAS Y LÍMITE DE PEDIDOS -->
+<!-- SCRIPT MASTER CON FECHAS Y CONSULTAS OPTIMIZADAS -->
 <script>
-  const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = 'https://ymuzrozqdjsyumoaowqp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltdXpyb3pxZGpzeXVtb2Fvd3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzODA0OTQsImV4cCI6MjEwODk1NjQ5NH0.7myUbu9yFtLZ8Oi-pi3pD5S-n2jN0dR7wTGhH_-c2Gs';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const STORE_LAT = 10.5100;
-  const STORE_LNG = -66.9150;
-
-  let categories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
-  let products = [];
-  let bcvRate = 889.25;
-  let isRainModeActive = false;
-  let storeOverride = 'auto'; 
-  let weeklySchedule = {
+const STORE_LAT = 10.5100;
+const STORE_LNG = -66.9150;
+let categories = ['Sopas, Hervidos & Parrillas', 'Salchipapas Mix', 'Bebidas & Postres'];
+let products = [];
+let bcvRate = 889.25;
+let isRainModeActive = false;
+let storeOverride = 'auto'; 
+let weeklySchedule = {
     0: { active: true, open: '11:00', close: '21:00', name: 'Domingo' },
     1: { active: true, open: '11:00', close: '21:00', name: 'Lunes' },
     2: { active: true, open: '11:00', close: '21:00', name: 'Martes' },
@@ -451,697 +391,547 @@
     4: { active: true, open: '11:00', close: '21:00', name: 'Jueves' },
     5: { active: true, open: '11:00', close: '21:00', name: 'Viernes' },
     6: { active: true, open: '11:00', close: '21:00', name: 'Sábado' }
-  };
-  let isAdminAuthenticated = false;
-  let cart = [];
-  let currentFilter = 'all';
-  let orderType = 'Delivery';
-  let deliveryMap = null;
-  let deliveryMarker = null;
-  let calculatedDistanceKm = 0;
-  let calculatedDeliveryCostUSD = 2.00;
-  let searchTimeout = null;
+};
+let isAdminAuthenticated = false;
+let cart = [];
+let currentFilter = 'all';
+let orderType = 'Delivery';
+let deliveryMap = null;
+let deliveryMarker = null;
+let calculatedDistanceKm = 0;
+let calculatedDeliveryCostUSD = 2.00;
+let searchTimeout = null;
 
-  // SINTETIZADOR DE ALARMA SONORA (SOLO PARA ADMIN)
-  let audioCtx = null;
-  let alarmInterval = null;
-  let lastKnownMaxOrderId = 0;
+// SINTETIZADOR DE ALARMA SONORA (SOLO PARA ADMIN)
+let audioCtx = null;
+let alarmInterval = null;
+let lastKnownMaxOrderId = 0;
 
-  function playAdminBeep() {
-    if (!isAdminAuthenticated) return; // LOS CLIENTES NUNCA ESCUCHAN NADA
+function playAdminBeep() {
+    if (!isAdminAuthenticated) return; 
     try {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Tono agudo de alerta
-      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.6); // Dura 0.6s
+        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.6); 
     } catch(e) {
-      console.log('Audio no soportado automáticamente', e);
+        console.log('Audio no soportado automáticamente', e);
     }
-  }
+}
 
-  function startAdminAlarm() {
+function startAdminAlarm() {
     if (alarmInterval || !isAdminAuthenticated) return;
     playAdminBeep();
-    alarmInterval = setInterval(() => {
-      playAdminBeep();
-    }, 1500); // Pitido cada 1.5 segundos hasta que el admin presione recibir o silenciar
-  }
+    alarmInterval = setInterval(() => { playAdminBeep(); }, 1500); 
+}
 
-  function stopAdminAlarm() {
-    if (alarmInterval) {
-      clearInterval(alarmInterval);
-      alarmInterval = null;
-    }
-  }
+function stopAdminAlarm() {
+    if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
+}
 
-  // SISTEMA INFALIBLE DE DETECCIÓN AUTOMÁTICA (POLLING CADA 8 SEGUNDOS)
-  async function pollForNewOrders() {
+// SISTEMA INFALIBLE DE DETECCIÓN AUTOMÁTICA (POLLING CADA 8 SEGUNDOS)
+async function pollForNewOrders() {
     if (!isAdminAuthenticated) return;
     try {
-      const { data, error } = await supabaseClient.from('orders').select('id').order('id', { ascending: false }).limit(1);
-      if (data && data.length > 0) {
-        const currentMaxId = data[0].id;
-        if (lastKnownMaxOrderId === 0) {
-          lastKnownMaxOrderId = currentMaxId; // Sincroniza al abrir el panel
-        } else if (currentMaxId > lastKnownMaxOrderId) {
-          lastKnownMaxOrderId = currentMaxId;
-          startAdminAlarm();
-          loadOrdersInCMS();
+        const { data, error } = await supabaseClient.from('orders').select('id').order('id', { ascending: false }).limit(1);
+        if (data && data.length > 0) {
+            const currentMaxId = data[0].id;
+            if (lastKnownMaxOrderId === 0) {
+                lastKnownMaxOrderId = currentMaxId; 
+            } else if (currentMaxId > lastKnownMaxOrderId) {
+                lastKnownMaxOrderId = currentMaxId;
+                startAdminAlarm();
+                loadOrdersInCMS();
+            }
         }
-      }
     } catch(e) {}
-  }
+}
 
-  function scrollToCart() {
+function scrollToCart() {
     const cartElement = document.getElementById('cart-section');
-    if (cartElement) {
-      cartElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
+    if (cartElement) { cartElement.scrollIntoView({ behavior: 'smooth' }); }
+}
 
-  function isCaracasOpen() {
+function isCaracasOpen() {
     if (storeOverride === 'open') return true;
     if (storeOverride === 'closed') return false;
-
     const now = new Date();
     const caracasHours = (now.getUTCHours() - 4 + 24) % 24;
     const caracasMinutes = now.getUTCMinutes();
     const currentTimeMinutes = caracasHours * 60 + caracasMinutes;
     const currentDay = now.getDay();
-
     const daySchedule = weeklySchedule[currentDay];
     if (!daySchedule || !daySchedule.active) return false;
-
     const [openH, openM] = daySchedule.open.split(':').map(Number);
     const [closeH, closeM] = daySchedule.close.split(':').map(Number);
     const openTimeMinutes = openH * 60 + openM;
     const closeTimeMinutes = closeH * 60 + closeM;
-
     return currentTimeMinutes >= openTimeMinutes && currentTimeMinutes < closeTimeMinutes;
-  }
+}
 
-  function checkStoreStatus() {
+function checkStoreStatus() {
     const badge = document.getElementById('kitchen-badge');
     const submitBtn = document.getElementById('btn-submit-order');
     const open = isCaracasOpen();
     if (open) {
-      badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600";
-      badge.innerText = storeOverride === 'open' ? "🟢 ABIERTO (Forzado)" : "🟢 ABIERTO";
-      if (submitBtn) submitBtn.disabled = false;
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-emerald-900 text-emerald-300 border border-emerald-600";
+        badge.innerText = storeOverride === 'open' ? "🟢 ABIERTO (Forzado)" : "🟢 ABIERTO";
+        if (submitBtn) submitBtn.disabled = false;
     } else {
-      badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
-      badge.innerText = storeOverride === 'closed' ? "🔴 CERRADO (Forzado)" : "🔴 CERRADO (Fuera de Horario)";
+        badge.className = "px-2.5 py-0.5 rounded-full font-bold bg-red-900 text-red-300 border border-red-600";
+        badge.innerText = storeOverride === 'closed' ? "🔴 CERRADO (Forzado)" : "🔴 CERRADO (Fuera de Horario)";
     }
-  }
+}
 
-  function calculateDistanceInKm(lat1, lon1, lat2, lon2) {
+function calculateDistanceInKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
-  }
+}
 
-  async function updateDeliveryCostFromCoords(lat, lng) {
+async function updateDeliveryCostFromCoords(lat, lng) {
     calculatedDistanceKm = calculateDistanceInKm(STORE_LAT, STORE_LNG, lat, lng);
-    
     let rawCost = Math.ceil(calculatedDistanceKm);
     if (rawCost < 2) rawCost = 2;
     calculatedDeliveryCostUSD = rawCost;
-
     const hasFreeDeliveryItem = cart.some(item => item.free_delivery === true);
-    if (hasFreeDeliveryItem) {
-      calculatedDeliveryCostUSD = 0.00;
-    }
-
+    if (hasFreeDeliveryItem) { calculatedDeliveryCostUSD = 0.00; }
     document.getElementById('calculated-distance-text').innerText = `${calculatedDistanceKm.toFixed(1)} km ($${calculatedDeliveryCostUSD.toFixed(2)})`;
     document.getElementById('cust-coords').value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-      const data = await res.json();
-      if (data && data.display_name) {
-        document.getElementById('cust-address').value = data.display_name;
-      } else {
-        document.getElementById('cust-address').value = `Ubicación GPS [${lat.toFixed(5)}, ${lng.toFixed(5)}]`;
-      }
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+        const data = await res.json();
+        if (data && data.display_name) {
+            document.getElementById('cust-address').value = data.display_name;
+        } else {
+            document.getElementById('cust-address').value = `Ubicación GPS [${lat.toFixed(5)}, ${lng.toFixed(5)}]`;
+        }
     } catch(e) {
-      document.getElementById('cust-address').value = `Ubicación GPS [${lat.toFixed(5)}, ${lng.toFixed(5)}]`;
+        document.getElementById('cust-address').value = `Ubicación GPS [${lat.toFixed(5)}, ${lng.toFixed(5)}]`;
     }
-
     updateCart();
-  }
+}
 
-  function handleAddressInput(query) {
+function handleAddressInput(query) {
     clearTimeout(searchTimeout);
     const suggestionsBox = document.getElementById('address-suggestions');
-    if (query.trim().length < 3) {
-      suggestionsBox.classList.add('hidden');
-      return;
-    }
-
+    if (query.trim().length < 3) { suggestionsBox.classList.add('hidden'); return; }
     searchTimeout = setTimeout(() => {
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Caracas, Venezuela')}&limit=5`)
-        .then(res => res.json())
-        .then(data => {
-          suggestionsBox.innerHTML = '';
-          if (data && data.length > 0) {
-            data.forEach(item => {
-              const div = document.createElement('div');
-              div.className = 'p-2 text-xs text-gray-800 cursor-pointer border-b border-gray-100 suggestion-item';
-              div.innerText = item.display_name;
-              div.onclick = () => selectAddressSuggestion(item.display_name, parseFloat(item.lat), parseFloat(item.lon));
-              suggestionsBox.appendChild(div);
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Caracas, Venezuela')}&limit=5`)
+            .then(res => res.json())
+            .then(data => {
+                suggestionsBox.innerHTML = '';
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'p-2 text-xs text-gray-800 cursor-pointer border-b border-gray-100 suggestion-item';
+                        div.innerText = item.display_name;
+                        div.onclick = () => selectAddressSuggestion(item.display_name, parseFloat(item.lat), parseFloat(item.lon));
+                        suggestionsBox.appendChild(div);
+                    });
+                    suggestionsBox.classList.remove('hidden');
+                } else {
+                    suggestionsBox.classList.add('hidden');
+                }
             });
-            suggestionsBox.classList.remove('hidden');
-          } else {
-            suggestionsBox.classList.add('hidden');
-          }
-        });
     }, 400);
-  }
+}
 
-  function selectAddressSuggestion(name, lat, lng) {
+function selectAddressSuggestion(name, lat, lng) {
     document.getElementById('cust-address').value = name;
     document.getElementById('address-suggestions').classList.add('hidden');
     if (deliveryMap && deliveryMarker) {
-      deliveryMap.setView([lat, lng], 15);
-      deliveryMarker.setLatLng([lat, lng]);
+        deliveryMap.setView([lat, lng], 15);
+        deliveryMarker.setLatLng([lat, lng]);
     }
     updateDeliveryCostFromCoords(lat, lng);
-  }
+}
 
-  async function loadSettingsFromSupabase() {
+async function loadSettingsFromSupabase() {
     const { data } = await supabaseClient.from('settings').select('*');
     if (data) {
-      const bcv = data.find(s => s.key === 'bcv_rate');
-      const rain = data.find(s => s.key === 'rain_mode');
-      const override = data.find(s => s.key === 'store_override');
-      const schedule = data.find(s => s.key === 'weekly_schedule');
-      const catData = data.find(s => s.key === 'categories');
-
-      if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
-      if (rain && rain.value === 'true') {
-        isRainModeActive = true;
-        document.getElementById('rain-alert-bar').classList.remove('hidden');
-      }
-      if (override && override.value) {
-        storeOverride = override.value;
-        updateOverrideButtonsUI();
-      }
-      if (schedule && schedule.value) {
-        try { weeklySchedule = JSON.parse(schedule.value); } catch(e){}
-      }
-      if (catData && catData.value) {
-        try { categories = JSON.parse(catData.value); } catch(e){}
-      }
+        const bcv = data.find(s => s.key === 'bcv_rate');
+        const rain = data.find(s => s.key === 'rain_mode');
+        const override = data.find(s => s.key === 'store_override');
+        const schedule = data.find(s => s.key === 'weekly_schedule');
+        const catData = data.find(s => s.key === 'categories');
+        if (bcv && bcv.value) bcvRate = parseFloat(bcv.value);
+        if (rain && rain.value === 'true') {
+            isRainModeActive = true;
+            document.getElementById('rain-alert-bar').classList.remove('hidden');
+        }
+        if (override && override.value) {
+            storeOverride = override.value;
+            updateOverrideButtonsUI();
+        }
+        if (schedule && schedule.value) { try { weeklySchedule = JSON.parse(schedule.value); } catch(e){} }
+        if (catData && catData.value) { try { categories = JSON.parse(catData.value); } catch(e){} }
     }
     document.getElementById('bcv-display').innerText = bcvRate.toFixed(2);
     const inputBcv = document.getElementById('input-bcv');
     if (inputBcv) inputBcv.value = bcvRate;
-    
     renderCategoriesNav();
     checkStoreStatus();
     updateCart();
-  }
+}
 
-  async function loadProductsFromSupabase() {
+async function loadProductsFromSupabase() {
     const { data } = await supabaseClient.from('menu_items').select('*');
     if (data && data.length > 0) {
-      products = data.map(item => ({
-        id: item.id,
-        name: item.name,
-        sort_order: item.sort_order || 99,
-        category: item.category || 'Sopas, Hervidos & Parrillas',
-        desc: item.description || '',
-        price: Number(item.price),
-        old_price: item.old_price ? Number(item.old_price) : null,
-        badge: item.badge || null,
-        free_delivery: item.free_delivery || false,
-        available: item.available !== false,
-        img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
-      }));
-
-      products.sort((a, b) => a.sort_order - b.sort_order);
+        products = data.map(item => ({
+            id: item.id,
+            name: item.name,
+            sort_order: item.sort_order || 99,
+            category: item.category || 'Sopas, Hervidos & Parrillas',
+            desc: item.description || '',
+            price: Number(item.price),
+            old_price: item.old_price ? Number(item.old_price) : null,
+            badge: item.badge || null,
+            free_delivery: item.free_delivery || false,
+            available: item.available !== false,
+            img: item.image_url || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400'
+        }));
+        products.sort((a, b) => a.sort_order - b.sort_order);
     }
     renderProducts('all');
     if (isAdminAuthenticated) {
-      renderAdminProducts();
-      renderAdminCategories();
-      populateCategorySelect();
-      renderWeeklyScheduleUI();
+        renderAdminProducts();
+        renderAdminCategories();
+        populateCategorySelect();
+        renderWeeklyScheduleUI();
     }
-  }
+}
 
-  function renderCategoriesNav() {
+function renderCategoriesNav() {
     const navBar = document.getElementById('category-nav-bar');
     navBar.innerHTML = `<button onclick="renderProducts('all')" class="cat-btn ${currentFilter === 'all' ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg font-bold whitespace-nowrap shadow border border-gray-300">🔥 Todo el Menú</button>`;
     categories.forEach(cat => {
-      navBar.innerHTML += `<button onclick="renderProducts('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">${cat}</button>`;
+        navBar.innerHTML += `<button onclick="renderProducts('${cat}')" class="cat-btn ${currentFilter === cat ? 'bg-black text-white' : 'bg-white/95 text-gray-900 font-bold'} px-4 py-2 rounded-lg border border-gray-300 whitespace-nowrap shadow-sm">${cat}</button>`;
     });
-  }
+}
 
-  function renderProducts(filterCat = 'all') {
+function renderProducts(filterCat = 'all') {
     currentFilter = filterCat;
     renderCategoriesNav();
     const grid = document.getElementById('catalog-grid');
     document.getElementById('current-category-title').innerText = filterCat === 'all' ? '🔥 Todo el Menú' : filterCat;
     grid.innerHTML = '';
-
     let filtered = filterCat === 'all' ? products : products.filter(p => p.category === filterCat);
     if (filtered.length === 0) {
-      grid.innerHTML = '<p class="text-gray-300 italic col-span-2 text-center py-10 bg-black/40 rounded-xl">No hay productos disponibles en esta categoría.</p>';
-      return;
+        grid.innerHTML = '<p class="text-gray-300 italic col-span-2 text-center py-10 bg-black/40 rounded-xl">No hay productos disponibles en esta categoría.</p>';
+        return;
     }
-
     filtered.forEach(p => {
-      const bsPrice = (p.price * bcvRate).toFixed(2);
-      const isAvailable = p.available !== false;
-
-      grid.innerHTML += `
-        <div class="dracarys-card p-4 gap-3 relative flex ${!isAvailable ? 'opacity-60 bg-gray-200' : ''}">
-          <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}">
-          <div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between">
-            <div>
-              ${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}
-              ${p.free_delivery ? `<span class="bg-emerald-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🛵 DELIVERY GRATIS</span>` : ''}
-              ${!isAvailable ? `<span class="bg-red-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🔴 AGOTADO</span>` : ''}
-              <h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3>
-              <p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p>
-            </div>
-            <div class="flex justify-between items-end mt-1">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-black text-gray-950 text-sm">$${p.price.toFixed(2)}</span>
-                  ${p.old_price ? `<span class="text-gray-400 line-through text-xs">$${p.old_price.toFixed(2)}</span>` : ''}
-                </div>
-                <span class="block text-[10px] text-gray-500">${bsPrice} Bs</span>
-              </div>
-              ${isAvailable ? 
-                `<button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">+ Añadir</button>` :
-                `<span class="text-red-700 font-bold text-[11px]">No disponible</span>`
-              }
-            </div>
-          </div>
-        </div>
-      `;
+        const bsPrice = (p.price * bcvRate).toFixed(2);
+        const isAvailable = p.available !== false;
+        grid.innerHTML += `<div class="dracarys-card p-4 gap-3 relative flex ${!isAvailable ? 'opacity-60 bg-gray-200' : ''}"><img src="${p.img}" class="w-24 h-24 rounded-xl object-cover border flex-shrink-0" alt="${p.name}"><div class="flex-grow text-xs space-y-1.5 flex flex-col justify-between"><div>${p.badge ? `<span class="bg-amber-500 text-black font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">${p.badge}</span>` : ''}${p.free_delivery ? `<span class="bg-emerald-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🛵 DELIVERY GRATIS</span>` : ''}${!isAvailable ? `<span class="bg-red-600 text-white font-extrabold text-[10px] px-1.5 py-0.5 rounded mr-1.5">🔴 AGOTADO</span>` : ''}<h3 class="font-bold text-gray-950 text-sm line-clamp-1">${p.name}</h3><p class="text-gray-600 text-[11px] line-clamp-2">${p.desc}</p></div><div class="flex justify-between items-end mt-1"><div><div class="flex items-center gap-2"><span class="font-black text-gray-950 text-sm">$${p.price.toFixed(2)}</span>${p.old_price ? `<span class="text-gray-400 line-through text-xs">$${p.old_price.toFixed(2)}</span>` : ''}</div><span class="block text-[10px] text-gray-500">${bsPrice} Bs</span></div>${isAvailable ? `<button onclick="addToCart(${p.id})" class="bg-black hover:bg-dracarys-fire text-white px-3 py-1.5 rounded-lg shadow-sm font-bold transition">+ Añadir</button>` :`<span class="text-red-700 font-bold text-[11px]">No disponible</span>`}</div></div></div>`;
     });
-  }
+}
 
-  function setOrderType(type) {
+function setOrderType(type) {
     orderType = type;
     document.getElementById('btn-delivery').className = type === 'Delivery' ? 'flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
     document.getElementById('btn-pickup').className = type === 'Retiro' ? 'flex-1 py-2 rounded-lg font-bold text-xs transition-all bg-dracarys-fire text-white shadow-md' : 'flex-1 py-2 rounded-lg font-bold text-xs transition-all text-gray-700 hover:text-black';
-    
     document.getElementById('distance-info-box').style.display = type === 'Delivery' ? 'block' : 'none';
     document.getElementById('delivery-cost-row').style.display = type === 'Delivery' ? 'flex' : 'none';
     document.getElementById('address-box').style.display = type === 'Delivery' ? 'block' : 'none';
     updateCart();
+    if (type === 'Delivery' && !deliveryMap) { setTimeout(initDeliveryMap, 300); }
+}
 
-    if (type === 'Delivery' && !deliveryMap) {
-      setTimeout(initDeliveryMap, 300);
-    }
-  }
-
-  function initDeliveryMap() {
+function initDeliveryMap() {
     const mapContainer = document.getElementById('delivery-map');
     if (!mapContainer || deliveryMap) return;
-
     mapContainer.style.height = "190px";
     mapContainer.style.width = "100%";
-
     deliveryMap = L.map('delivery-map').setView([STORE_LAT, STORE_LNG], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(deliveryMap);
-
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(deliveryMap);
     deliveryMarker = L.marker([STORE_LAT, STORE_LNG], { draggable: true }).addTo(deliveryMap);
     updateDeliveryCostFromCoords(STORE_LAT, STORE_LNG);
-
     deliveryMarker.on('dragend', function() {
-      const pos = deliveryMarker.getLatLng();
-      updateDeliveryCostFromCoords(pos.lat, pos.lng);
+        const pos = deliveryMarker.getLatLng();
+        updateDeliveryCostFromCoords(pos.lat, pos.lng);
     });
-
     deliveryMap.on('click', function(e) {
-      deliveryMarker.setLatLng(e.latlng);
-      updateDeliveryCostFromCoords(e.latlng.lat, e.latlng.lng);
+        deliveryMarker.setLatLng(e.latlng);
+        updateDeliveryCostFromCoords(e.latlng.lat, e.latlng.lng);
     });
-
     setTimeout(() => { deliveryMap.invalidateSize(); }, 200);
-  }
+}
 
-  function getGPSLocation() {
+function getGPSLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        if (deliveryMap && deliveryMarker) {
-          deliveryMap.setView([lat, lng], 15);
-          deliveryMarker.setLatLng([lat, lng]);
-          updateDeliveryCostFromCoords(lat, lng);
-          alert('¡Ubicación GPS fijada y tarifa calculada!');
-        }
-      }, () => {
-        alert('No se pudo obtener el GPS automáticamente. Puedes mover el marcador en el mapa.');
-      });
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            if (deliveryMap && deliveryMarker) {
+                deliveryMap.setView([lat, lng], 15);
+                deliveryMarker.setLatLng([lat, lng]);
+                updateDeliveryCostFromCoords(lat, lng);
+                alert('¡Ubicación GPS fijada y tarifa calculada!');
+            }
+        }, () => {
+            alert('No se pudo obtener el GPS automáticamente. Puedes mover el marcador en el mapa.');
+        });
     }
-  }
+}
 
-  function addToCart(id) {
+function addToCart(id) {
     const p = products.find(item => item.id === id);
     if (!p || !p.available) return;
     const existing = cart.find(item => item.id === id);
     if (existing) { existing.qty += 1; } else { cart.push({ ...p, qty: 1 }); }
     updateCart();
-  }
+}
 
-  function changeQty(index, delta) {
+function changeQty(index, delta) {
     cart[index].qty += delta;
     if (cart[index].qty <= 0) cart.splice(index, 1);
     updateCart();
-  }
+}
 
-  function updateCart() {
+function updateCart() {
     const container = document.getElementById('cart-items');
     const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
     document.getElementById('cart-badge').innerText = totalQty;
     document.getElementById('mobile-cart-badge').innerText = totalQty;
-
     if (cart.length === 0) {
-      container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>';
-      document.getElementById('subtotal-usd').innerText = '$0.00';
-      document.getElementById('delivery-cost-usd').innerText = '$0.00';
-      document.getElementById('total-usd').innerText = '$0.00';
-      document.getElementById('total-bs').innerText = '0.00 Bs';
-      document.getElementById('mobile-total-usd').innerText = '$0.00';
-      document.getElementById('mobile-total-bs').innerText = '0.00 Bs';
-      return;
+        container.innerHTML = '<p class="text-gray-500 italic text-center py-6">Tu caldero está vacío...</p>';
+        document.getElementById('subtotal-usd').innerText = '$0.00';
+        document.getElementById('delivery-cost-usd').innerText = '$0.00';
+        document.getElementById('total-usd').innerText = '$0.00';
+        document.getElementById('total-bs').innerText = '0.00 Bs';
+        document.getElementById('mobile-total-usd').innerText = '$0.00';
+        document.getElementById('mobile-total-bs').innerText = '0.00 Bs';
+        return;
     }
-
     container.innerHTML = '';
     let subtotal = 0;
     cart.forEach((item, index) => {
-      subtotal += item.price * item.qty;
-      container.innerHTML += `
-        <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
-          <div class="pr-2 truncate max-w-[150px]">
-            <p class="font-bold text-gray-900 text-[11px]">${item.name}</p>
-            <p class="text-dracarys-fire font-semibold text-[10px]">$${item.price.toFixed(2)} x ${item.qty}</p>
-          </div>
-          <div class="flex items-center gap-1">
-            <button onclick="changeQty(${index}, -1)" class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold">-</button>
-            <span class="font-bold text-xs px-1">${item.qty}</span>
-            <button onclick="changeQty(${index}, 1)" class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold">+</button>
-          </div>
-        </div>
-      `;
+        subtotal += item.price * item.qty;
+        container.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200"><div class="pr-2 truncate max-w-[150px]"><p class="font-bold text-gray-900 text-[11px]">${item.name}</p><p class="text-dracarys-fire font-semibold text-[10px]">$${item.price.toFixed(2)} x ${item.qty}</p></div><div class="flex items-center gap-1"><button onclick="changeQty(${index}, -1)" class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold">-</button><span class="font-bold text-xs px-1">${item.qty}</span><button onclick="changeQty(${index}, 1)" class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold">+</button></div></div>`;
     });
-
     const hasFreeDelivery = cart.some(item => item.free_delivery === true);
     const finalDelivery = (orderType === 'Delivery' && !hasFreeDelivery) ? calculatedDeliveryCostUSD : 0.00;
     const totalUSD = subtotal + finalDelivery;
     const totalBS = totalUSD * bcvRate;
-
     document.getElementById('subtotal-usd').innerText = `$${subtotal.toFixed(2)}`;
     document.getElementById('delivery-cost-usd').innerText = hasFreeDelivery && orderType === 'Delivery' ? '¡EXONERADO ($0.00)!' : `$${finalDelivery.toFixed(2)}`;
     document.getElementById('total-usd').innerText = `$${totalUSD.toFixed(2)}`;
     document.getElementById('total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
-
     document.getElementById('mobile-total-usd').innerText = `$${totalUSD.toFixed(2)}`;
     document.getElementById('mobile-total-bs').innerText = `${totalBS.toFixed(2)} Bs`;
-  }
+}
 
-  function updatePaymentInfo() {
+function updatePaymentInfo() {
     const method = document.getElementById('pay-method').value;
     const box = document.getElementById('payment-details-box');
     if (!box) return;
-    
     if (method === 'Pago Móvil') {
-      box.innerHTML = `
-        <p class="font-bold text-amber-950">📱 Datos de Pago Móvil:</p>
-        <p>Bancos: <strong>Banesco o BDV (0134 / 0102)</strong></p>
-        <p>Teléfono: <strong>0412-7120538</strong></p>
-        <p>C.I.: <strong>V-13479980</strong></p>
-      `;
+        box.innerHTML = `<p class="font-bold text-amber-950">📱 Datos de Pago Móvil:</p><p>Bancos: <strong>Banesco o BDV (0134 / 0102)</strong></p><p>Teléfono: <strong>0412-7120538</strong></p><p>C.I.: <strong>V-13479980</strong></p>`;
     } else if (method === 'Wally Tech') {
-      box.innerHTML = `
-        <p class="font-bold text-amber-950">💳 Datos para Wally Tech:</p>
-        <p>Teléfono / Cuenta: <strong>0412-7120538</strong></p>
-        <p>Titular: <strong>Dracarys C.A.</strong></p>
-      `;
+        box.innerHTML = `<p class="font-bold text-amber-950">💳 Datos para Wally Tech:</p><p>Teléfono / Cuenta: <strong>0412-7120538</strong></p><p>Titular: <strong>Dracarys C.A.</strong></p>`;
     } else if (method === 'Binance Pay') {
-      box.innerHTML = `
-        <p class="font-bold text-amber-950">🪙 Binance Pay (USDT):</p>
-        <p>Correo Binance Pay: <strong>eduardooa99@gmail.com</strong></p>
-        <p>Titular: <strong>Eduardo Oronoz</strong></p>
-      `;
+        box.innerHTML = `<p class="font-bold text-amber-950">🪙 Binance Pay (USDT):</p><p>Correo Binance Pay: <strong>eduardooa99@gmail.com</strong></p><p>Titular: <strong>Eduardo Oronoz</strong></p>`;
     } else {
-      box.innerHTML = `
-        <p class="font-bold text-amber-950">💵 Efectivo:</p>
-        <p>Prepara el monto exacto para facilitar la entrega o retiro.</p>
-      `;
+        box.innerHTML = `<p class="font-bold text-amber-950">💵 Efectivo:</p><p>Prepara el monto exacto para facilitar la entrega o retiro.</p>`;
     }
-  }
+}
 
 async function saveGeneralSettings() {
     const newRate = parseFloat(document.getElementById('input-bcv').value);
     if (isNaN(newRate)) return alert('Ingresa una tasa válida.');
-    
     const { error } = await supabaseClient.from('settings').upsert({ key: 'bcv_rate', value: newRate.toString() });
     if (error) return alert('Error al guardar la tasa: ' + error.message);
-    
-    // Recarga completa de los ajustes y productos para refrescar todos los montos en pantalla
     await loadSettingsFromSupabase();
     loadProductsFromSupabase();
-    
     alert('¡Tasa BCV actualizada y sincronizada con éxito!');
 }
 
-  async function toggleRainMode() {
+async function toggleRainMode() {
     isRainModeActive = !isRainModeActive;
     await supabaseClient.from('settings').upsert({ key: 'rain_mode', value: isRainModeActive.toString() });
     document.getElementById('rain-alert-bar').classList.toggle('hidden', !isRainModeActive);
     const btn = document.getElementById('toggle-rain-btn');
     btn.innerText = isRainModeActive ? '🟢 ACTIVADO' : 'Desactivado';
     btn.className = isRainModeActive ? 'px-4 py-2 rounded-lg font-bold text-white bg-amber-600 shadow' : 'px-4 py-2 rounded-lg font-bold text-white bg-gray-600 shadow';
-  }
+}
 
-  async function setStoreOverride(mode) {
+async function setStoreOverride(mode) {
     storeOverride = mode;
     await supabaseClient.from('settings').upsert({ key: 'store_override', value: mode });
     updateOverrideButtonsUI();
     checkStoreStatus();
     alert(`Modo de horario cambiado a: ${mode.toUpperCase()}`);
-  }
+}
 
-  function updateOverrideButtonsUI() {
+function updateOverrideButtonsUI() {
     document.getElementById('btn-override-auto').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'auto' ? 'bg-black text-white border-black' : 'bg-white text-gray-800 border-gray-300'}`;
     document.getElementById('btn-override-open').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'open' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-emerald-50 text-emerald-800 border-emerald-600'}`;
     document.getElementById('btn-override-closed').className = `flex-1 py-2 rounded font-bold border shadow-sm ${storeOverride === 'closed' ? 'bg-red-700 text-white border-red-700' : 'bg-red-50 text-red-800 border-red-600'}`;
-  }
+}
 
-  function renderWeeklyScheduleUI() {
+function renderWeeklyScheduleUI() {
     const container = document.getElementById('weekly-schedule-container');
     if (!container) return;
     container.innerHTML = '';
-    
     const daysOrder = [1, 2, 3, 4, 5, 6, 0];
     daysOrder.forEach(dayKey => {
-      const d = weeklySchedule[dayKey];
-      container.innerHTML += `
-        <div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200 text-xs">
-          <div class="flex items-center gap-2 w-28">
-            <input type="checkbox" id="sched-active-${dayKey}" ${d.active ? 'checked' : ''} class="w-4 h-4 text-amber-600 rounded">
-            <span class="font-bold text-gray-900">${d.name}</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <span class="text-[10px] text-gray-500">Apertura:</span>
-            <input type="time" id="sched-open-${dayKey}" value="${d.open}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs">
-            <span class="text-[10px] text-gray-500 ml-2">Cierre:</span>
-            <input type="time" id="sched-close-${dayKey}" value="${d.close}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs">
-          </div>
-        </div>
-      `;
+        const d = weeklySchedule[dayKey];
+        container.innerHTML += `<div class="flex items-center justify-between bg-white p-2 rounded border border-gray-200 text-xs"><div class="flex items-center gap-2 w-28"><input type="checkbox" id="sched-active-${dayKey}" ${d.active ? 'checked' : ''} class="w-4 h-4 text-amber-600 rounded"><span class="font-bold text-gray-900">${d.name}</span></div><div class="flex items-center gap-1"><span class="text-[10px] text-gray-500">Apertura:</span><input type="time" id="sched-open-${dayKey}" value="${d.open}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs"><span class="text-[10px] text-gray-500 ml-2">Cierre:</span><input type="time" id="sched-close-${dayKey}" value="${d.close}" class="border border-gray-300 p-1 rounded text-gray-900 text-xs"></div></div>`;
     });
-  }
+}
 
-  async function saveWeeklySchedule() {
+async function saveWeeklySchedule() {
     const daysOrder = [1, 2, 3, 4, 5, 6, 0];
     daysOrder.forEach(dayKey => {
-      const active = document.getElementById(`sched-active-${dayKey}`).checked;
-      const open = document.getElementById(`sched-open-${dayKey}`).value;
-      const close = document.getElementById(`sched-close-${dayKey}`).value;
-      weeklySchedule[dayKey].active = active;
-      weeklySchedule[dayKey].open = open;
-      weeklySchedule[dayKey].close = close;
+        const active = document.getElementById(`sched-active-${dayKey}`).checked;
+        const open = document.getElementById(`sched-open-${dayKey}`).value;
+        const close = document.getElementById(`sched-close-${dayKey}`).value;
+        weeklySchedule[dayKey].active = active;
+        weeklySchedule[dayKey].open = open;
+        weeklySchedule[dayKey].close = close;
     });
-
     await supabaseClient.from('settings').upsert({ key: 'weekly_schedule', value: JSON.stringify(weeklySchedule) });
     checkStoreStatus();
     alert('¡Horarios semanales guardados en Supabase con éxito!');
-  }
+}
 
-  async function submitOrder() {
+async function submitOrder() {
     if (!isCaracasOpen()) return alert('El establecimiento está cerrado en este momento.');
     if (cart.length === 0) return alert('Agrega al menos un producto al pedido.');
-    
     const name = document.getElementById('cust-name').value.trim();
     const phone = document.getElementById('cust-phone').value.trim();
     const address = document.getElementById('cust-address').value.trim();
     const coords = document.getElementById('cust-coords').value;
     const method = document.getElementById('pay-method').value;
     const ref = document.getElementById('pay-ref').value.trim();
-
     if (!name || !phone) return alert('Por favor ingresa tu nombre y teléfono.');
     if (orderType === 'Delivery' && !address) return alert('Ingresa tu dirección de entrega.');
     if (!ref) return alert('Por favor ingresa el número de referencia del pago.');
-
+    
     const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
     const hasFreeDelivery = cart.some(item => item.free_delivery === true);
     const deliveryCost = (orderType === 'Delivery' && !hasFreeDelivery) ? calculatedDeliveryCostUSD : 0;
     const totalUSD = subtotal + deliveryCost;
     const totalBS = totalUSD * bcvRate;
-
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coords)}`;
-
+    
+    const nowIsoString = new Date().toISOString();
     const { error } = await supabaseClient.from('orders').insert([{
-      customer_name: name,
-      phone: phone,
-      order_type: orderType,
-      delivery_zone: orderType === 'Delivery' ? `Distancia: ${calculatedDistanceKm.toFixed(1)} km` : 'N/A',
-      delivery_address: orderType === 'Delivery' ? `${address} [Coords: ${coords}]` : 'Retiro en Local',
-      items: cart,
-      total_usd: totalUSD,
-      total_bs: totalBS,
-      payment_method: method,
-      payment_ref: ref,
-      status: 'Recibido'
+        customer_name: name,
+        phone: phone,
+        order_type: orderType,
+        delivery_zone: orderType === 'Delivery' ? `Distancia: ${calculatedDistanceKm.toFixed(1)} km` : 'N/A',
+        delivery_address: orderType === 'Delivery' ? `${address} [Coords: ${coords}]` : 'Retiro en Local',
+        items: cart,
+        total_usd: totalUSD,
+        total_bs: totalBS,
+        payment_method: method,
+        payment_ref: ref,
+        status: 'Recibido',
+        created_at: nowIsoString
     }]);
-
+    
     if (error) return alert('Error al guardar en base de datos: ' + error.message);
-
+    
+    const nowTime = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas', dateStyle: 'short', timeStyle: 'short' });
     let summary = `🛒 *¡NUEVO PEDIDO DRACARYS!*\n`;
+    summary += `📅 *Fecha:* ${nowTime}\n`;
     summary += `👤 *Cliente:* ${name}\n`;
     summary += `📱 *Teléfono:* ${phone}\n`;
     summary += `🛵 *Modalidad:* ${orderType}\n`;
     if (orderType === 'Delivery') {
-      summary += `📍 *Dirección:* ${address}\n`;
-      summary += `📏 *Distancia Real:* ${calculatedDistanceKm.toFixed(1)} km\n`;
-      summary += `🗺️ *Google Maps:* ${googleMapsUrl}\n`;
+        summary += `📍 *Dirección:* ${address}\n`;
+        summary += `📏 *Distancia Real:* ${calculatedDistanceKm.toFixed(1)} km\n`;
+        summary += `🗺️ *Google Maps:* ${googleMapsUrl}\n`;
     }
     summary += `💳 *Método de Pago:* ${method} (Ref: ${ref})\n\n`;
     summary += `🍲 *Platos Pedidos:*\n`;
     cart.forEach(i => { summary += `• ${i.qty}x ${i.name} ($${(i.price * i.qty).toFixed(2)})\n`; });
     summary += `\n💵 *Total USD:* $${totalUSD.toFixed(2)}\n`;
     summary += `🇻🇪 *Total Bs (BCV):* ${totalBS.toFixed(2)} Bs`;
-
+    
     window.open(`https://wa.me/584127120538?text=${encodeURIComponent(summary)}`, '_blank');
     alert('¡Pedido registrado! Redirigiendo a WhatsApp...');
     cart = [];
     updateCart();
-  }
+}
 
-  function renderAdminCategories() {
+function renderAdminCategories() {
     const list = document.getElementById('admin-category-list');
     if (!list) return;
     list.innerHTML = '';
     categories.forEach((cat, index) => {
-      list.innerHTML += `
-        <div class="flex justify-between items-center bg-white p-2.5 rounded border border-gray-200">
-          <span class="font-bold text-gray-900">📂 ${cat}</span>
-          <button onclick="deleteCategory(${index})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button>
-        </div>
-      `;
+        list.innerHTML += `<div class="flex justify-between items-center bg-white p-2.5 rounded border border-gray-200"><span class="font-bold text-gray-900">📂 ${cat}</span><button onclick="deleteCategory(${index})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button></div>`;
     });
     populateCategorySelect();
-  }
+}
 
-  async function createCategory() {
+async function createCategory() {
     const input = document.getElementById('new-category-name');
     const name = input.value.trim();
     if (!name) return alert('Ingresa un nombre para la categoría.');
     if (categories.includes(name)) return alert('Esta categoría ya existe.');
-    
     categories.push(name);
     await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
-
     input.value = '';
     renderAdminCategories();
     renderCategoriesNav();
     alert('¡Categoría creada y sincronizada globalmente!');
-  }
+}
 
-  async function deleteCategory(index) {
+async function deleteCategory(index) {
     if (categories.length <= 1) return alert('Debes tener al menos una categoría activa.');
     const catName = categories[index];
     if (!confirm(`¿Eliminar la categoría "${catName}"?`)) return;
-    
     categories.splice(index, 1);
     await supabaseClient.from('settings').upsert({ key: 'categories', value: JSON.stringify(categories) });
-    
     renderAdminCategories();
     renderCategoriesNav();
     renderProducts(currentFilter);
     alert('Categoría eliminada.');
-  }
+}
 
-  function populateCategorySelect() {
+function populateCategorySelect() {
     const select = document.getElementById('edit-category');
     if (!select) return;
     select.innerHTML = '';
     categories.forEach(cat => {
-      select.innerHTML += `<option value="${cat}">${cat}</option>`;
+        select.innerHTML += `<option value="${cat}">${cat}</option>`;
     });
-  }
+}
 
-  function renderAdminProducts() {
+function renderAdminProducts() {
     const list = document.getElementById('admin-product-list');
     if (!list) return;
     list.innerHTML = '';
     products.forEach(p => {
-      const isAvailable = p.available !== false;
-      list.innerHTML += `
-        <div class="flex justify-between items-center bg-gray-100 p-2.5 rounded border border-gray-200">
-          <div>
-            <p class="font-bold text-gray-900">#${p.sort_order || 99} — ${p.name} ($${p.price.toFixed(2)})</p>
-            <p class="text-[10px] text-gray-500">${p.category} ${p.badge ? ' | 🏷️ ' + p.badge : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p>
-          </div>
-          <div class="flex gap-1">
-            <button onclick="toggleProductAvailability(${p.id})" class="${isAvailable ? 'bg-amber-600' : 'bg-emerald-600'} text-white px-2 py-1 rounded text-[10px] font-bold">${isAvailable ? 'Agotar' : 'Activar'}</button>
-            <button onclick="selectProductToEdit(${p.id})" class="bg-black text-white px-2 py-1 rounded text-[10px] font-bold">Editar</button>
-            <button onclick="deleteProduct(${p.id})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button>
-          </div>
-        </div>
-      `;
+        const isAvailable = p.available !== false;
+        list.innerHTML += `<div class="flex justify-between items-center bg-gray-100 p-2.5 rounded border border-gray-200"><div><p class="font-bold text-gray-900">#${p.sort_order || 99} — ${p.name} ($${p.price.toFixed(2)})</p><p class="text-[10px] text-gray-500">${p.category} ${p.badge ? ' | 🏷️ ' + p.badge : ''} | <span class="${isAvailable ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}">${isAvailable ? '🟢 Disponible' : '🔴 Agotado'}</span></p></div><div class="flex gap-1"><button onclick="toggleProductAvailability(${p.id})" class="${isAvailable ? 'bg-amber-600' : 'bg-emerald-600'} text-white px-2 py-1 rounded text-[10px] font-bold">${isAvailable ? 'Agotar' : 'Activar'}</button><button onclick="selectProductToEdit(${p.id})" class="bg-black text-white px-2 py-1 rounded text-[10px] font-bold">Editar</button><button onclick="deleteProduct(${p.id})" class="bg-red-600 text-white px-2 py-1 rounded text-[10px] font-bold">Eliminar</button></div></div>`;
     });
-  }
+}
 
-  async function toggleProductAvailability(id) {
+async function toggleProductAvailability(id) {
     const p = products.find(item => item.id === id);
     if (!p) return;
     const newStatus = p.available === false ? true : false;
     const { error } = await supabaseClient.from('menu_items').update({ available: newStatus }).eq('id', id);
     if (error) return alert('Error al actualizar disponibilidad: ' + error.message);
     loadProductsFromSupabase();
-  }
+}
 
-  function selectProductToEdit(id) {
+function selectProductToEdit(id) {
     const p = products.find(item => item.id === id);
     if (!p) return;
     document.getElementById('edit-id').value = p.id;
@@ -1155,64 +945,34 @@ async function saveGeneralSettings() {
     document.getElementById('edit-badge').value = p.badge || '';
     document.getElementById('edit-free-delivery').checked = p.free_delivery;
     document.getElementById('visual-edit-name').innerText = p.name;
-  }
-
-async function saveVisualEdit() {
-  const id = document.getElementById('edit-id').value;
-  const name = document.getElementById('edit-name').value.trim();
-  const sort_order = parseInt(document.getElementById('edit-sort-order').value) || 99;
-  const desc = document.getElementById('edit-desc').value.trim();
-  const price = parseFloat(document.getElementById('edit-price').value);
-  const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
-  
-  // Captura segura del valor exacto del select de categoría
-  const categorySelect = document.getElementById('edit-category');
-  const category = categorySelect ? categorySelect.value : 'Sopas, Hervidos & Parrillas';
-
-  const badge = document.getElementById('edit-badge').value.trim() || null;
-  const free_delivery = document.getElementById('edit-free-delivery').checked;
-  const img = document.getElementById('edit-img-url').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
-
-  if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
-
-  if (id) {
-    // Convertimos el id a número o mantenemos el tipo correcto según tu BD
-    const { error } = await supabaseClient.from('menu_items').update({
-      name, 
-      sort_order, 
-      description: desc, 
-      price, 
-      old_price, 
-      category, // <--- Aquí se envía la categoría seleccionada correctamente
-      image_url: img, 
-      badge, 
-      free_delivery
-    }).eq('id', id);
-
-    if (error) return alert('Error al actualizar: ' + error.message);
-    alert('¡Plato y categoría actualizados con éxito!');
-  } else {
-    const { error } = await supabaseClient.from('menu_items').insert([{
-      name, 
-      sort_order, 
-      description: desc, 
-      price, 
-      old_price, 
-      category, 
-      image_url: img, 
-      badge, 
-      free_delivery, 
-      available: true
-    }]);
-
-    if (error) return alert('Error al crear: ' + error.message);
-    alert('¡Plato creado con éxito!');
-  }
-
-  loadProductsFromSupabase();
 }
 
-  function addNewProductPrompt() {
+async function saveVisualEdit() {
+    const id = document.getElementById('edit-id').value;
+    const name = document.getElementById('edit-name').value.trim();
+    const sort_order = parseInt(document.getElementById('edit-sort-order').value) || 99;
+    const desc = document.getElementById('edit-desc').value.trim();
+    const price = parseFloat(document.getElementById('edit-price').value);
+    const old_price = parseFloat(document.getElementById('edit-old-price').value) || null;
+    const categorySelect = document.getElementById('edit-category');
+    const category = categorySelect ? categorySelect.value : 'Sopas, Hervidos & Parrillas';
+    const badge = document.getElementById('edit-badge').value.trim() || null;
+    const free_delivery = document.getElementById('edit-free-delivery').checked;
+    const img = document.getElementById('edit-img-url').value.trim() || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=400';
+    if (!name || isNaN(price)) return alert('Ingresa un nombre y precio válidos.');
+    if (id) {
+        const { error } = await supabaseClient.from('menu_items').update({ name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery }).eq('id', id);
+        if (error) return alert('Error al actualizar: ' + error.message);
+        alert('¡Plato y categoría actualizados con éxito!');
+    } else {
+        const { error } = await supabaseClient.from('menu_items').insert([{ name, sort_order, description: desc, price, old_price, category, image_url: img, badge, free_delivery, available: true }]);
+        if (error) return alert('Error al crear: ' + error.message);
+        alert('¡Plato creado con éxito!');
+    }
+    loadProductsFromSupabase();
+}
+
+function addNewProductPrompt() {
     document.getElementById('edit-id').value = '';
     document.getElementById('edit-name').value = '';
     document.getElementById('edit-sort-order').value = products.length + 1;
@@ -1223,24 +983,24 @@ async function saveVisualEdit() {
     document.getElementById('edit-badge').value = '';
     document.getElementById('edit-free-delivery').checked = false;
     document.getElementById('visual-edit-name').innerText = 'Nuevo Plato';
-  }
+}
 
-  async function deleteProduct(id) {
+async function deleteProduct(id) {
     if (!confirm('¿Estás seguro de eliminar este plato?')) return;
     const { error } = await supabaseClient.from('menu_items').delete().eq('id', id);
     if (error) return alert('Error al eliminar: ' + error.message);
     loadProductsFromSupabase();
     alert('Plato eliminado.');
-  }
+}
 
-  function openAdmin() { 
+function openAdmin() { 
     const modal = document.getElementById('admin-modal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     pollForNewOrders();
-  }
-  
-  function closeAdmin() { 
+}
+
+function closeAdmin() { 
     isAdminAuthenticated = false;
     stopAdminAlarm();
     document.getElementById('admin-pass').value = '';
@@ -1249,44 +1009,33 @@ async function saveVisualEdit() {
     const modal = document.getElementById('admin-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
-  }
-
- async function authAdmin() {
-  const passInput = document.getElementById('admin-pass').value;
-  
-  // Validación segura y cifrada contra Supabase Auth
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: 'eduardooa99@gmail.com',
-    password: passInput
-  });
-
-  if (error || !data.session) {
-    alert('Clave incorrecta o acceso no autorizado');
-    return;
-  }
-
-  // Si las credenciales son correctas, se otorga acceso seguro al panel
-  isAdminAuthenticated = true;
-  
-  try {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-  } catch(e) {}
-
-  document.getElementById('admin-login-box').classList.add('hidden');
-  document.getElementById('admin-panel-content').classList.remove('hidden');
-  renderAdminProducts();
-  renderAdminCategories();
-  populateCategorySelect();
-  renderWeeklyScheduleUI();
-  loadOrdersInCMS();
 }
 
-  function switchAdminTab(tab) {
+async function authAdmin() {
+    const passInput = document.getElementById('admin-pass').value;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: 'eduardooa99@gmail.com',
+        password: passInput
+    });
+    if (error || !data.session) {
+        alert('Clave incorrecta o acceso no autorizado');
+        return;
+    }
+    isAdminAuthenticated = true;
+    try {
+        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    } catch(e) {}
+    document.getElementById('admin-login-box').classList.add('hidden');
+    document.getElementById('admin-panel-content').classList.remove('hidden');
+    renderAdminProducts();
+    renderAdminCategories();
+    populateCategorySelect();
+    renderWeeklyScheduleUI();
+    loadOrdersInCMS();
+}
+
+function switchAdminTab(tab) {
     document.getElementById('admin-tab-products').classList.toggle('hidden', tab !== 'products');
     document.getElementById('admin-tab-categories').classList.toggle('hidden', tab !== 'categories');
     document.getElementById('admin-tab-operations').classList.toggle('hidden', tab !== 'operations');
@@ -1295,105 +1044,107 @@ async function saveVisualEdit() {
     if (tab === 'products') renderAdminProducts();
     if (tab === 'categories') renderAdminCategories();
     if (tab === 'operations') renderWeeklyScheduleUI();
-  }
+}
 
-  async function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus) {
     const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
     if (error) return alert('Error al actualizar estatus: ' + error.message);
     stopAdminAlarm(); 
     loadOrdersInCMS();
-  }
+}
 
-  async function loadOrdersInCMS() {
+async function loadOrdersInCMS() {
     const container = document.getElementById('orders-list-container');
-    // Consulta optimizada limitando a los últimos 15 pedidos para evitar timeouts
-    const { data, error } = await supabaseClient.from('orders').select('*').order('id', { ascending: false }).limit(15);
+    // Consulta optimizada con campos específicos y límite de 10 pedidos + created_at para evitar timeouts
+    const { data, error } = await supabaseClient.from('orders').select('id, customer_name, phone, order_type, delivery_address, items, total_usd, total_bs, payment_method, payment_ref, status, created_at').order('id', { ascending: false }).limit(10);
     
     if (error) {
-      container.innerHTML = `<p class="text-red-600 text-center py-4">Error al cargar pedidos: ${error.message}</p>`;
-      return;
+        container.innerHTML = `<p class="text-red-600 text-center py-4">Error al cargar pedidos: ${error.message}</p>`;
+        return;
     }
-
     if (!data || data.length === 0) {
-      container.innerHTML = '<p class="text-gray-500 text-center py-4">No hay pedidos registrados aún.</p>';
-      return;
+        container.innerHTML = '<p class="text-gray-500 text-center py-4">No hay pedidos registrados aún.</p>';
+        return;
     }
-
     if (data.length > 0 && lastKnownMaxOrderId === 0) {
-      lastKnownMaxOrderId = data[0].id;
+        lastKnownMaxOrderId = data[0].id;
     }
-
     container.innerHTML = '';
     data.forEach(o => {
-      let itemsHtml = '';
-      if (o.items && Array.isArray(o.items)) {
-        o.items.forEach(i => {
-          itemsHtml += `<li class="text-[11px]">• ${i.qty}x ${i.name} ($${(i.price * i.qty).toFixed(2)})</li>`;
-        });
-      }
+        let itemsHtml = '';
+        if (o.items && Array.isArray(o.items)) {
+            o.items.forEach(i => {
+                itemsHtml += `<li class="text-[11px]">• ${i.qty}x ${i.name} ($${(i.price * i.qty).toFixed(2)})</li>`;
+            });
+        }
+        const currentStatus = o.status || 'Recibido';
+        
+        let fechaFormateada = 'Reciente';
+        if (o.created_at) {
+            fechaFormateada = new Date(o.created_at).toLocaleString('es-VE', { timeZone: 'America/Caracas', dateStyle: 'short', timeStyle: 'short' });
+        }
 
-      const currentStatus = o.status || 'Recibido';
-
-      container.innerHTML += `
+        container.innerHTML += `
         <div class="bg-white p-4 rounded-xl border border-gray-300 space-y-2 shadow-sm">
-          <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
-            <span class="text-dracarys-gold font-cinzel">Pedido #${o.id} — ${o.customer_name}</span>
-            <span class="bg-dracarys-fire text-white px-2 py-0.5 rounded text-xs">$${Number(o.total_usd).toFixed(2)} (${Number(o.total_bs).toFixed(2)} Bs)</span>
-          </div>
-          <div class="text-[11px] text-gray-700 space-y-1">
-            <p><strong>📱 Teléfono:</strong> <a href="https://wa.me/58${o.phone.replace(/\D/g,'')}" target="_blank" class="text-emerald-700 font-bold hover:underline">${o.phone}</a></p>
-            <p><strong>🛵 Modalidad:</strong> ${o.order_type}</p>
-            <p><strong>📍 Dirección:</strong> ${o.delivery_address}</p>
-            <p><strong>💳 Pago:</strong> ${o.payment_method} | <strong>Ref:</strong> <span class="text-black font-bold bg-amber-100 px-1 rounded">${o.payment_ref}</span></p>
-            <div class="border-t pt-1 mt-1">
-              <p class="font-bold text-gray-900">🍲 Platos solicitados:</p>
-              <ul class="pl-2 space-y-0.5">${itemsHtml}</ul>
+            <div class="flex justify-between items-center font-bold text-gray-900 border-b pb-1">
+                <span class="text-dracarys-gold font-cinzel">Pedido #${o.id} — ${o.customer_name}</span>
+                <span class="text-[11px] text-gray-500 font-semibold">📅 ${fechaFormateada}</span>
             </div>
-          </div>
-          <div class="pt-2 border-t flex items-center justify-between gap-2 flex-wrap bg-gray-50 p-2 rounded">
-            <span class="font-bold text-gray-800 text-[11px]">Estatus Actual: <strong class="text-dracarys-fire">${currentStatus}</strong></span>
-            <div class="flex gap-1 flex-wrap text-[10px]">
-              <button onclick="updateOrderStatus(${o.id}, '📥 Recibido')" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">📥 Recibido</button>
-              <button onclick="updateOrderStatus(${o.id}, '🔍 En Verificación')" class="bg-amber-600 text-white px-2 py-1 rounded font-bold">🔍 Verificado</button>
-              <button onclick="updateOrderStatus(${o.id}, '🔥 En Preparación')" class="bg-orange-600 text-white px-2 py-1 rounded font-bold">🔥 Cocina</button>
-              <button onclick="updateOrderStatus(${o.id}, '🛵 En Camino')" class="bg-purple-600 text-white px-2 py-1 rounded font-bold">🛵 En Camino</button>
-              <button onclick="updateOrderStatus(${o.id}, '✅ Entregado')" class="bg-emerald-700 text-white px-2 py-1 rounded font-bold">✅ Entregado</button>
+            <div class="flex justify-between items-center text-xs bg-gray-50 p-1.5 rounded">
+                <span class="font-bold text-gray-800">Total a Pagar:</span>
+                <span class="bg-dracarys-fire text-white px-2 py-0.5 rounded font-bold">$${Number(o.total_usd).toFixed(2)} (${Number(o.total_bs).toFixed(2)} Bs)</span>
             </div>
-          </div>
-        </div>
-      `;
+            <div class="text-[11px] text-gray-700 space-y-1">
+                <p><strong>📱 Teléfono:</strong><a href="https://wa.me/58${o.phone.replace(/\D/g,'')}" target="_blank" class="text-emerald-700 font-bold hover:underline">${o.phone}</a></p>
+                <p><strong>🛵 Modalidad:</strong> ${o.order_type}</p>
+                <p><strong>📍 Dirección:</strong> ${o.delivery_address}</p>
+                <p><strong>💳 Pago:</strong> ${o.payment_method} | <strong>Ref:</strong><span class="text-black font-bold bg-amber-100 px-1 rounded">${o.payment_ref}</span></p>
+                <div class="border-t pt-1 mt-1">
+                    <p class="font-bold text-gray-900">🍲 Platos solicitados:</p>
+                    <ul class="pl-2 space-y-0.5">${itemsHtml}</ul>
+                </div>
+            </div>
+            <div class="pt-2 border-t flex items-center justify-between gap-2 flex-wrap bg-gray-50 p-2 rounded">
+                <span class="font-bold text-gray-800 text-[11px]">Estatus Actual: <strong class="text-dracarys-fire">${currentStatus}</strong></span>
+                <div class="flex gap-1 flex-wrap text-[10px]">
+                    <button onclick="updateOrderStatus(${o.id}, '📥 Recibido')" class="bg-blue-600 text-white px-2 py-1 rounded font-bold">📥 Recibido</button>
+                    <button onclick="updateOrderStatus(${o.id}, '🔍 En Verificación')" class="bg-amber-600 text-white px-2 py-1 rounded font-bold">🔍 Verificado</button>
+                    <button onclick="updateOrderStatus(${o.id}, '🔥 En Preparación')" class="bg-orange-600 text-white px-2 py-1 rounded font-bold">🔥 Cocina</button>
+                    <button onclick="updateOrderStatus(${o.id}, '🛵 En Camino')" class="bg-purple-600 text-white px-2 py-1 rounded font-bold">🛵 En Camino</button>
+                    <button onclick="updateOrderStatus(${o.id}, '✅ Entregado')" class="bg-emerald-700 text-white px-2 py-1 rounded font-bold">✅ Entregado</button>
+                </div>
+            </div>
+        </div>`;
     });
-  }
+}
 
-  function showLegalModal(type) {
+function showLegalModal(type) {
     const modal = document.getElementById('legal-modal');
     const body = document.getElementById('legal-modal-body');
     if (type === 'delivery') {
-      body.innerHTML = '<p><strong>Políticas de Delivery:</strong> Calculado en tiempo real desde Altagracia, Caracas, a razón de $2.00 por cada 2 km. Las entregas se efectúan bajo estrictas medidas de seguridad alimentaria.</p>';
+        body.innerHTML = '<p><strong>Políticas de Delivery:</strong> Calculado en tiempo real desde Altagracia, Caracas, a razón de $2.00 por cada 2 km. Las entregas se efectúan bajo estrictas medidas de seguridad alimentaria.</p>';
     } else if (type === 'freshness') {
-      body.innerHTML = '<p><strong>Garantía de Frescura:</strong> Sopas y parrillas elaboradas al momento a la leña con ingredientes de primera calidad. Si tu pedido presenta inconvenientes, contáctanos de inmediato vía WhatsApp.</p>';
+        body.innerHTML = '<p><strong>Garantía de Frescura:</strong> Sopas y parrillas elaboradas al momento a la leña con ingredientes de primera calidad. Si tu pedido presenta inconvenientes, contáctanos de inmediato vía WhatsApp.</p>';
     } else {
-      body.innerHTML = '<p><strong>Términos del Servicio:</strong> Operado legalmente por CORPORACION GELEMAK C.A. (RIF J-41251218-8). Pagos verificados en tiempo real mediante referencias de Pago Móvil, Wally Tech y Binance Pay.</p>';
+        body.innerHTML = '<p><strong>Términos del Servicio:</strong> Operado legalmente por CORPORACION GELEMAK C.A. (RIF J-41251218-8). Pagos verificados en tiempo real mediante referencias de Pago Móvil, Wally Tech y Binance Pay.</p>';
     }
     modal.classList.add('flex');
     modal.classList.remove('hidden');
-  }
+}
 
-  function closeLegalModal() { 
+function closeLegalModal() { 
     const modal = document.getElementById('legal-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
-  }
+}
 
-  loadSettingsFromSupabase();
-  loadProductsFromSupabase();
-  checkStoreStatus();
-  updatePaymentInfo();
-  
-  setInterval(pollForNewOrders, 8000);
-
-  setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
-  setInterval(checkStoreStatus, 60000);
+loadSettingsFromSupabase();
+loadProductsFromSupabase();
+checkStoreStatus();
+updatePaymentInfo();
+setInterval(pollForNewOrders, 8000);
+setTimeout(() => { if (orderType === 'Delivery') initDeliveryMap(); }, 500);
+setInterval(checkStoreStatus, 60000);
 </script>
 </body>
 </html>
